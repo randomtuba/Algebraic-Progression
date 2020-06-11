@@ -1,0 +1,78 @@
+/* CSS files add styling rules to your content */
+
+h1 {
+  font-style: italic;
+}
+
+.tab {
+  font-size: 20px;
+}
+
+.number {
+  font-size: 25px;
+}
+
+.xButton {
+  font-size: 18px;
+}
+
+.upgradeButton {
+  height: 100px;
+  width: 150px;
+}
+
+.yButton {
+  font-size: 18px;
+}
+
+.multButton {
+  border-width: 3px;
+}
+
+.multButton2 {
+  border-width: 3px;
+}
+
+.resetTab {
+  font-size: 18px;
+}
+
+.reupg {
+  height: 100px;
+  width: 150px;
+}
+
+.reupg2 {
+  height: 100px;
+  width: 150px;
+}
+
+.marquee {
+  position: relative;
+  overflow: hidden;
+  height: 25px;
+  width: 100%;
+  border: 1px solid orange;
+}
+
+.marquee p {
+  position: absolute;
+  margin: 0;
+  line-height: 25px;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite
+}
+
+@keyframes marquee {
+  0% { transform: translateX(2000px); }
+  100% { transform: translateX(-100px); }
+}
+
+.sroot {
+  height: 100px;
+  width: 150px;
+}
+
+.pps {
+  font-size: 12px;
+}
