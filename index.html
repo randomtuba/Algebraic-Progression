@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Algebraic Progression: Rewritten</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="https://cdn.glitch.com/a5759b22-0f92-4fe3-9b9a-0d5677062b14%2FAP.png?v=1622480672269">
+    
+  </head>
+  
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="./break_eternity.js"></script>
+    
+    <div id="app">
+    <div id="game">
+      <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;">Enter the E</div>
+    </div><br><br>
+    <button v-for="i in tabNames.length" id="'tab'+i" class="tab" @click="player.tab=i" v-html="tabNames[i-1]" v-if="i!=4||i==4&&unlocked('xupgs')"></button><br><br>
+    <div id="points">
+      {{"Number = " + (player.y > 0.5 ? player.y+"y+" : "")+(player.x > 0.5 ? player.x+"x+" : "")+format(player.points)}}
+    </div>
+    <div id="pps">
+      You are getting {{format(player.pps)}} points per second
+    </div>
+    <button id="pointButton" onclick="pointButton()" class="hoverable">Click me to get +1 point!</button> <button onclick="buyMax()" class="hoverable">Buy Max</button>
+    <br><br>
+    <div id="tab1disp" v-if="player.tab == 1">
+      <div v-for="i in 3">
+        <div id="'amount'+i">
+          {{["Autoclickers","Point Factories","Point Portals"][i-1]}}: {{player.buildings[i-1]}}  
+        </div>
+        <button id="'building'+i" class="building" @click="buy(i)">
+          Buy for {{format(cost(i))}} points  
+        </button><br><br>
+      </div>
+    <button id="x" class="xButton" onclick="buyX()" v-if="unlocked('x')">
+      Gain x for {{format(xCost())}} points
+    </button><br>
+    <button id="y" class="yButton" onclick="buyY()" v-if="player.x >= 100">
+      Gain y for {{format(yCost())}}x
+    </button><br><br>
+      <div v-for="i in 3" v-if="player.upgrades[3]">
+        <div id="'func'+i">
+          <b>{{["f","g","h"][i-1]}}(x) = <span v-html="formatExponent(funcDisplay(i))"></span></b><br>
+          {{["f","g","h"][i-1]}}({{format(player.functions[i-1],0)}}) = {{format(funcEff(i))}}
+        </div>
+        <button id="'funcCost'+i" class="building" @click="buyFunc(i)">
+          Buy for {{format(costfunc(i))}} points
+        </button><br><br>
+      </div>
+    </div>
+    <div id="tab2disp" v-if="player.tab == 2">
+    <button id="save" onclick="save()">
+      Save
+    </button>
+    <button id="export" onclick="exportSave()">
+      Export
+    </button>
+    <button id="import" onclick="importSave()">
+      Import
+    </button>
+    <button id="reset" onclick="reset()">
+      Hard Reset
+    </button>
+    </div>
+    <div id="tab3disp" v-if="player.tab == 3">
+      Here's some goals to strive for:<br><br>
+      1. Buy an Autoclicker<br>
+      2. Buy a Point Factory<br>
+      3. Buy a Point Portal<br>
+      4. Buy 10x<br>
+      5. Buy 4 upgrades<br>
+      6. Get real<br><br><br>
+      bottom text
+    </div>
+    <div id="tab4disp" v-if="player.tab == 4">
+      <table>
+        <tr>
+          <td v-for="i in xUpgCosts.length"><button :id="'upg'+i" @click="buyUpg(i-1)" :class="{upgradeLocked: (player.x < xUpgCosts[i-1]), upgradeBuyable: (player.x >= xUpgCosts[i-1]), upgradeBought: (player.upgrades[i-1] == 1)}">{{xUpgDesc[i-1]}}<br><br>Cost: {{xUpgCosts[i-1]}}x</button></td>
+          
+        </tr>
+      </table>
+    </div>
+    <link rel="stylesheet" :href="'style.css'" id="style">
+    </div>
+    <script src="js/game.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/news.js"></script>
+
+    
+    <script>load(); setInterval(save, 100)</script>
+    <script>doodooWater();</script>
+  </body>
+</html>
