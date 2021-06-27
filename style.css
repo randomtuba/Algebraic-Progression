@@ -1,3 +1,10 @@
+:root{
+  --textColor: black;
+  --bgColor: white;
+  --buildBG: black;
+  --buildColor: white;
+}
+
 body {
   font-family: helvetica, arial, sans-serif, typewriter;
   margin: 2em;
@@ -6,6 +13,10 @@ body {
 button {
   border-radius: 5px;
   font-family: helvetica, arial, sans-serif, typewriter;
+}
+
+h2 {
+  font-size: 18px;
 }
 
 #points {
@@ -17,7 +28,7 @@ button {
   transition-duration: 0.2s;
 }
 
-.tab:hover, .hoverable:hover, .building:hover, .buildingLocked:hover {
+.tab:hover, .hoverable:hover, .building:hover, .buildingLocked:hover, .tabQua:hover {
   color: white;
   background-color: gray;
 }
@@ -27,7 +38,7 @@ button {
 }
 
 #game {
-  border: 2px solid black;
+  border: 2px solid var(--textColor);
   padding: 2px;
   width: 75%;
   overflow: hidden;
@@ -36,10 +47,8 @@ button {
 }
 
 .building {
-  color: white;
-  background-color: black;
-  border-color: white;
-  transition-duration: 0.2s;
+  background-color: #bbbbbb;
+  transition-duration: 0.2s
 }
 
 .tab {
@@ -48,14 +57,21 @@ button {
   color: gray;
 }
 
+.tabQua {
+  font-size: 20px;
+  border-color: white;
+  color: blue;
+  background-color: #A1C7CC;
+}
+
 .buildingLocked {
   color: #BB0000;
-  background-color: black;
+  background-color: #bbbbbb;
   transition-duration: 0.2s  
 }
 
 .xButton {
-  background-color: #FF00FF;
+  background-color: #ffaaff;
   font-size: 18px;
 }
 
@@ -89,6 +105,14 @@ button {
 }
 
 .yButton {
-  background-color: #00FF00;
+  background-color: #aaffaa;
   font-size: 18px;
+}
+
+#prestige {
+  height: 75px;
+  width: 100px;
+  color: blue;
+  border-color: blue;
+  background-color: #A1C7CC;
 }

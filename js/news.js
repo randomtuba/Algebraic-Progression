@@ -32,6 +32,17 @@ newsArray = [
   ["BREAKING NEWS: We ran out of ideas",true,"a28"],
   ["BREAKING NEWS: Florida Man rents Point Portal, causes hole in space-time",true,"a29"],
   ["BREAKING NEWS: Algebraic Progression saves leaked across the nation by a professional hacker. Investigation is ongoing.",true,"a30"],
+  ["Why does the news ticker line breaks news messages?",true,"a31"],
+  ["^",true,"a32"],
+  ["It's important that the news ticker can't be disabled. The news ticker will never disappear and you will get tired of it faster.",true,"a32"],
+  ["Part 2: Tuba fucks up",true,"a33"],
+  ["The action of adding news tickers is like drugs. It's pleasure, but you can't do too much of it.",true,"a34"],
+  ["You know what this game needs more of? It needs more protein",true,"a35"],
+  ["Say it with me: X, Y, Z, W, A, B, C...",true,"a36"],
+  ["Hey all, Scott here! Why are my thoughts being broadcasted on a news ticker?! I need help.",true,"a37"],
+  ["Fact: tuba is not a furry",true,"a38"],
+  ["0/10 quadratic layer needs more parabolas",true,"a39"],
+  ["You can't kill News Ticker Man, look at me go!",true,"a40"]
 ];}
 var s;
 var scrollTimeouts = []; 
