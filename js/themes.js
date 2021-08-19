@@ -6,8 +6,8 @@ const themes = {
     buildColor: "white",
   },
   Dark:{
-    textColor: "white",
-    bgColor: "black",
+    textColor: "#eeeeee",
+    bgColor: "#111111",
     buildBG: "white",
     buildColor: "black",
   }

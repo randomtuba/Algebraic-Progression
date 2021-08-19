@@ -90,6 +90,7 @@ const app = new Vue({
       autobuyers: [true,true,true,true,[false,0]],
       theme: "Light",
       sacrificing: "x",
+      achs: []
     },
     xUpgCosts,
     xUpgDesc,
@@ -137,6 +138,42 @@ const app = new Vue({
       
       return mult.times(gain)
     },
+    getMaxAllText: function() { /*written by Jayman ~ NOTE: I will clean it up now that it is working. :)*/
+      let itemList = ["Buildings", "Functions", "X", "Y"];
+      let booleans = [this.hasQuadUpg(7), this.unlocked("x"), this.player.x >= 100];
+      let maText = `Max All`;
+      let currentSubStrs = [` ${itemList[0]}`];
+      for (let [i, name] of booleans.entries()) {
+        if (name) currentSubStrs.push(`, ${itemList[i + 1]}`);
+      }
+      /*if (this.hasQuadUpg(7)) {
+        currentSubStrs.push(`, ${itemList[1]}`);
+      }
+      if (this.unlocked("x")) { //this.player.unlocks.includes("x")
+        currentSubStrs.push(`, ${itemList[2]}`);
+      }
+      if (this.player.x >= 100) {
+        currentSubStrs.push(`, ${itemList[3]}`);
+      }*/
+      let amount = currentSubStrs.length; /*do this instead of increment amount by 1 in each check... a little bit shorter/more concise.*/
+      for (let [i, name] of currentSubStrs.entries()) {
+        /*if (!currentSubStrs[i + 1]) didnt work for some reason...*/
+        /*if (i == amount - 1) currentSubStrs[i] = currentSubStrs[i].replace(",", " and");
+        maText += currentSubStrs[i];*/
+        if (i == amount - 1) name = name.replace(",", " and");
+        maText += name;
+      }
+      maText += " (M)";
+      return maText;
+    },
+    getQuadBuildingEffect: function() { 
+      if (!this.hasQuadUpg(2)) return (1).toFixed(2);
+      else {
+        let buildingMult = D(1.01).pow(D(this.player.buildings[0]).add(this.player.buildings[1]).add(this.player.buildings[2])).min(hasQuadUpg(12)?1e309:1e10);
+        if(this.hasQuadUpg(12)&&buildingMult.gt(1e10))buildingMult=buildingMult.div(1e10).pow(0.1).mul(1e10);
+        return buildingMult.toFixed(2);
+      }
+    },
     quadUpgs,
     quadUpgText,
     buyQuadUpg,
@@ -148,6 +185,9 @@ const app = new Vue({
     themeNum,
     sacrifice,
     sacEffect,
+    achNum,
+    achs,
+    allocateQuadUpgText
   },
 })
 
@@ -159,6 +199,11 @@ function format(x){ // Redefined from app.data
   return app.format(x)
 }
 
+app.quadUpgs[1].effect = () => app.getQuadBuildingEffect();
+app.quadUpgs[3].effect = () => app.getQuadBuildingEffect();
+app.quadUpgs[6].effect = () => app.getQuadBuildingEffect();
+app.quadUpgText = app.allocateQuadUpgText(app.quadUpgs);
+
 var mainGameLoop = window.setInterval(function() { // runs the loop 
   loop((Date.now()-app.player.timeSinceLastTick)/1000)
   app.player.timeSinceLastTick=Date.now()
@@ -166,8 +211,9 @@ var mainGameLoop = window.setInterval(function() { // runs the loop
   if(app.player.buildings[0]>0.5&&!app.player.unlocks.includes("factory"))app.player.unlocks.push("factory")
   if(app.player.buildings[1]>0.5&&!app.player.unlocks.includes("portal"))app.player.unlocks.push("portal")
   if(app.player.buildings[2]>0.5&&!app.player.unlocks.includes("x"))app.player.unlocks.push("x")
-  if(app.player.x>0.5&&!app.player.unlocks.includes("xupgs"))app.player.unlocks.push("xupgs")
+  if(app.player.x>0.5&&!app.player.unlocks.includes(4))app.player.unlocks.push(4)
   if(app.player.y>0.5&&!app.player.unlocks.includes("quad"))app.player.unlocks.push("quad")
+  if(app.player.x2>0.5&&!app.player.unlocks.includes(5))app.player.unlocks.push(5)
   //convertNumber()
 }, 33);
 //yes
@@ -192,6 +238,13 @@ function loop(diff) { // don't change this stuff unless you know what you're doi
   if(document.getElementById("aqAuto")&&app.player.tab==5&&app.player.subtab.quadratic==3)app.player.autobuyers[4][1]=document.getElementById("aqAuto").value
   
   app.player.quadraticStats.time+=diff
+  
+  for(let x=0;x<Math.ceil(Math.sqrt(achNum));x++){
+    for(let y=0;y<Math.ceil(Math.sqrt(achNum));y++){
+      if(app.player.achs.includes((x+1)*10+y+1)||!achs[x*Math.ceil(Math.sqrt(achNum))+y])continue;
+      if(achs[x*Math.ceil(Math.sqrt(achNum))+y].complete() && !app.player.achs.includes(x*Math.ceil(Math.sqrt(achNum))+y))app.player.achs.push(x*Math.ceil(Math.sqrt(achNum))+y)
+    }
+  }
 }
 
 function pointGain(){
@@ -269,54 +322,33 @@ function funcEff(x){
 }
 
 function buyMax(type){
-  if(D(app.player.points).lt(10))return;
-
-  if(hasQuadUpg(7)&&(type&&type=="functions")){
-    for(let i=1;i<4;i++){
-      let x = 4-i
-      
-      if(D(app.player.points).gte(cost(i)))buy(i)
-      if(costfunc(x).gt(app.player.points))continue;
-
-      let max = D(app.player.points).div([10000000,30000000,1e8][x-1]).log([2,5,7][x-1]).minus(app.player.functions[x-1]).floor()
-      if(max.lt(1))continue;
-      let fcost = D([2,5,7][x-1]).pow(max.add(app.player.functions[x-1])).times([10000000,30000000,1e8][x-1])
-
-      app.player.functions[x-1] = D(app.player.functions[x-1]).add(max)
+  if(hasQuadUpg(7)&&(!type||type=="functions")){
+    for(let i=3; i>0; i--) {
+      if(costfunc(i).gte(app.player.points))continue;
+      while (D(app.player.points).gte(costfunc(i))) {
+        buyFunc(i);
+      }
     }
   }
 
-  
-  for(let i=1;i<4;i++){
+  for(let i=3; i>0; i--){
     if(type&&type!="buildings")break;
-    let x = 4-i
-    if(cost(x).gt(app.player.points))continue;
-    
-    let max = D(app.player.points).div([25,200,15000][x-1]).log(app.player.upgrades[0] ? 1.1 : 1.15).minus(app.player.buildings[x-1]).floor()
-    if(max.lt(1))continue;
-    let bcost = D(app.player.upgrades[0] ? 1.1 : 1.15).pow(max.add(app.player.buildings[x-1])).times([25,200,15000][x-1])
-    
-    if(!hasQuadUpg(7))app.player.points = D(app.player.points).sub(bcost)
-    app.player.buildings[x-1] = D(app.player.buildings[x-1]).add(max)
+    if(cost(i).gt(app.player.points))continue;
+    while (D(app.player.points).gte(cost(i))) {
+      buy(i);
+    }
   }
   
   if(type=="x"||!type){
-    let xMax = D(app.player.points).div(1e5).log(1.1).minus(app.player.x).floor()
-    if(xMax.gte(1)){
-      let xCost = D(1.1).pow(xMax.add(app.player.x)).times(1e5)
-
-      if(!hasQuadUpg(13))app.player.points = D(app.player.points).sub(xCost)
-      app.player.x= D(app.player.x).add(xMax)
+    while(app.player.points.gte(app.xCost())){
+      buyX();
     }
-    else if(D(app.player.points).gte(app.xCost()))buyX()
   }
   
-  if(type=="y"&&D(app.player.x).gte(750)){
-    let yMax = D(app.player.x).div(1000).log(D(0.25).div(sacEffect('x')).add(1)).minus(app.player.y).floor()
-    if(yMax.gte(1)){
-      app.player.y= D(app.player.y).add(yMax)
+  if((type=="y"||!type)&&D(app.player.x).gte(750)){
+    while(D(app.player.x).gte(app.yCost())){
+      buyY();
     }
-    if(D(app.player.points).gte(app.yCost()))buyY()
   }
 }
 

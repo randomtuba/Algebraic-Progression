@@ -15,37 +15,42 @@
     
     <div id="app">
     <div id="game">
-      <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;color:var(--textColor);">Enter the E</div>
+      <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;color:var(--textColor);"><b>Enter the E</b></div>
     </div>
-      <h1 style="color:var(--textColor);margin:auto">Algebraic Progression<sup>v1.1</sup></h1>
-    <button v-for="i in tabs.length" id="'tab'+i" :class="'tab'+(typeof tabs[i-1][1] == 'object'?tabs[i-1][1][1]:'')" :style="typeof tabs[i-1][1] == 'object'?tabs[i-1][1][0]:''" @click="player.tab=i" v-html="tabs[i-1][0]" v-if="tabs[i-1][2]==undefined?true:tabs[i-1][2]"></button><br><br>
+      <h1 style="color:var(--textColor);margin:auto">Algebraic Progression<sup>v1.1.1</sup></h1>
+    <!--<button v-for="i in tabs.length" id="'tab'+i" :class="'tab'+(typeof tabs[i-1][1] == 'object'?tabs[i-1][1][1]:'')" :style="typeof tabs[i-1][1] == 'object'?tabs[i-1][1][0]:''" @click="player.tab=i" v-html="tabs[i-1][0]" v-if="tabs[i-1][2]==undefined?true:tabs[i-1][2]"></button><br><br>-->
+      <button v-for="i in tabs.length" id="'tab'+i" :class="'tab'+(typeof tabs[i-1][1] == 'object'?tabs[i-1][1][1]:'')" :style="typeof tabs[i-1][1] == 'object'?tabs[i-1][1][0]:''" class="tab" @click="player.tab=i" v-html="tabs[i-1][0]" v-if="tabs[i-1][2]==undefined?true:tabs[i-1][2]&&i>3?player.unlocks.includes(i):true"></button><br><br>
     <div id="points" style="color:var(--textColor)">
       {{"Number = " + (player.y > 0.5 ? player.y+"y+" : "")+(player.x > 0.5 ? format(player.x,0)+"x+" : "")+format(player.points)}}
     </div>
-    <div id="pps">
-      You are getting {{format(player.pps)}} points per second
+    <button id="pointButton" onclick="pointButton()" style="background-color:var(--bgColor);color:var(--textColor);font-weight:bold;border-width: 3px;border-color:var(--textColor);" class="hoverable">+1 Point</button> <div id="pps" style="color:var(--textColor);font-style:italic;display:inline;font-weight:bold;">You are getting {{format(player.pps)}} points per second</div>
+      <br>
+    <div v-if="unlocked('quad')">
+      <br>
+      <button id="prestige" onclick="goQuadratic()">Go Quadratic for {{format(x2resetGain(),x2resetGain().lt(1e9)?0:2)}} x² (Q)</button>
+      <br>
     </div>
-    <button id="pointButton" onclick="pointButton()" class="hoverable">Click me to get +1 point!</button> <button onclick="buyMax()" class="hoverable">Buy Max (M)</button>
-      <br><br>
-    <button id="prestige" onclick="goQuadratic()" v-if="unlocked('quad')">Go Quadratic for {{format(x2resetGain(),x2resetGain().lt(1e9)?0:2)}} x² (Q)</button>
-    <br><br>
+    <div>
+      <br>
+      <button onclick="buyMax()" style="background-color:var(--bgColor);color:var(--textColor);font-weight:bold;border-width: 3px;border-color:var(--textColor);" class="hoverable">{{getMaxAllText()}}</button>
+      <br>
+    </div>
+    <br>
     <div id="tab1disp" v-if="player.tab == 1">
       <div v-for="i in 3">
         <div v-if="i==1||i==2&&unlocked('factory')||i==3&&unlocked('portal')">
-          <div id="'amount'+i" style="color:var(--textColor)">
-            {{["Autoclickers","Point Factories","Point Portals"][i-1]}}: {{player.buildings[i-1]}} - {{format(player.buildingGain[i-1])}} base points/sec [{{format(player.buildingPercent[i-1])}}%]
-          </div>
+          <div id="'amount'+i" style="color:var(--textColor)">{{["Autoclickers","Point Factories","Point Portals"][i-1]}} - {{player.buildings[i-1]}} ~ {{format(player.buildingGain[i-1])}}/s [{{format(player.buildingPercent[i - 1])}}%]</div>
           <button id="'building'+i" class="building" @click="buy(i)">
             Buy for {{format(cost(i))}} points ({{i}})  
             </button><br><br>
         </div>
       </div>
-    <button id="x" class="xButton" onclick="buyX()" v-if="unlocked('x')">
+    <button id="x" class="xButton" onclick="buyX()" style="float:left; clear:both;" v-if="unlocked('x')">
       Gain x for {{format(xCost())}} points (X)
     </button><br>
-    <button id="y" class="yButton" onclick="buyY()" v-if="player.x >= 100">
+    <button id="y" class="yButton" onclick="buyY()" style="float:left; clear:both;" v-if="player.x >= 100">
       Gain y for {{format(yCost(),yCost().lt(1e9)?0:2)}}x (Y)
-    </button><br><br>
+    </button><br><br><br>
       <div v-if="player.upgrades[3]">
         <span style="color:var(--textColor)"><b>f(x)</b> * <b>g(x)</b> * <b>h(x)</b> = {{format(funcEff(1).times(funcEff(2)).times(funcEff(3)))}}</span><br><br>
       <div v-for="i in 3">
@@ -84,16 +89,11 @@
       Cosmic47 - For making sure that the game is the best it can be<br></div>
     </div>
     <div id="tab3disp" v-if="player.tab == 3" style="color:var(--textColor)">
-      Here's some goals to strive for:<br><br>
-      1. Buy an Autoclicker<br>
-      2. Buy a Point Factory<br>
-      3. Buy a Point Portal<br>
-      4. Buy 10x<br>
-      5. Buy 4 upgrades<br>
-      6. Reach 100x<br>
-      7. Reset on the 1st prestige layer<br>
-      8. Get real<br><br><br>
-      bottom text
+      <table style="text-align:center">
+        <tr v-for="j in Math.ceil(Math.sqrt(achNum))">
+          <td v-if="achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1]" v-for="i in Math.ceil(Math.sqrt(achNum))" style="border: 2px solid var(--textColor);width:150px;height:100px;max-height:150px;border-radius:10px" :style="{backgroundColor:(player.achs.includes((j-1)*Math.ceil(Math.sqrt(achNum))+i-1)?'green':'red')}"><b><span style="font-size:20px">{{achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1].name}}</span></b><br>{{achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1].desc}}</td>
+        </tr>
+      </table>
     </div>
     <div id="tab4disp" v-if="player.tab == 4">
       <table>
@@ -108,7 +108,7 @@
       <button v-if="hasQuadUpg(4)" @click="player.subtab.quadratic=3" style="color:blue; border-color: blue; background-color: #A1C7CC;">Automation</button>
       <button v-if="hasQuadUpg(11)" @click="player.subtab.quadratic=2" style="color:blue; border-color: blue; background-color: #A1C7CC;">Coordinate Plane</button>
       <table v-if="player.subtab.quadratic==1">
-        <tr v-for="j in Math.ceil(Object.keys(quadUpgs).length/4)">
+        <tr v-for="j in Math.ceil(Object.keys(quadUpgs).length/4)" v-if="hasQuadUpg((j-1)*4-1)||j==1">
           <td v-for="i in Math.min(Object.keys(quadUpgs).length-4*(j-1),4)"><button style="width:150px;height:125px;" :id="'quadUpg'+(i+(j-1)*4)" @click="buyQuadUpg((i+(j-1)*4)-1)" :class="{upgradeLocked: (player.x2 < quadUpgs[(i+(j-1)*4)-1].cost), upgradeBuyable: (player.x2 >= quadUpgs[(i+(j-1)*4)-1].cost), upgradeBought: (player.quadUpgs[(i+(j-1)*4)-1] == 1)}" v-html="quadUpgText[(i+(j-1)*4)-1]"></button></td>
         </tr>
       </table>
@@ -128,6 +128,7 @@
     <link rel="stylesheet" :href="'style.css'" id="style">
     </div>
     <script src="js/themes.js"></script>
+    <script src="js/achievements.js"></script>
     
     <script src="js/quadratic.js"></script>
     <script src="js/game.js"></script>
