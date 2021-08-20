@@ -42,7 +42,17 @@ newsArray = [
   ["Hey all, Scott here! My thoughts are being broadcasted on a news ticker now! No reason, just felt like it.",true,"a37"],
   ["Fact: tuba is not a furry",true,"a38"],
   ["0/10 quadratic layer needs more parabolas",true,"a39"],
-  ["You can't kill News Ticker Man, look at me go!",true,"a40"]
+  ["You can't kill News Ticker Man, look at me go!",true,"a40"],
+  ["Square Root is just Time Dilation but harder, deal with it",true,"a41"],
+  ["Is this a Synergism reference???????",true,"a42"],
+  ["Fun Fact: Offline time exists! You'll get a boost to production when you go back online based on how long you spend away from the game.",true,"a43"],
+  ["'hmmm today I will dev AP' -randomtuba, 5 seconds before disaster struck",true,"a44"],
+  ["Want another game to play while you're idling? Check out Tuba's Tree! Game Link: https://randomtuba.github.io/Tubas-Tree/",true,"a45"],
+  ["Fun Fact: A main GitHub page for Tuba's incremental games is in the works!",true,"a46"],
+  ["If you're wondering about new content, there is going to be a 2nd prestige layer eventually added into this game.",true,"a47"],
+  ["'shit game remove timewalls' -reda",true,"a48"],
+  ["if i see one more 5 hours joke i will fucking snap",true,"a49"],
+  ["BREAKING NEWS: Tuba finally fixed Max All",true,"a50"],
 ];}
 var s;
 var scrollTimeouts = []; 

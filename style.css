@@ -19,12 +19,18 @@ h2 {
   font-size: 18px;
 }
 
+span{
+  color: inherit
+}
+
 #points {
   font-size: 25px;
 }
 
 .tab {
   font-size: 20px;
+  color: gray;
+  border-color: white;
   transition-duration: 0.2s;
 }
 
@@ -93,7 +99,7 @@ h2 {
   border-color: green;
 }
 
-#upg1, #upg2, #upg3, #upg4 {
+#upg1, #upg2, #upg3, #upg4, #upg5, #upg6, #upg7, #upg8 {
   height: 100px;
   width: 150px;
   transition-duration: 0.2s;
@@ -117,6 +123,16 @@ h2 {
   background-color: #A1C7CC;
 }
 
-.ach:hover {
-  
+#enterSqrt {
+  width: 150px;
+  height: 125px;
+  color: #e08a00;
+  background-color: #ffcb52;
+  border-color: #e08a00;
+  transition-duration: 0.2s;
+}
+
+#enterSqrt:hover {
+  color: #ffcb52;
+  background-color: #e08a00;
 }

@@ -17,17 +17,17 @@
     <div id="game">
       <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;color:var(--textColor);"><b>Enter the E</b></div>
     </div>
-      <h1 style="color:var(--textColor);margin:auto">Algebraic Progression<sup>v1.1.1</sup></h1>
+      <h1 style="color:var(--textColor);margin:auto">Algebraic Progression<sup>v1.2</sup></h1>
     <!--<button v-for="i in tabs.length" id="'tab'+i" :class="'tab'+(typeof tabs[i-1][1] == 'object'?tabs[i-1][1][1]:'')" :style="typeof tabs[i-1][1] == 'object'?tabs[i-1][1][0]:''" @click="player.tab=i" v-html="tabs[i-1][0]" v-if="tabs[i-1][2]==undefined?true:tabs[i-1][2]"></button><br><br>-->
       <button v-for="i in tabs.length" id="'tab'+i" :class="'tab'+(typeof tabs[i-1][1] == 'object'?tabs[i-1][1][1]:'')" :style="typeof tabs[i-1][1] == 'object'?tabs[i-1][1][0]:''" class="tab" @click="player.tab=i" v-html="tabs[i-1][0]" v-if="tabs[i-1][2]==undefined?true:tabs[i-1][2]&&i>3?player.unlocks.includes(i):true"></button><br><br>
     <div id="points" style="color:var(--textColor)">
       {{"Number = " + (player.y > 0.5 ? player.y+"y+" : "")+(player.x > 0.5 ? format(player.x,0)+"x+" : "")+format(player.points)}}
     </div>
     <button id="pointButton" onclick="pointButton()" style="background-color:var(--bgColor);color:var(--textColor);font-weight:bold;border-width: 3px;border-color:var(--textColor);" class="hoverable">+1 Point</button> <div id="pps" style="color:var(--textColor);font-style:italic;display:inline;font-weight:bold;">You are getting {{format(player.pps)}} points per second</div>
-      <br>
+      <br><div id="softcap" style="color:red;" v-if="D(player.points).gte('1e500')">Due to a mathematical error in your formula, points are softcapped beyond 1e500</div><br>
+      <br v-if="D(player.points).lt('1e500')">
     <div v-if="unlocked('quad')">
-      <br>
-      <button id="prestige" onclick="goQuadratic()">Go Quadratic for {{format(x2resetGain(),x2resetGain().lt(1e9)?0:2)}} x² (Q)</button>
+      <button id="prestige" onclick="goQuadratic()">{{player.inSquareRoot ? 'Exit Square Root for ' + format(getEssenceGain()) + ' root essence.' : 'Go Quadratic for ' + format(x2resetGain(),x2resetGain().lt(1e9)?0:2) + ' x²'}} (Q)</button>
       <br>
     </div>
     <div>
@@ -36,10 +36,10 @@
       <br>
     </div>
     <br>
-    <div id="tab1disp" v-if="player.tab == 1">
+    <div id="tab1disp" v-if="player.tab == 1"> <!--- GENERATION !--->
       <div v-for="i in 3">
         <div v-if="i==1||i==2&&unlocked('factory')||i==3&&unlocked('portal')">
-          <div id="'amount'+i" style="color:var(--textColor)">{{["Autoclickers","Point Factories","Point Portals"][i-1]}} - {{player.buildings[i-1]}} ~ {{format(player.buildingGain[i-1])}}/s [{{format(player.buildingPercent[i - 1])}}%]</div>
+          <div id="'amount'+i" style="color:var(--textColor)">{{["Autoclickers","Point Factories","Point Portals"][i-1]}} - {{player.buildings[i-1]}}{{player.producedBuildings[i-1]?` + [${format(player.producedBuildings[i-1])}]`:""}} ~ {{format(player.buildingGain[i-1])}}/s [{{format(player.buildingPercent[i - 1])}}%]</div>
           <button id="'building'+i" class="building" @click="buy(i)">
             Buy for {{format(cost(i))}} points ({{i}})  
             </button><br><br>
@@ -64,7 +64,7 @@
       </div>
       </div>
     </div>
-    <div id="tab2disp" v-if="player.tab == 2">
+    <div id="tab2disp" v-if="player.tab == 2"> <!--- OPTIONS !--->
     <button id="save" onclick="save()" class="hoverable">
       Save
     </button>
@@ -88,41 +88,58 @@
       Antimatter Dimensions (Hevipelle) - For news ticker code<br>
       Cosmic47 - For making sure that the game is the best it can be<br></div>
     </div>
-    <div id="tab3disp" v-if="player.tab == 3" style="color:var(--textColor)">
+    <div id="tab3disp" v-if="player.tab == 3" style="color:var(--textColor)"> <!--- ACHIEVEMENTS !--->
       <table style="text-align:center">
         <tr v-for="j in Math.ceil(Math.sqrt(achNum))">
           <td v-if="achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1]" v-for="i in Math.ceil(Math.sqrt(achNum))" style="border: 2px solid var(--textColor);width:150px;height:100px;max-height:150px;border-radius:10px" :style="{backgroundColor:(player.achs.includes((j-1)*Math.ceil(Math.sqrt(achNum))+i-1)?'green':'red')}"><b><span style="font-size:20px">{{achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1].name}}</span></b><br>{{achs[(j-1)*Math.ceil(Math.sqrt(achNum))+i-1].desc}}</td>
         </tr>
       </table>
     </div>
-    <div id="tab4disp" v-if="player.tab == 4">
+    <div id="tab4disp" v-if="player.tab == 4"> <!--- UPGRADES !--->
       <table>
         <tr>
-          <td v-for="i in xUpgCosts.length"><button :id="'upg'+i" @click="buyUpg(i-1)" :class="{upgradeLocked: (player.x < xUpgCosts[i-1]), upgradeBuyable: (player.x >= xUpgCosts[i-1]), upgradeBought: (player.upgrades[i-1] == 1)}">{{xUpgDesc[i-1]}}<br><br>Cost: {{xUpgCosts[i-1]}}x</button></td>
+          <td v-for="i in 4"><button :id="'upg'+i" @click="buyUpg(i-1)" :class="{upgradeLocked: (player.x < xUpgCosts[i-1]), upgradeBuyable: (player.x >= xUpgCosts[i-1]), upgradeBought: (player.upgrades[i-1] == 1)}"><span v-html="xUpgDesc[i-1]"></span><br><br>Cost: {{xUpgCosts[i-1]}}x</button></td>
+        </tr>
+        <tr v-if="hasSqrtUpg(2)">
+          <td v-for="i in 4"><button :id="'upg'+(i+4)" @click="buyUpg(i+3)" :class="{upgradeLocked: (player.x < xUpgCosts[i+3]), upgradeBuyable: (player.x >= xUpgCosts[i+3]), upgradeBought: (player.upgrades[i+3] == 1)}"><span v-html="xUpgDesc[i+3]"></span><br><br>Cost: {{xUpgCosts[i+3]}}x</button></td>
         </tr>
       </table>
     </div>
-    <div id="tab5disp" v-if="player.tab == 5">
+    <div id="tab5disp" v-if="player.tab == 5"> <!--- QUADRATIC !--->
       <span style="color:var(--textColor)">You have <span v-html="format(player.x2,0)" style="font-size:20px;color:blue;"></span> x<sup>2</sup>.</span><br>
       <button @click="player.subtab.quadratic=1" style="color:blue; border-color: blue; background-color: #A1C7CC;">Quadratic Upgrades</button>
       <button v-if="hasQuadUpg(4)" @click="player.subtab.quadratic=3" style="color:blue; border-color: blue; background-color: #A1C7CC;">Automation</button>
       <button v-if="hasQuadUpg(11)" @click="player.subtab.quadratic=2" style="color:blue; border-color: blue; background-color: #A1C7CC;">Coordinate Plane</button>
-      <table v-if="player.subtab.quadratic==1">
+      <button v-if="hasQuadUpg(15)" @click="player.subtab.quadratic=4" style="color:blue; border-color: blue; background-color: #A1C7CC;">Square Root</button>
+      <table v-if="player.subtab.quadratic==1"> <!--- Quadratic Upgrades !--->
+        <br>
         <tr v-for="j in Math.ceil(Object.keys(quadUpgs).length/4)" v-if="hasQuadUpg((j-1)*4-1)||j==1">
           <td v-for="i in Math.min(Object.keys(quadUpgs).length-4*(j-1),4)"><button style="width:150px;height:125px;" :id="'quadUpg'+(i+(j-1)*4)" @click="buyQuadUpg((i+(j-1)*4)-1)" :class="{upgradeLocked: (player.x2 < quadUpgs[(i+(j-1)*4)-1].cost), upgradeBuyable: (player.x2 >= quadUpgs[(i+(j-1)*4)-1].cost), upgradeBought: (player.quadUpgs[(i+(j-1)*4)-1] == 1)}" v-html="quadUpgText[(i+(j-1)*4)-1]"></button></td>
         </tr>
       </table>
-      <div v-if="player.subtab.quadratic==2">
-        <span>You have sacrificed <span style="font-size:20px;color:blue;">{{format(player.sacx,D(player.sacx).lt(1e9)?0:2)}}</span> x (dividing y cost scaling by {{format(sacEffect('x'))}}) and <span style="font-size:20px;color:blue;">{{format(player.sacy,D(player.sacy).lt(1e9)?0:2)}}</span> y (adding {{format(sacEffect('y'))}} to g(x) and h(x) base).</span><br><br>
-        <button @click="sacrifice(player.sacrificing)" class="hoverable">Sacrifice</button><button v-html="player.sacrificing" @click="player.sacrificing=(player.sacrificing=='x'?'y':'x')" class="hoverable"></button>
+      <div v-if="player.subtab.quadratic==2"> <!--- Coordinate Plane !--->
+        <br>
+        <span style="color:var(--textColor);">You have sacrificed <span v-html="sacrificeTxt()"></span>.</span><br><br>
+        <button @click="sacrifice(player.sacrificing)" class="hoverable">Sacrifice</button><button v-html="sacrificeButtonTxt()" @click="changeSac()" class="hoverable"></button>
       </div>
-      <div v-if="player.subtab.quadratic==3">
+      <div v-if="player.subtab.quadratic==3"> <!--- Automation !--->
         <br>
         <button @click="player.autobuyers[0]=!player.autobuyers[0]" class="hoverable">Building Autobuyer: {{player.autobuyers[0]?'ON':'OFF'}}</button><br>
         <button v-if="hasQuadUpg(5)" @click="player.autobuyers[1]=!player.autobuyers[1]" class="hoverable">X Autobuyer: {{player.autobuyers[1]?'ON':'OFF'}}</button><br>
         <button v-if="hasQuadUpg(8)" @click="player.autobuyers[2]=!player.autobuyers[2]" class="hoverable">Function Autobuyer: {{player.autobuyers[2]?'ON':'OFF'}}</button><br>
         <button v-if="hasQuadUpg(10)" @click="player.autobuyers[3]=!player.autobuyers[3]" class="hoverable">Y Autobuyer: {{player.autobuyers[3]?'ON':'OFF'}}</button><br>
-        <span v-if="hasQuadUpg(14)">Quadratic Automator: Reset at <input id="aqAuto" size="5"> x<sup>2</sup> <button @click="player.autobuyers[4][0]=!player.autobuyers[4][0]">{{player.autobuyers[4][0]?'ON':'OFF'}}</button></span>
+        <span v-if="hasQuadUpg(14)" style="color:var(--textColor)">Quadratic Automator: Reset at <input id="aqAuto" size="5"> x<sup>2</sup> <button @click="player.autobuyers[4][0]=!player.autobuyers[4][0]">{{player.autobuyers[4][0]?'ON':'OFF'}}</button></span>
+      </div>
+      <div v-if="player.subtab.quadratic==4"> <!--- Square Root !--->
+        <br>
+        <span style="color:var(--textColor)">You have <span style="font-size:20px;color:orange;">{{format(player.rootEssence)}}</span> root essence.</span><br>
+        <button id="enterSqrt" onclick="enterSquareRoot()">{{player.inSquareRoot ? 'Exit Square Root for ' + format(getEssenceGain()) + ' root essence.' : 'Enter Square Root.'}}</button>
+        <table>
+        <br>
+        <tr v-for="j in Math.ceil(Object.keys(sqrtUpgs).length/4)" v-if="hasSqrtUpg((j-1)*4-1)||j==1">
+          <td v-for="i in Math.min(Object.keys(sqrtUpgs).length-4*(j-1),4)"><button style="width:150px;height:125px;" :id="'sqrtUpg'+(i+(j-1)*4)" @click="buySqrtUpg((i+(j-1)*4)-1)" :class="{upgradeLocked: (player.rootEssence < sqrtUpgs[(i+(j-1)*4)-1].cost && i+(j-1)*4 != 1 || player.rootEssence < reBuyableCost()), upgradeBuyable: (player.rootEssence >= sqrtUpgs[(i+(j-1)*4)-1].cost && i+(j-1)*4 != 1 || player.rootEssence >= reBuyableCost()), upgradeBought: (player.sqrtUpgs[(i+(j-1)*4)-1] === 1)}" v-html="sqrtUpgText[(i+(j-1)*4)-1]"></button></td>
+        </tr>
+      </table>
       </div>
     </div>
     <link rel="stylesheet" :href="'style.css'" id="style">

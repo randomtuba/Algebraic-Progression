@@ -3,8 +3,8 @@ const c = id => document.getElementsByClassName(id)
 const t = id => document.getElementsByTagName(id)
 const D = id => new Decimal(id)
 
-const xUpgCosts = [1,10,25,50]
-const xUpgDesc = ["Cost scaling is 1.1x","Production is doubled","Divide x cost by 2","Unlock Functions"]
+const xUpgCosts = [1,10,25,50,6200,10300,12500,19200]
+const xUpgDesc = ["Cost scaling is 1.1x","Production is doubled","Divide x cost by 2","Unlock Functions","Divide X cost by 1 million and multiply point gain by 1,000","Point Portals produce Point Factories and Point Factories produce Autoclickers","Raise point gain to (log(x+1)*log(y+1)<br>/100+1).","Gain 10x more root essence"]
 
 const tabs = [["Generation"],["Options"],["Achievements"],["Upgrades","","unlocked('xupgs')"],["Quadratic",["color:blue; border-color: blue; background-color: #A1C7CC;",""],"unlocked('quadratic')"]] //quadratic tab is unlocked when you quadratic reset for the first time
 // [tabName, css [style, class] or "" for nothing, v-if]
@@ -14,7 +14,7 @@ var a = false
 const app = new Vue({
   el: '#app',
   data: {
-    D: function (){return D()},
+    D(x){return new Decimal(x)},
     format: function(x,p=2){
       x=D(x)
   if (D(x).lt(1e9)){
@@ -62,6 +62,7 @@ const app = new Vue({
     costfunc: function(x){
       return D([2,5,7][x-1]).pow(this.player.functions[x-1]).times([10000000,30000000,1e8][x-1])
     },
+    getEssenceGain(){return D((app.player.x/100)+app.player.y).times(D(2).pow(this.player.sqrtUpgs[0])).times(this.player.upgrades[7]?10:1).sub(app.player.rootEssence).floor().max(0)},
     player: {
       points: "0",
       x: 0,
@@ -69,11 +70,14 @@ const app = new Vue({
       x2: "0",
       sacx: 0,
       sacy: 0,
+      sacx2: "0",
       timeSinceLastTick: Date.now(),
+      timeBoost: 1,
       buildings: [0,0,0],
+      producedBuildings: [0,0,0],
       buildingPercent: [0,0,0],
       buildingGain: [0,0,0],
-      functions: [0,0,0],
+      functions: [0,0,0], //uh do you know how to implement x upgrade 6
       tab: 1,
       subtab:{
         quadratic: 1
@@ -82,7 +86,7 @@ const app = new Vue({
         time: 0,
         best: [0,0]
       },
-      upgrades: [0,0,0,0],
+      upgrades: [0,0,0,0,0,0,0,0],
       quadUpgs: [0,0,0,0,0,0,0,0,0,0],
       pps: "0",
       unlocks: [],
@@ -90,7 +94,10 @@ const app = new Vue({
       autobuyers: [true,true,true,true,[false,0]],
       theme: "Light",
       sacrificing: "x",
-      achs: []
+      achs: [],
+      inSquareRoot: false,
+      rootEssence: "0",
+      sqrtUpgs: [D(0),0,0,0]
     },
     xUpgCosts,
     xUpgDesc,
@@ -122,7 +129,7 @@ const app = new Vue({
       return this.player.unlocks.includes(x)
     },
     xCost: function(){
-      return D(1.1).pow(this.player.x).times(1e5).div(this.player.upgrades[2]?2:1)
+      return D(1.1).pow(this.player.x).times(1e5).div(this.player.upgrades[2]?2:1).div(this.player.upgrades[4]?1000000:1)
     },
     yCost: function(){
       return D(0.25).div(sacEffect('x')).add(1).pow(this.player.y).times(1000)
@@ -135,6 +142,8 @@ const app = new Vue({
       let gain = D(x).add(y)
       let mult = D(1)
       if(hasQuadUpg(10))mult=mult.times(2)
+      if(hasSqrtUpg(1))mult=mult.times(3)
+      if(hasSqrtUpg(6))mult=mult.times(sqrtUpgs[6].effect())
       
       return mult.times(gain)
     },
@@ -175,10 +184,16 @@ const app = new Vue({
       }
     },
     quadUpgs,
+    sqrtUpgs,
     quadUpgText,
+    sqrtUpgText,
     buyQuadUpg,
+    buySqrtUpg,
     hasQuadUpg: function(id){
       return !!this.player.quadUpgs[id]
+    },
+    hasSqrtUpg: function(id){
+      return !!this.player.sqrtUpgs[id]
     },
     changeTheme,
     themeList,
@@ -187,7 +202,30 @@ const app = new Vue({
     sacEffect,
     achNum,
     achs,
-    allocateQuadUpgText
+    allocateQuadUpgText,
+    allocateSqrtUpgText,
+    reBuyableCost(){
+      return D(5).pow(this.player.sqrtUpgs[0]).mul(2).round()
+    },
+    sacrificeTxt(){
+      let xtxt = `<span style="font-size:20px;color:blue;">${this.format(this.player.sacx,D(this.player.sacx).lt(1e9)?0:2)}</span> x (dividing y cost scaling by ${this.format(this.sacEffect('x'))})`
+      let ytxt = `<span style="font-size:20px;color:blue;">${this.format(this.player.sacy,D(this.player.sacy).lt(1e9)?0:2)}</span> y (adding ${this.format(this.sacEffect('y'))} to g(x) and h(x) base)`
+      if(!hasSqrtUpg(5))return xtxt + " and " + ytxt
+      let x2txt = `<span style="font-size:20px;color:blue;">${this.format(this.player.sacx2,D(this.player.sacx2).lt(1e9)?0:2)}</span> x<sup>2</sup> (multiplying point gain by ${this.format(this.sacEffect('x2'))})`
+      return xtxt + ", " + ytxt + ", and " + x2txt
+    },
+    changeSac(){
+      let arr = ['x','y']
+      if(hasSqrtUpg(5))arr.push('x2')
+        
+      let io = arr.indexOf(this.player.sacrificing)+1
+      if(io>=arr.length)io=0
+      this.player.sacrificing=arr[io]
+    },
+    sacrificeButtonTxt(){
+      if(this.player.sacrificing=="x2")return "x<sup>2</sup>"
+      return this.player.sacrificing
+    }
   },
 })
 
@@ -202,10 +240,13 @@ function format(x){ // Redefined from app.data
 app.quadUpgs[1].effect = () => app.getQuadBuildingEffect();
 app.quadUpgs[3].effect = () => app.getQuadBuildingEffect();
 app.quadUpgs[6].effect = () => app.getQuadBuildingEffect();
-app.quadUpgText = app.allocateQuadUpgText(app.quadUpgs);
 
 var mainGameLoop = window.setInterval(function() { // runs the loop 
-  loop((Date.now()-app.player.timeSinceLastTick)/1000)
+  let diff = (Date.now()-app.player.timeSinceLastTick)/1000
+  if(diff<60)loop(diff)
+  else{
+    app.player.timeBoost = diff
+  }
   app.player.timeSinceLastTick=Date.now()
   
   if(app.player.buildings[0]>0.5&&!app.player.unlocks.includes("factory"))app.player.unlocks.push("factory")
@@ -219,11 +260,16 @@ var mainGameLoop = window.setInterval(function() { // runs the loop
 //yes
 function loop(diff) { // don't change this stuff unless you know what you're doing
   if (!(app.player.points instanceof Decimal)) app.player.points = D(app.player.points)
+  app.player.timeBoost=Math.max(app.player.timeBoost-app.player.timeBoost*diff,1) //ok now points don't generate at all
+  diff*=app.player.timeBoost
   
-  app.player.pps = pointGain()
+  app.player.pps = pointGain().pow(app.player.inSquareRoot?(hasSqrtUpg(7)?0.6:0.5):1)
   app.player.points = D(app.player.points).add(app.player.pps.times(diff))
+  if(app.player.upgrades[5]) app.player.producedBuildings[0] = D(app.player.producedBuildings[0]).add(D(app.player.buildings[1]).add(D(app.player.producedBuildings[1])).times(diff))
+  if(app.player.upgrades[5]) app.player.producedBuildings[1] = D(app.player.producedBuildings[1]).add(D(app.player.buildings[2]).add(D(app.player.producedBuildings[2])).times(diff))
+  // note: produced buildings don't do anything yet!
   
-  if(hasQuadUpg(4)||hasQuadUpg(5))app.player.timeSinceAutobuy+=diff*(hasQuadUpg(11)?D(app.player.x2).add(1).log10().add(1).toNumber():1)
+  if(hasQuadUpg(4)||hasQuadUpg(5))app.player.timeSinceAutobuy+=diff*(hasQuadUpg(11)?D(app.player.x2).add(1).log10().add(1).toNumber():1)*(hasSqrtUpg(8)?4:1)
   if(app.player.timeSinceAutobuy>=1){
     app.player.timeSinceAutobuy=0
     autobuy()
@@ -245,14 +291,30 @@ function loop(diff) { // don't change this stuff unless you know what you're doi
       if(achs[x*Math.ceil(Math.sqrt(achNum))+y].complete() && !app.player.achs.includes(x*Math.ceil(Math.sqrt(achNum))+y))app.player.achs.push(x*Math.ceil(Math.sqrt(achNum))+y)
     }
   }
+  
+  let ele = document.getElementById("rebuyablecost")
+  if(ele)ele.innerText = format(reBuyableCost())
+  
+  if(app.player.tab==5&&app.player.subtab.quadratic==1){
+    quadUpgUpdateEffects.forEach(x=>{
+      document.getElementById("quadUpgEffect"+x).innerText = format(quadUpgs[x].effect())
+    })
+  }
+  
+  if(app.player.tab==5&&app.player.subtab.quadratic==4){
+    sqrtUpgUpdateEffects.forEach(x=>{
+      let ele2 = document.getElementById("sqrtUpgEffect"+x)
+      if(ele2)document.getElementById("sqrtUpgEffect"+x).innerText = format(sqrtUpgs[x].effect())
+    })
+  }
 }
 
 function pointGain(){
   let totalBuildingMult = D(1.01).pow(D(app.player.buildings[0]).add(app.player.buildings[1]).add(app.player.buildings[2])).min(hasQuadUpg(12)?1e309:1e10)
   if(hasQuadUpg(12)&&totalBuildingMult.gt(1e10))totalBuildingMult=totalBuildingMult.div(1e10).pow(0.1).mul(1e10)
   
-  let b1 = D(app.player.buildings[0]).times(hasQuadUpg(1)?totalBuildingMult:1)
-  let b2 = D(app.player.buildings[1]*10).times(hasQuadUpg(3)?totalBuildingMult:1)
+  let b1 = D(app.player.buildings[0]).add(app.player.producedBuildings[0]).times(hasQuadUpg(1)?totalBuildingMult:1)
+  let b2 = D(app.player.buildings[1]*10).add(app.player.producedBuildings[1]*10).times(hasQuadUpg(3)?totalBuildingMult:1)
   let b3 = D(app.player.buildings[2]*1000).times(hasQuadUpg(6)?totalBuildingMult:1)
   let buildings = b1.add(b2).add(b3)
   
@@ -262,12 +324,18 @@ function pointGain(){
   
   let mult = D(1)
   if(app.player.upgrades[1])mult=mult.times(2)
+  if(app.player.upgrades[4])mult=mult.times(1000)
   for(let x=1;x<4;x++){
     mult=mult.times(funcEff(x))
   }
   if(hasQuadUpg(0))mult=mult.times(20).times(hasQuadUpg(13)?D(app.player.x2).add(1):1)
+  if(hasSqrtUpg(3))mult=mult.times(D(app.player.rootEssence).plus(1).pow(10))
   
   let gain = buildings.times(mult)
+  if(app.player.upgrades[6])gain=gain.pow(D(app.player.x).add(1).log10().times(D(app.player.y).add(1).log10()).div(100).add(1))
+  gain = gain.times(sacEffect('x2'))
+  if(hasSqrtUpg(10))mult=mult.times(sqrtUpgs[10].effect())
+  if(D(app.player.points).gte("1e500"))gain=gain.div("1e500").pow(hasSqrtUpg(9)?0.6:0.5).mul("1e500");
   
   return gain
 }
@@ -340,7 +408,7 @@ function buyMax(type){
   }
   
   if(type=="x"||!type){
-    while(app.player.points.gte(app.xCost())){
+    while(D(app.player.points).gte(app.xCost())){
       buyX();
     }
   }
