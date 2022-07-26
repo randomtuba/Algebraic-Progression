@@ -2,12 +2,17 @@ body {
   font-family: helvetica, arial, sans-serif, typewriter;
   margin: 2em;
   text-align: center;
+  background-color: #111111;
+  color: white;
 }
 
 button {
   border-radius: 5px;
   font-family: helvetica, arial, sans-serif, typewriter;
   transition-duration: 0.2s;
+  background-color: gray;
+  color: white;
+  border-color: white;
 }
 
 h2 {
@@ -20,17 +25,19 @@ span{
 
 #points {
   font-size: 25px;
+  text-shadow: 0px 0px 7px;
 }
 
 .tab {
   font-size: 20px;
-  color: gray;
-  border-color: white;
+  color: white;
+  background-color: #003891;
+  border-color: #4f4c91;
 }
 
 .buildingBuyable {
-  background-color: #dddddd;
-  color: black;
+  background-color: black;
+  color: #32964d;
   border-color: #32964d;
   transition-duration: 0.2s;
 }
@@ -41,9 +48,9 @@ span{
 }
 
 .buildingLocked {
-  background-color: #bbbbbb;
+  background-color: black;
+  color: white;
   border-color: red;
-  transition-duration: 0.2s;
 }
 
 .buildingLocked:hover {
@@ -51,14 +58,20 @@ span{
   color: white;
 }
 
-.tab:hover, .hoverable:hover {
-  color: white;
-  background-color: gray;
-  border-color: gray;
+.tab:hover {
+  color: black;
+  background-color: #bdd6fc;
+  border-color: #bdd6fc;
+}
+
+.hoverable:hover {
+  color: black;
+  background-color: white;
+  border-color: white;
 }
 
 #game {
-  border: 2px solid black;
+  border: 2px solid white;
   padding: 2px;
   width: 75%;
   overflow: hidden;
@@ -77,25 +90,25 @@ span{
 }
 
 .xButton {
-  background-color: #ffaaff;
+  background-color: #aa00aa;
   font-size: 18px;
 }
 
 .xButton:hover {
-  color: #880088;
-  background-color: #ff88ff;
-  border-color: #880088;
+  color: #ddaadd;
+  background-color: #880088;
+  border-color: #ddaadd;
 }
 
 .yButton {
-  background-color: #aaffaa;
+  background-color: #446622;
   font-size: 18px;
 }
 
 .yButton:hover {
-  color: #446622;
-  background-color: #bbff66;
-  border-color: #446622;
+  color: #ddffaa;
+  background-color: #668844;
+  border-color: #ddffaa;
 }
 
 .upgradeLocked {
@@ -118,7 +131,7 @@ span{
 
 #pps {
   font-size: 12px;
-  color: gray;
+  color: lightgray;
 }
 
 #prestige {
@@ -180,7 +193,7 @@ span{
 }
 
 .quadText {
-  color: blue;
+  color: #006DB6;
   font-size: 20px;
 }
 
@@ -225,19 +238,21 @@ span{
 }
 
 .achievementLocked {
-  border: 2px solid black;
+  border: 2px solid white;
   width: 150px;
   height: 100px;
   max-height: 150px;
   border-radius: 10px;
-  background-color: red;
+  background-color: crimson;
+  color: white;
 }
 
 .achievementUnlocked {
-  border: 2px solid black;
+  border: 2px solid white;
   width: 150px;
   height: 100px;
   max-height: 150px;
   border-radius: 10px;
-  background-color: green;
+  background-color: #39cc94;
+  color: white;
 }

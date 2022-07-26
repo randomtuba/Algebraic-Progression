@@ -1,0 +1,172 @@
+const QUAD_UPGRADES = {
+  1: {
+    title: "Quadratic Bonus",
+    desc: "Multiply production based on unspent x².",
+    cost: new Decimal(1),
+    eff() {return new Decimal(15).mul(new Decimal(1).add(player.x2.pow(0.5)))},
+    effectDisplay() {return format(QUAD_UPGRADES[1].eff()) + "x production"},
+  },
+  2: {
+    title: "Synergized Autoclickers",
+    desc: "Autoclickers are stronger based on total Buildings bought.",
+    cost: new Decimal(1),
+    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.2)},
+    effectDisplay() {return format(QUAD_UPGRADES[2].eff()) + "x Autoclicker effectiveness"},
+  },
+  3: {
+    title: "Nonlinear f(x)",
+    desc: "Square f(x).",
+    cost: new Decimal(2),
+    effectDisplay() {return null},
+  },
+  4: {
+    title: "Synergized Factories",
+    desc: "Point Factories are stronger based on total Buildings bought.",
+    cost: new Decimal(10),
+    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.3)},
+    effectDisplay() {return format(QUAD_UPGRADES[4].eff()) + "x Point Factory effectiveness"},
+  },
+  5: {
+    title: "Automation I",
+    desc: "Unlock autobuyers for Buildings.",
+    cost: new Decimal(25),
+    effectDisplay() {return null},
+  },
+  6: {
+    title: "Automation II",
+    desc: "Unlock the X Autobuyer and keep X Upgrades on Quadratic.",
+    cost: new Decimal(30),
+    effectDisplay() {return null},
+  },
+  7: {
+    title: "Synergized Portals",
+    desc: "Point Portals are stronger based on total Buildings bought.",
+    cost: new Decimal(50),
+    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.4)},
+    effectDisplay() {return format(QUAD_UPGRADES[7].eff()) + "x Point Portal effectiveness"},
+  },
+  8: {
+    title: "Point Hoarder",
+    desc: "Buying things no longer subtracts from your point amount, and you start with 25 points.",
+    cost: new Decimal(100),
+    effectDisplay() {return null},
+  },
+  9: {
+    title: "Base Addend",
+    desc: "Add 0.2 to the bases of g(x) and h(x), and unlock autobuyers for Functions.",
+    cost: new Decimal(200),
+    effectDisplay() {return null},
+  },
+  10: {
+    title: "Automation III",
+    desc: "Unlock the Y autobuyer.",
+    cost: new Decimal(300),
+    effectDisplay() {return null},
+  },
+  11: {
+    title: "Softcap Delay",
+    desc: "The g(x) and h(x) softcaps start 10 purchases later.",
+    cost: new Decimal(750),
+    effectDisplay() {return null},
+  },
+  12: {
+    title: "New Mechanic?",
+    desc: "Unlock the Coordinate Plane.",
+    cost: new Decimal(1500),
+    effectDisplay() {return null},
+  },
+  13: {
+    title: "Self-Synergy",
+    desc: "Gain more points based on points.",
+    cost: new Decimal(100000),
+    eff() {return player.points.max(0).pow(0.2).add(1)},
+    effectDisplay() {return format(QUAD_UPGRADES[4].eff()) + "x production"},
+  },
+  14: {
+    title: "Automation IV",
+    desc: "Unlock Auto-Quadratic, and make sacrificed Y more effective.",
+    cost: new Decimal(1e6),
+    effectDisplay() {return null},
+  },
+  15: {
+    title: "Powerful Sacrifice",
+    desc: "Make sacrificed X twice as effective.",
+    cost: new Decimal(1e7),
+    effectDisplay() {return null},
+  },
+  16: {
+    title: "Uprooted",
+    desc: "Unlock Square Root.",
+    cost: new Decimal(1e9),
+    effectDisplay() {return null},
+  },
+  17: {
+    title: "Softcap Delay II",
+    desc: "The sacrificed Y effect softcap starts at 1.7 instead of 1.5.",
+    cost: new Decimal(1e180),
+    effectDisplay() {return null},
+  },
+  18: {
+    title: "Y Divider",
+    desc: "Divide the Y cost by 1.1.",
+    cost: new Decimal(1e225),
+    effectDisplay() {return null},
+  },
+  19: {
+    title: "Automation V",
+    desc: "Sacrificing no longer resets anything, and unlock Auto-Sacrifice.",
+    cost: new Decimal("1e400"),
+    effectDisplay() {return null},
+  },
+  20: {
+    title: "Complicated Mathematics",
+    desc: "Unlock Quadratic Formula. (next update)",
+    cost: new Decimal("1e450"),
+    effectDisplay() {return null},
+  },
+};
+
+function buyQU(x) {
+  if(player.x2.gte(QUAD_UPGRADES[x].cost) && !hasQU(x)){
+    player.x2 = player.x2.sub(QUAD_UPGRADES[x].cost)
+    player.quadUpgs.push(x)
+  }
+}
+
+function hasQU(x) {
+  return player.quadUpgs.includes(x);
+}
+
+function rowAmt(x){
+  switch(x) {
+    case 1: // QUAD UPGRADES
+      let row=1
+      if(player.quadUpgs.length >= 4)row++
+      if(player.quadUpgs.length >= 8)row++
+      if(player.quadUpgs.length >= 12)row++
+      if(hasChallenge(2))row++
+      return row
+    break;
+    case 2: // SQRT UPGRADES
+      let row2=1
+      if(player.sqrtUpgs.length >= 4)row2++
+      if(player.sqrtUpgs.length >= 8)row2++
+      return row2
+    break;
+    case 3: // X UPGRADES
+      let row3=1
+      if(hasSU(3))row3++
+      return row3
+  }
+}
+
+function doublerCost() {
+  return new Decimal(1e9).mul(Decimal.pow(10,player.doublers))
+}
+
+function buyDoubler() {
+  if(player.x2.gte(doublerCost())){
+    player.x2 = player.x2.sub(doublerCost())
+    player.doublers = player.doublers.add(1)
+  }
+}
