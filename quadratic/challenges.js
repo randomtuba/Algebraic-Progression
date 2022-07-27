@@ -64,12 +64,12 @@ const CHALLENGES = {
 }
 
 function startChallenge(x) {
-  if(player.challenge == 0){
-    goQuadratic()
-    player.challenge = x
-  }else{
+  if(player.challenge == x){
     if(player.points.gte(CHALLENGES[x].goal) && !hasChallenge(x)) player.chalCompletions.push(x)
     goQuadratic()
+  }else{
+    goQuadratic()
+    player.challenge = x
   }
 }
 

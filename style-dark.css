@@ -170,21 +170,21 @@ span{
 }
 
 .challengeDefault {
-  color: red;
-  background-color: pink;
-  border-color: red;
+  color: white;
+  background-color: crimson;
+  border-color: white;
 }
 
 .challengeIncomplete {
-  color: #8B8000;
-  background-color: yellow;
-  border-color: #8B8000;
+  color: yellow;
+  background-color: #8B8000;
+  border-color: yellow;
 }
 
 .challengeComplete {
-  color: green;
-  background-color: lime;
-  border-color: green;
+  color: white;
+  background-color: green;
+  border-color: white;
 }
 
 .autocenter {

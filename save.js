@@ -47,7 +47,8 @@ function start() {
     challenge: 0,
     chalCompletions: [],
     chalExponents: [new Decimal(1),new Decimal(1)],
-    achievements: []
+    achievements: [],
+    options: [true,true], // for autosave and offline progress respectively (I tried adding them but they it didn't work)
   };
   return a;
 }
