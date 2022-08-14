@@ -22,5 +22,6 @@ function goQuadratic() {
     player.quadratics = player.quadratics.add(1)
     player.challenge = 0
     player.chalExponents = [new Decimal(0),new Decimal(1)]
+    player.purchases = 75
   }
 }

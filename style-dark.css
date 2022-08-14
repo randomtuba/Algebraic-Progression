@@ -256,3 +256,22 @@ span{
   background-color: #39cc94;
   color: white;
 }
+
+.quadFormulaText {
+  font-size: 20px;
+  color: #5fe1ed;
+}
+
+.realSolution {
+  color: #8aff78;
+}
+
+.nonrealSolution {
+  color: #ff7878;
+}
+
+.qpBuyable {
+  background-color: #5fe1ed;
+  color: black;
+  border-color: #5fe1ed;
+}

@@ -92,7 +92,7 @@ const ACHIEVEMENTS = {
     done(){return player.points.gte(1.79e308)},
   },
   18: {
-    name: "Inflation?",
+    name: "To B or not to B",
     desc: "Get 3 b.",
     done(){return player.b.gte(3)},
   },
@@ -102,9 +102,59 @@ const ACHIEVEMENTS = {
     done(){return player.y.gte(100)},
   },
   20: {
+    name: "(-b ± √(b^2 - 4ac)) / 2a",
+    desc: "Unlock Quadratic Formula.",
+    done(){return hasQU(20)},
+  },
+  21: {
+    name: "f(Infinite)",
+    desc: "Have a 1.79e308x multiplier from Functions.",
+    done(){return BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()).gte(1.79e308)},
+  },
+  22: {
+    name: "Doubled Storage",
+    desc: "Buy 5 Limit Expanders.",
+    done(){return player.quadBuyables[4].gte(5)},
+  },
+  23: {
+    name: "Not-so-challenging",
+    desc: "Reach 1e3000 points in a Challenge.",
+    done(){return player.points.gte("1e3000") && player.challenge != 0},
+  },
+  24: {
+    name: "Quadratic Millennium",
+    desc: "Reach 1e1000 x².",
+    done(){return player.x2.gte("1e1000")},
+  },
+  25: {
+    name: "Almost There!",
+    desc: "Unlock Root Epicenter.",
+    done(){return hasSU(16)},
+  },
+  26: {
+    name: "X-hausted",
+    desc: "Reach 1,000,000x.",
+    done(){return player.x.gte(1e6)},
+  },
+  27: {
+    name: "Epic Gamer",
+    desc: "Complete 10 Challenges.",
+    done(){return player.chalCompletions.length == 10},
+  },
+  28: {
+    name: "Super Saiyan",
+    desc: "Reach 1e45 Quadratic Power.",
+    done(){return player.quadPower.gte(1e45)},
+  },
+  29: {
+    name: "Outer Core",
+    desc: "Complete Root Epicenter Level √4.",
+    done(){return player.hasCompletedLevel4},
+  },
+  30: {
     name: "The End",
     desc: "...for now.",
-    done(){return hasQU(20)},
+    done(){return player.x2.gt("1e2950") && player.rootEssence.gte("1e660")},
   },
 }
 

@@ -1,5 +1,6 @@
 var tmp = {
   text: "",
+  letters: [null,"a","b","c"],
 };
 function clickButton() {
   player.points = player.points.add(1)
@@ -8,12 +9,6 @@ function clickButton() {
 function pps() {
   let pps = new Decimal(0);
   pps = pps.add(BUYABLES[1].eff()).add(BUYABLES[2].eff()).add(BUYABLES[3].eff())
-  if(player.inSqrt) pps = pps.max(0).pow(hasSU(8)?0.55:0.5)
-  if(player.challenge == 4) pps = pps.max(0).pow(0.75)
-  if(hasUpgrade(7)) pps = pps.pow(1.01)
-  if(hasChallenge(4)) pps = pps.pow(1.03)
-  if(player.challenge == 2) pps = pps.pow(player.chalExponents[0])
-  if(player.challenge == 9) pps = pps.pow(player.chalExponents[1])
   return pps;
 }
 
@@ -22,24 +17,33 @@ function tab(x) {
 }
 
 function xCost() {
-  return new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,hasSU(1)?SQRT_UPGRADES[1].eff():1)).pow(player.x)).div(hasUpgrade(3)?2:1).div(hasUpgrade(5)?1000000:1)
+  return new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,xDivision())).pow(player.x)).div(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).div(hasUpgrade(5)?1000000:1).div(hasChallenge(5)?1e9:1)
+}
+         
+function xDivision() {
+  let div = new Decimal(1)
+  if(hasSU(1)) div = div.mul(SQRT_UPGRADES[1].eff())
+  div = div.mul(QP_BUYABLES[1].eff())
+  return div
 }
 
 function yCost() {
-  return new Decimal(100).div(hasQU(18)?1.1:1).mul(new Decimal(1).add(Decimal.div(0.25,sacEffect('x'))).pow(player.y)).floor()
+  return new Decimal(100).div(hasQU(18)?1.1:1).div(hasChallenge(8)?5:1).mul(new Decimal(1).add(Decimal.div(0.25,sacEffect('x'))).pow(player.y)).floor()
 }
 
 function buyVariable(x) {
   switch (x) {
     case "x":
-      if (player.points.gte(xCost())){
+      if (player.points.gte(xCost()) && (player.purchases > 0 || player.challenge != 10)){
         if(!hasQU(8)) player.points = player.points.sub(xCost())
         player.x = player.x.add(1)
+        player.purchases -= 1
       }
       break;
     case "y":
-      if (player.x.gte(yCost())){
+      if (player.x.gte(yCost()) && (player.purchases > 0 || player.challenge != 10)){
         player.y = player.y.add(1)
+        player.purchases -= 1
       }
       break;
   }
@@ -51,28 +55,33 @@ function switchTheme() {
 }
 
 var changedQAdisplay = false
+var changedESdisplay = false
 
 function mainLoop(){
   if(!window["player"]||!player.points)return;
   let diff = (Date.now()-player.lastTick)/1000
   player.lastTick = Date.now()
   
-  player.points = player.points.add(pps().times(diff));
-  player.totalPoints = player.totalPoints.add(pps().times(diff));
+  if(player.challenge != 8 || isPrime(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).add(player.buyables[4]).add(player.buyables[5]).add(player.buyables[6]))) player.points = player.points.add(pps().times(diff));
+  if(player.challenge != 8 || isPrime(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).add(player.buyables[4]).add(player.buyables[5]).add(player.buyables[6]))) player.totalPoints = player.totalPoints.add(pps().times(diff));
   player.timePlayed = (Date.now() - player.startingTime) / 1000;
   player.prestigeTimes[0] = player.prestigeTimes[0] += diff;
   player.prestigeTimes[2] = player.prestigeTimes[2] += diff;
   player.slope = player.slope.add(sacEffect('x2').mul(diff))
+  player.quadPower = player.quadPower.add(qpGen().mul(diff))
   
-  if(player.currentTab == 'quad' && player.currentSubtab == 'upgrades' && document.getElementById("quadAuto").value == "" && player.inputValue != ""){
-    changedQAdisplay = false
+  if(player.inSqrt && document.getElementById("epicSlider")){
+    document.getElementById("epicSlider").disabled = true;
+  }else if(document.getElementById("epicSlider")){
+    document.getElementById("epicSlider").disabled = false;
   }
-  if(!changedQAdisplay && player.currentTab == 'quad' && player.currentSubtab == 'upgrades'){
-    changedQAdisplay = true
-    document.getElementById("quadAuto").value = player.inputValue
+  
+  if(inSqrtLevel(4) && player.points.gte(1e12)) {
+    player.hasCompletedLevel4 = true;
   }
-  if(player.quadUpgs.includes(14) && document.getElementById("quadAuto") && player.currentTab == 'quad' && player.currentSubtab == 'upgrades'){
-    player.inputValue = document.getElementById("quadAuto").value
+  
+  if(inSqrtLevel(5) && player.points.gte(1e12)) {
+    player.hasCompletedLevel5 = true;
   }
   
   updateAuto()
@@ -80,6 +89,7 @@ function mainLoop(){
   updatePercent()
   updateExps(diff)
   updateAchs()
+  updateValues()
   
   if(isNaN(player.points)) {
     exportSave()
@@ -93,29 +103,29 @@ setInterval(mainLoop, 40);
 
 function updateAuto() {
   // VARIABLES
-  if(player.autobuyers[8] && player.points.gte(yCost())){
-    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
+  if(player.autobuyers[8] && player.points.gte(yCost()) && player.challenge != 10){
+    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
   }
-  if(player.autobuyers[7] && player.points.gte(xCost())){
-    player.x = player.points.div(100000).mul(hasUpgrade(3)?2:1).mul(hasUpgrade(5)?1000000:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,hasSU(1)?SQRT_UPGRADES[1].eff():1))).floor()
+  if(player.autobuyers[7] && player.points.gte(xCost()) && player.challenge != 10){
+    player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
     if(!hasQU(8)) player.points = player.points.sub(xCost())
     player.x = player.x.add(1)
   }
   
   // FUNCTIONS
-  if(player.autobuyers[6] && player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4)){
+  if(player.autobuyers[6] && player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[6] = player.points.div(100000000).max(1).log(functionCostScaling(3)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[6].cost())
     player.buyables[6] = player.buyables[6].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[5] && player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4)){
+  if(player.autobuyers[5] && player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[5] = player.points.div(30000000).max(1).log(functionCostScaling(2)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[5].cost())
     player.buyables[5] = player.buyables[5].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[4] && player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4)){
+  if(player.autobuyers[4] && player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[4] = player.points.div(5000000).max(1).log(functionCostScaling(1)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[4].cost())
     player.buyables[4] = player.buyables[4].add(1)
@@ -123,19 +133,19 @@ function updateAuto() {
   }
   
   // BUILDINGS
-  if(player.autobuyers[3] && player.points.gte(BUYABLES[3].cost())){
+  if(player.autobuyers[3] && player.points.gte(BUYABLES[3].cost()) && player.challenge != 10){
     player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[3].cost())
     player.buyables[3] = player.buyables[3].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[2] && player.points.gte(BUYABLES[2].cost())){
+  if(player.autobuyers[2] && player.points.gte(BUYABLES[2].cost()) && player.challenge != 10){
     player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[2].cost())
     player.buyables[2] = player.buyables[2].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[1] && player.points.gte(BUYABLES[1].cost())){
+  if(player.autobuyers[1] && player.points.gte(BUYABLES[1].cost()) && player.challenge != 10){
     player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[1].cost())
     player.buyables[1] = player.buyables[1].add(1)
@@ -157,29 +167,29 @@ function updateAuto() {
 
 function buyMax() {
   // VARIABLES
-  if(player.points.gte(yCost())){
-    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
+  if(player.points.gte(yCost()) && player.challenge != 10){
+    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
   }
-  if(player.points.gte(xCost())){
-    player.x = player.points.div(100000).mul(hasUpgrade(3)?2:1).mul(hasUpgrade(5)?1000000:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,hasSU(1)?SQRT_UPGRADES[1].eff():1))).floor()
+  if(player.points.gte(xCost()) && player.challenge != 10){
+    player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
     if(!hasQU(8)) player.points = player.points.sub(xCost())
     player.x = player.x.add(1)
   }
   
   // FUNCTIONS
-  if(player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4)){
+  if(player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[6] = player.points.div(100000000).max(1).log(functionCostScaling(3)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[6].cost())
     player.buyables[6] = player.buyables[6].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4)){
+  if(player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[5] = player.points.div(30000000).max(1).log(functionCostScaling(2)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[5].cost())
     player.buyables[5] = player.buyables[5].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4)){
+  if(player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
     player.buyables[4] = player.points.div(5000000).max(1).log(functionCostScaling(1)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[4].cost())
     player.buyables[4] = player.buyables[4].add(1)
@@ -187,19 +197,19 @@ function buyMax() {
   }
   
   // BUILDINGS
-  if(player.points.gte(BUYABLES[3].cost())){
+  if(player.points.gte(BUYABLES[3].cost()) && player.challenge != 10){
     player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[3].cost())
     player.buyables[3] = player.buyables[3].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[2].cost())){
+  if(player.points.gte(BUYABLES[2].cost()) && player.challenge != 10){
     player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[2].cost())
     player.buyables[2] = player.buyables[2].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[1].cost())){
+  if(player.points.gte(BUYABLES[1].cost()) && player.challenge != 10){
     player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[1].cost())
     player.buyables[1] = player.buyables[1].add(1)
@@ -229,6 +239,28 @@ function updatePercent() {
 function updateExps(diff) {
   player.chalExponents[0] = player.chalExponents[0].add(new Decimal(1).div(30).mul(diff)).min(1)
   player.chalExponents[1] = player.chalExponents[1].sub(new Decimal(0.04).mul(diff)).max(0)
+}
+
+function updateValues() {
+  // Auto-Quadratic
+  if(player.currentTab == 'quad' && player.currentSubtab == 'upgrades' && document.getElementById("quadAuto")?.value == "" && player.inputValue != ""){
+    changedQAdisplay = false
+  }
+  if(!changedQAdisplay && player.currentTab == 'quad' && player.currentSubtab == 'upgrades'){
+    changedQAdisplay = true
+    if(document.getElementById("quadAuto"))document.getElementById("quadAuto").value = player.inputValue
+  }
+  if(player.quadUpgs.includes(14) && document.getElementById("quadAuto") && player.currentTab == 'quad' && player.currentSubtab == 'upgrades'){
+    player.inputValue = document.getElementById("quadAuto").value
+  }
+  
+  // Root Epicenter Slider
+  if(player.currentTab == "quad" && player.currentSubtab == "sroot" && document.getElementById("epicSlider") != player.epicenterLevel && !changedESdisplay){
+    if(document.getElementById("epicSlider")) document.getElementById("epicSlider").value = player.epicenterLevel
+    changedESdisplay = true
+  }
+  if(player.currentTab != "quad" || player.currentSubtab != "sroot") changedESdisplay = false
+  if(changedESdisplay && document.getElementById("epicSlider")) player.epicenterLevel = document.getElementById("epicSlider").value
 }
 
 document.addEventListener("keydown", function onEvent(event) {

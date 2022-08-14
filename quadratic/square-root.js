@@ -1,11 +1,32 @@
 function reFormula() {
-  return new Decimal(1.1).pow(player.x.div(100).sub(1)).mul(new Decimal(1.25).pow(player.y)).mul(Decimal.pow(2,player.sqrtDoublers)).mul(hasSU(11)?10:1).sub(player.rootEssence).max(0).floor()
+  if(!inSqrtLevel(2)){
+    let re = new Decimal(1.1).pow(player.x.div(100).sub(1)).mul(new Decimal(1.25).pow(player.y))
+    re = re.mul(Decimal.pow(2,player.sqrtDoublers))
+    if(hasSU(11)) re = re.mul(10)
+    if(hasSU(15)) re = re.mul(SQRT_UPGRADES[15].eff())
+    re = re.mul(ceEffect(1))
+    re = re.sub(player.rootEssence).max(0).floor()
+    return re
+  }else{
+    let addend = 0
+    if(inSqrtLevel(3)) addend += 0.008
+    if(inSqrtLevel(4)) addend += 0.05
+    if(inSqrtLevel(5)) addend += 0.31
+    let re = player.points.div(1e12).pow(0.002+addend)
+    if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
+    re = re.sub(player.challengeEssence).max(0).floor()
+    return re
+  }
 }
 
 function enterSqrt() {
   if(quadFormula().gte(1)){
     if(player.inSqrt){
-      player.rootEssence = player.rootEssence.add(reFormula())
+      if(inSqrtLevel(2)){
+        player.challengeEssence = player.challengeEssence.add(reFormula())
+      }else{
+        player.rootEssence = player.rootEssence.add(reFormula())
+      }
     }
     goQuadratic();
     player.inSqrt = !player.inSqrt;
@@ -24,7 +45,7 @@ const SQRT_UPGRADES = {
     title: "Uprooted Points",
     desc: "Gain more points based on Root Essence.",
     cost: new Decimal(90),
-    eff() {return player.rootEssence.max(0).pow(1.25).add(1)},
+    eff() {return inSqrtLevel(5) ? player.rootEssence.max(0).pow(1.25).add(1).pow(0.12) : player.rootEssence.max(0).pow(1.25).add(1)},
     effectDisplay() {return format(SQRT_UPGRADES[2].eff()) + "x production"},
   },
   3: {
@@ -90,6 +111,34 @@ const SQRT_UPGRADES = {
     cost: new Decimal(1e14),
     effectDisplay() {return null},
   },
+  13: {
+    title: "Powerful Points",
+    desc: "Gain more Quadratic Power based on points.",
+    cost: new Decimal(1.11e111),
+    eff() {return player.points.max(10).log(100)},
+    effectDisplay() {return format(SQRT_UPGRADES[13].eff()) + "x Quadratic Power gain"},
+  },
+  14: {
+    title: "The Other \"b\"",
+    desc: "Gain more Quadratic Power based on Y-Intercept.",
+    cost: new Decimal(1e200),
+    eff() {return Decimal.pow(1.2,player.b)},
+    effectDisplay() {return format(SQRT_UPGRADES[14].eff()) + "x Quadratic Power gain"},
+  },
+  15: {
+    title: "Mechanical Interlock",
+    desc: "RE and QP boost each other.",
+    cost: new Decimal("1e312"),
+    eff() {return player.quadPower.pow(0.3).add(1)}, // boost to RE
+    eff2() {return player.rootEssence.max(10).log10()}, // boost to QP
+    effectDisplay() {return format(SQRT_UPGRADES[15].eff()) + "x RE gain, " + format(SQRT_UPGRADES[15].eff2()) + "x QP gain"},
+  },
+  16: {
+    title: "The Center of Quadratic",
+    desc: "Unlock Root Epicenter.",
+    cost: new Decimal("1e343"),
+    effectDisplay() {return null},
+  },
 };
 
 function buySU(x) {
@@ -104,12 +153,39 @@ function hasSU(x) {
 }
 
 function sqrtDoublerCost() {
-  return new Decimal(200).mul(Decimal.pow(5,player.sqrtDoublers))
+  return new Decimal(200).mul(Decimal.pow(5,player.sqrtDoublers)).mul(Decimal.pow(1.05,player.sqrtDoublers.sub(100).max(0).pow(2)))
 }
 
 function buySqrtDoubler() {
   if(player.rootEssence.gte(sqrtDoublerCost())){
     player.rootEssence = player.rootEssence.sub(sqrtDoublerCost())
     player.sqrtDoublers = player.sqrtDoublers.add(1)
+  }
+}
+
+const epicenterDescs = [null,
+"Level √1: A regular Square Root Run.",
+"Level √2: Level √1 and Points are divided by 1e5000.<br>(keep in mind that all multiplication and division goes before exponents)",
+"Level √3: Level √2 and Points are divided by 1e1650.",
+"Level √4: Level √3 and Points are divided by 1e3650.<br><i>Completing this will multiply the challenge essence effect softcap starts by 1,000,<br>and multiply the Challenge 1 effect hardcap start by 1e50</i>",
+"Level √-1: Level √4 and sacrificed X,<br>sacrificed Y, and Square Root Upgrade 2 is raised ^0.12.<br><i>Completing this will unlock the next prestige layer.</i>",
+]
+
+function inSqrtLevel(x) {
+  return player.inSqrt && player.epicenterLevel >= x
+}
+
+function ceEffect(x) {
+  switch (x) {
+    case 1:
+      let eff1 = player.challengeEssence.max(1).pow(2)
+      if(eff1.gt(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))) eff1 = eff1.div(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))
+      return eff1
+    break;
+    case 2:
+      let eff2 = player.challengeEssence.max(1).pow(1.2)
+      if(eff2.gt(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))) eff2 = eff2.div(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))
+      return eff2
+    break;
   }
 }

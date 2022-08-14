@@ -42,7 +42,7 @@ const UPGRADES = {
 };
 
 function buyUpgrade(x) {
-  if(player.x.gte(UPGRADES[x].cost)){
+  if(player.x.gte(UPGRADES[x].cost) && !hasUpgrade(x)){
     player.xUpgs.push(x)
   }
 }

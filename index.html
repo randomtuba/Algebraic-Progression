@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Algebraic Progression v1.3.1</title>
+    <title>Algebraic Progression v1.4</title>
     <link rel="stylesheet" href="style.css" id="style" />
     <link rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337">
     <script src="game.js" defer></script>
@@ -19,6 +19,7 @@
     <script src="quadratic/coordinate-plane.js" defer></script>
     <script src="quadratic/square-root.js" defer></script>
     <script src="quadratic/challenges.js" defer></script>
+    <script src="quadratic/quad-formula.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12" defer></script>
   </head>
   <body>
@@ -35,17 +36,23 @@
     <button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1)) && !player.inSqrt" onclick="goQuadratic()">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
     </button><br v-if="player.y.gte(1) || player.totalx2.gte(1)"><br v-if="player.y.gte(1) || player.totalx2.gte(1)">
+    <span v-if="player.hasCompletedLevel5">
+      <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.<br>(next update)</span><br><br>
+    </span>
     <div id="points">
       Number = {{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
     </div>
     <div id="pps">
-      You are getting {{format(pps())}} points per second
+      You are getting {{formatSmall(pps())}} points per second
     </div>
     <div v-if="player.challenge == 2">
       C2 Exponent: ^{{format(player.chalExponents[0])}}
     </div>
     <div v-if="player.challenge == 9">
       C9 Exponent: ^{{format(player.chalExponents[1])}}
+    </div>
+    <div v-if="player.challenge == 10">
+      Purchases Left: {{player.purchases}}
     </div>
     <button id="clickButton" class="hoverable" onclick="clickButton()">
       +1 Point
@@ -93,9 +100,10 @@
         Hard Reset
       </button>
       <br><br>
-      Algebraic Progression v1.3.1<br>
+      Algebraic Progression v1.4<br>
       Made by randomtuba<br>
-      Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing<br><br>
+      Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing<br>
+      Game made with Vue.js and break_eternity.js<br><br>
       <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/">Original Rewrite</a><br><br>
       Note: Earlier versions of the game have bugs that will not be fixed.
       </div>
@@ -118,9 +126,9 @@
       </div>
       </div>
     <div id="tab4disp" v-if="player.currentTab == 'achs'"> <!--- ACHIEVEMENTS !--->
-      {{player.achievements.length}}/20 Achievements completed ({{player.achievements.length / 0.2}}%)<br><br>
+      {{player.achievements.length}}/30 Achievements completed ({{player.achievements.length / 0.3}}%)<br><br>
       <table class="autocenter">
-        <tr v-for="a in 4">
+        <tr v-for="a in 6">
           <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b)}">
             <b><span style="font-size:20px">{{ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc}}
           </td>
@@ -146,6 +154,7 @@
       <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'cplane'" v-if="hasQU(12)">Coordinate Plane</button>
       <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'sroot'" v-if="hasQU(16)">Square Root</button>
       <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'chals'" v-if="hasSU(12)">Challenges</button>
+      <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
       <br v-if="hasQU(12)"><br v-if="hasQU(12)">
       <div id="tab6-1disp" v-if="player.currentSubtab == 'upgrades'"> <!--- QUADRATIC UPGRADES !--->
         <table class="autocenter">
@@ -176,7 +185,7 @@
       <div id="tab6-2disp" v-if="player.currentSubtab == 'cplane'"> <!--- COORDINATE PLANE !--->
         You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">, and <span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second).<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
         <span v-if="hasUpgrade(8)">
-        You have <span class="quadText">{{format(player.b)}}</span> b (y-intercept), multiplying slope gain by {{format(bEffect(1))}}, adding {{format(player.b.div(2))}} to the slope effect exponent, and multiplying sacrificed X and Y effects by {{format(bEffect(2))}}.<br>
+        You have <span class="quadText">{{format(player.b)}}</span> b (y-intercept), multiplying slope gain by {{format(bEffect(1))}}, multiplying sacrificed X and Y effects by {{format(bEffect(2))}}, and adding {{format(bEffect(3))}} to the slope effect exponent.<br>
         <button :class="{buildingLocked:player.slope.lt(bCost()),buildingBuyable:player.slope.gte(bCost())}" @click="buyB()">Buy for {{format(bCost())}} slope (B)</button><br><br>
         </span>
         <button @click="sacrifice(player.sacrifice)" class="hoverable">Sacrifice</button><button @click="switchSacrifice()" class="hoverable" v-html="player.sacrifice"></button><br>
@@ -184,7 +193,14 @@
       </div>
       <div id="tab6-3disp" v-if="player.currentSubtab == 'sroot'"> <!--- SQUARE ROOT !--->
         You have <span style="color:orange;font-size:20px">{{formatWhole(player.rootEssence)}}</span> root essence.<br>
-        <button id="enterSqrt" onclick="enterSqrt()">{{player.inSqrt ? "Exit Square Root for " + formatWhole(reFormula()) + " Root Essence. (S)" : "Enter Square Root. (S)"}}</button><br><br>
+        <span v-if="hasSU(16)">You have <span style="color:#b56700;font-size:20px">{{formatWhole(player.challengeEssence)}}</span> challenge essence, multiplying root essence gain by {{format(ceEffect(1))}}x and quadratic power gain by {{format(ceEffect(2))}}x.</span><br>
+        <button id="enterSqrt" onclick="enterSqrt()">{{player.inSqrt ? "Exit Square Root for " + formatWhole(reFormula()) + " " + (inSqrtLevel(2) ? "Challenge" : "Root") + " Essence. (S)" : "Enter Square Root. (S)"}}</button><br><br>
+        <span v-if="hasSU(16)">
+          <b>Root Epicenter:</b><br>
+          <span v-html="epicenterDescs[player.epicenterLevel]"></span><br>
+          <input type="range" min="1" max="5" value="1" class="slider" id="epicSlider">
+          <br><br>
+        </span>
         <button :class="{upgradeLocked:player.rootEssence.lt(sqrtDoublerCost()),upgradeBuyable:player.rootEssence.gte(sqrtDoublerCost())}" style="height: 150px; width: 175px" onclick="buySqrtDoubler()">
             <b>Root Essence Doubler</b><br>
             Double RE gain per purchase!<br>
@@ -213,7 +229,7 @@
         <table class="autocenter">
           <tr v-for="a in 5">
             <td v-for="b in 2">
-              <button style="width: 300px; height: 150px;" @click="startChallenge(a*2-2+b)" :class="{challengeDefault: player.challenge != a*2-2+b, challengeIncomplete: player.challenge == a*2-2+b, challengeComplete: hasChallenge(a*2-2+b)}">
+              <button style="width: 300px; height: 150px;" @click="startChallenge(a*2-2+b)" :class="{challengeDefault: player.challenge != a*2-2+b, challengeIncomplete: player.challenge == a*2-2+b, challengeComplete: hasChallenge(a*2-2+b) && player.challenge != a*2-2+b}">
                 <b>{{CHALLENGES[a*2-2+b].title}}</b><br>
                 {{CHALLENGES[a*2-2+b].desc}}<br>
                 Goal: Reach {{format(CHALLENGES[a*2-2+b].goal)}} points.<br>
@@ -222,6 +238,27 @@
               </button>
             </td>
           </tr>
+        </table>
+      </div>
+      <div id="tab6-5disp" v-if="player.currentSubtab == 'formula'"> <!--- QUADRATIC FORMULA !--->
+        You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
+        To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
+        Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
+        <span :class="{realSolution: player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0), nonrealSolution: player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).lt(0)}">{{player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
+        <div v-for="a in 3">
+          <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
+          <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><br>
+        </div><br><br>
+        <table class="autocenter">
+          <td v-for="a in 4">
+            <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.quadPower.lt(QP_BUYABLES[a].cost()),qpBuyable:player.quadPower.gte(QP_BUYABLES[a].cost()),upgradeBought:a==1&&player.quadBuyables[1].eq(4)}" @click="buyQPBuyable(a)">
+              <b>{{QP_BUYABLES[a].title}}</b><br>
+              {{QP_BUYABLES[a].desc}}<br>
+              Amount: {{player.quadBuyables[a]}}{{a == 1 ? "/4" : ""}}<br>
+              Cost: {{QP_BUYABLES[a].cost().eq(Infinity) ? "Maxed!" : format(QP_BUYABLES[a].cost())}}<br>
+              Effect: {{QP_BUYABLES[a].effectDisplay()}}
+            </button>
+          </td>
         </table>
       </div>
       </div>

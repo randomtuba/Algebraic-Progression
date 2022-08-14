@@ -3,14 +3,14 @@ const QUAD_UPGRADES = {
     title: "Quadratic Bonus",
     desc: "Multiply production based on unspent x².",
     cost: new Decimal(1),
-    eff() {return new Decimal(15).mul(new Decimal(1).add(player.x2.pow(0.5)))},
+    eff() {return new Decimal(4).mul(new Decimal(1).add(player.x2.pow(0.5)))},
     effectDisplay() {return format(QUAD_UPGRADES[1].eff()) + "x production"},
   },
   2: {
     title: "Synergized Autoclickers",
     desc: "Autoclickers are stronger based on total Buildings bought.",
     cost: new Decimal(1),
-    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.2)},
+    eff() {return player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).div(4).add(1).pow(1.2)},
     effectDisplay() {return format(QUAD_UPGRADES[2].eff()) + "x Autoclicker effectiveness"},
   },
   3: {
@@ -23,7 +23,7 @@ const QUAD_UPGRADES = {
     title: "Synergized Factories",
     desc: "Point Factories are stronger based on total Buildings bought.",
     cost: new Decimal(10),
-    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.3)},
+    eff() {return player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).div(4).add(1).pow(1.3)},
     effectDisplay() {return format(QUAD_UPGRADES[4].eff()) + "x Point Factory effectiveness"},
   },
   5: {
@@ -42,7 +42,7 @@ const QUAD_UPGRADES = {
     title: "Synergized Portals",
     desc: "Point Portals are stronger based on total Buildings bought.",
     cost: new Decimal(50),
-    eff() {return new Decimal(1).add(player.buyables[1]).add(player.buyables[2]).add(player.buyables[3]).pow(1.4)},
+    eff() {return player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).div(4).add(1).pow(1.4)},
     effectDisplay() {return format(QUAD_UPGRADES[7].eff()) + "x Point Portal effectiveness"},
   },
   8: {
@@ -101,27 +101,27 @@ const QUAD_UPGRADES = {
     effectDisplay() {return null},
   },
   17: {
-    title: "Softcap Delay II",
-    desc: "The sacrificed Y effect softcap starts at 1.7 instead of 1.5.",
-    cost: new Decimal(1e180),
+    title: "Didn't Need It Anyway",
+    desc: "The sacrificed Y effect softcap is removed.",
+    cost: new Decimal(1e75),
     effectDisplay() {return null},
   },
   18: {
     title: "Y Divider",
     desc: "Divide the Y cost by 1.1.",
-    cost: new Decimal(1e225),
+    cost: new Decimal(1e84),
     effectDisplay() {return null},
   },
   19: {
     title: "Automation V",
     desc: "Sacrificing no longer resets anything, and unlock Auto-Sacrifice.",
-    cost: new Decimal("1e400"),
+    cost: new Decimal(1e96),
     effectDisplay() {return null},
   },
   20: {
     title: "Complicated Mathematics",
-    desc: "Unlock Quadratic Formula. (next update)",
-    cost: new Decimal("1e450"),
+    desc: "Unlock Quadratic Formula.",
+    cost: new Decimal(1e160),
     effectDisplay() {return null},
   },
 };
@@ -151,6 +151,7 @@ function rowAmt(x){
       let row2=1
       if(player.sqrtUpgs.length >= 4)row2++
       if(player.sqrtUpgs.length >= 8)row2++
+      if(hasChallenge(5))row2++
       return row2
     break;
     case 3: // X UPGRADES
@@ -161,7 +162,7 @@ function rowAmt(x){
 }
 
 function doublerCost() {
-  return new Decimal(1e9).mul(Decimal.pow(10,player.doublers))
+  return new Decimal(1e9).mul(Decimal.pow(10,player.doublers)).mul(Decimal.pow(1.1,player.doublers.sub(290).max(0).pow(2)))
 }
 
 function buyDoubler() {

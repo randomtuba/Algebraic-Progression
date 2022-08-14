@@ -17,7 +17,7 @@ function start() {
     ],
     currentTab: 'gen',
     totalPoints: new Decimal(0),
-    timePlayed: Date.now(),
+    timePlayed: 0,
     prestigeTimes: [0,10000000,0,10000000],
     x: new Decimal(0),
     y: new Decimal(0),
@@ -27,7 +27,7 @@ function start() {
     totalx2: new Decimal(0),
     quadratics: new Decimal(0),
     quadUpgs: [],
-    startingTime: 0,
+    startingTime: Date.now(),
     lastTick: 0,
     autobuyers: [null,false,false,false,false,false,false,false,false,false,false],
     currentSubtab: 'upgrades',
@@ -49,6 +49,14 @@ function start() {
     chalExponents: [new Decimal(1),new Decimal(1)],
     achievements: [],
     options: [true,true], // for autosave and offline progress respectively (I tried adding them but they it didn't work)
+    abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
+    quadPower: new Decimal(0),
+    quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+    challengeEssence: new Decimal(0),
+    epicenterLevel: "1",
+    purchases: 75,
+    hasCompletedLevel4: false,
+    hasCompletedLevel5: false,
   };
   return a;
 }

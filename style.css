@@ -198,25 +198,25 @@ span{
   0% {
     border-color: red;
   }
-  15% {
+  12% {
     border-color: orange;
   }
   25% {
     border-color: yellow;
   }
-  40% {
+  37% {
     border-color: lime;
   }
-  55% {
+  50% {
     border-color: cyan;
   }
-  70% {
+  62% {
     border-color: blue;
   }
-  80% {
+  75% {
     border-color: purple;
   }
-  90% {
+  87% {
     border-color: magenta;
   }
   100% {
@@ -240,4 +240,23 @@ span{
   max-height: 150px;
   border-radius: 10px;
   background-color: green;
+}
+
+.quadFormulaText {
+  font-size: 20px;
+  color: #00838f;
+}
+
+.realSolution {
+  color: #00ad28;
+}
+
+.nonrealSolution {
+  color: #a60000;
+}
+
+.qpBuyable {
+  background-color: #00838f;
+  color: white;
+  border-color: #00838f;
 }
