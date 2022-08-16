@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Algebraic Progression v1.4</title>
+    <title>Algebraic Progression v1.4.1</title>
     <link rel="stylesheet" href="style.css" id="style" />
     <link rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337">
     <script src="game.js" defer></script>
@@ -84,7 +84,7 @@
       </div>
     </div>
     <div id="tab2disp" v-if="player.currentTab == 'options'"> <!--- OPTIONS !--->
-      <button class="hoverable" onclick="save()">
+      <button class="hoverable" onclick="save(); notifyMessage('Game Saved!');">
         Save
       </button>
       <button class="hoverable" onclick="exportSave()">
@@ -96,11 +96,17 @@
       <button class="hoverable" onclick="switchTheme()">
         {{player.theme ? "Current Theme: Light" : "Current Theme: Dark"}}
       </button>
+      <button class="hoverable" onclick="toggleOption(0)">
+        Autosave: {{player.options[0] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(1)">
+      Offline Progress: {{player.options[1] ? "ON" : "OFF"}}
+      </button>
       <button id="hardReset" onclick="hardReset()">
         Hard Reset
       </button>
       <br><br>
-      Algebraic Progression v1.4<br>
+      Algebraic Progression v1.4.1<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing<br>
       Game made with Vue.js and break_eternity.js<br><br>
@@ -122,14 +128,24 @@
       You have gone Quadratic {{formatWhole(player.quadratics)}} times.<br>
       Your fastest Quadratic is {{formatTime(player.prestigeTimes[1])}}.<br>
       You have spent {{formatTime(player.prestigeTimes[0])}} in this Quadratic.<br>
-      You have bought {{player.quadUpgs.length}} Quadratic Upgrades.  
+      You have bought {{player.quadUpgs.length}} Quadratic Upgrades.
+      <span v-if="hasQU(16)">
+      <br>
+      You have entered Square Root {{player.sqrtEnters}} times.<br>
+      You have bought {{player.sqrtUpgs.length}} Square Root Upgrades.
+      </span>
+      <span v-if="hasQU(20)">
+      <br>
+      The sum of a, b, and c is {{formatWhole(player.abc[1].add(player.abc[2]).add(player.abc[3]))}}.<br>
+      You have bought a total of {{format(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula buyables.
+      </span>
       </div>
       </div>
     <div id="tab4disp" v-if="player.currentTab == 'achs'"> <!--- ACHIEVEMENTS !--->
-      {{player.achievements.length}}/30 Achievements completed ({{player.achievements.length / 0.3}}%)<br><br>
+      {{player.achievements.length}}/30 Achievements completed ({{format(player.achievements.length / 0.3)}}%)<br><br>
       <table class="autocenter">
         <tr v-for="a in 6">
-          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b)}">
+          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 30}">
             <b><span style="font-size:20px">{{ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc}}
           </td>
         </tr>

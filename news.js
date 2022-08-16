@@ -109,6 +109,7 @@ function updateNewsArray() {
   ["Hi, I'm just another news ticker...I appear to have lost the <span style='color:red'>will to live</span>.",true,"a105"], //v1.4
   ["You've just been news tickered, send a screenshot of this news ticker to someone else to get un-news tickered",true,"a106"], //Prestige Game
   ["RIP to those under 13 that haven't taken algebra 1 yet",true,"a107"], //v1.4
+  ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news tickers are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
   ]
 }
 var s;

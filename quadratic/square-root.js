@@ -11,7 +11,6 @@ function reFormula() {
     let addend = 0
     if(inSqrtLevel(3)) addend += 0.008
     if(inSqrtLevel(4)) addend += 0.05
-    if(inSqrtLevel(5)) addend += 0.31
     let re = player.points.div(1e12).pow(0.002+addend)
     if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
     re = re.sub(player.challengeEssence).max(0).floor()
@@ -29,6 +28,9 @@ function enterSqrt() {
       }
     }
     goQuadratic();
+    if(!player.inSqrt){
+      player.sqrtEnters += 1
+    }
     player.inSqrt = !player.inSqrt;
   }
 }

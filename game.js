@@ -54,12 +54,16 @@ function switchTheme() {
   document.getElementById("style").href = player.theme ? "style.css" : "style-dark.css";
 }
 
+function toggleOption(x){
+  player.options[x] = !player.options[x]
+}
+
 var changedQAdisplay = false
 var changedESdisplay = false
 
 function mainLoop(){
   if(!window["player"]||!player.points)return;
-  let diff = (Date.now()-player.lastTick)/1000
+  let diff = player.options[1] ? ((Date.now()-player.lastTick)/1000) : 0.04
   player.lastTick = Date.now()
   
   if(player.challenge != 8 || isPrime(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).add(player.buyables[4]).add(player.buyables[5]).add(player.buyables[6]))) player.points = player.points.add(pps().times(diff));

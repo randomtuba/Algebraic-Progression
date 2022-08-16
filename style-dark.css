@@ -257,6 +257,16 @@ span{
   color: white;
 }
 
+.achievementGolden {
+  border: 2px solid white;
+  width: 150px;
+  height: 100px;
+  max-height: 150px;
+  border-radius: 10px;
+  background-color: #999900;
+  color: white;
+}
+
 .quadFormulaText {
   font-size: 20px;
   color: #5fe1ed;

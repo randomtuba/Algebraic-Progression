@@ -48,7 +48,7 @@ function start() {
     chalCompletions: [],
     chalExponents: [new Decimal(1),new Decimal(1)],
     achievements: [],
-    options: [true,true], // for autosave and offline progress respectively (I tried adding them but they it didn't work)
+    options: [true,true],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
     quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
@@ -57,6 +57,7 @@ function start() {
     purchases: 75,
     hasCompletedLevel4: false,
     hasCompletedLevel5: false,
+    sqrtEnters: 0,
   };
   return a;
 }
@@ -114,12 +115,11 @@ function load() {
 s = document.getElementById("news");
   scrollNextMessage();
 }
-setInterval(function () {
-  save();
-}, 5000);
+
 window.onload = function () {
   load();
-};
+window.saveInterval = player.options[0] ? setInterval(save,5000) : 0
+}
 
 function exportSave() {
   let str = btoa(JSON.stringify(player));
