@@ -330,7 +330,7 @@
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
         To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
         Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
-        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
+        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{qpGen().gt(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
           <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><br>
