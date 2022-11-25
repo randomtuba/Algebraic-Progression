@@ -104,7 +104,6 @@ function fixData(defaultData, newData) {
   }
 }
 function load() {
-  let startTime = Date.now()
   let get = localStorage.getItem("idk");
 
   if (get === null || get === undefined) {
@@ -154,7 +153,6 @@ s = document.getElementById("news");
     style: 'apcurrent',
     className:'saving',
   });
-  console.log(Date.now()-startTime)
 }
 
 window.onload = function () {
@@ -220,7 +218,7 @@ function hardReset() {
 }
 
 function fixOldSave() {
-  player.currentSubtab = [player.currentSubtab,'milestones']
+  player.currentSubtab = ['upgrades','milestones']
   player.prestigeTimes[2] = player.timePlayed
   player.options[7] = false
   $.notify('Your save is fixed!', {
