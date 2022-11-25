@@ -319,8 +319,8 @@ function updateValues() {
 }
 
 function fixUnixEpoch() {
-  if(player.prestigeTimes[0] >= 1639872000) player.prestigeTimes[0] = 0
-  if(player.prestigeTimes[2] >= 1639872000) player.prestigeTimes[2] = 0
+  if(player.prestigeTimes[0] >= 1639872000) player.prestigeTimes[0] = player.timePlayed
+  if(player.prestigeTimes[2] >= 1639872000) player.prestigeTimes[2] = player.timePlayed
 }
 
 function download(filename, text) {
