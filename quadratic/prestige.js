@@ -33,7 +33,7 @@ function goQuadratic(force) {
     player.purchases = 75
   }
   else if(quadFormula().gte(1)){
-    if(!player.options[7] || confirm("Going Quadratic will reset Buildings, Functions, Variables, and X Upgrades, but you will receive x² in return. Are you sure you want to do this?")) {
+    if(!player.options[7] || player.autobuyers[9] || confirm("Going Quadratic will reset Buildings, Functions, Variables, and X Upgrades, but you will receive x² in return. Are you sure you want to do this?")) {
       player.x2 = player.x2.add(quadFormula())
       player.totalx2 = player.totalx2.add(quadFormula())
       player.quadratics = player.quadratics.add(new Decimal(hasCU(0,7)?COMP_UPGRADES[7].eff():1).mul(hasCU(1,2)?BCOMP_UPGRADES[2].eff():1))
