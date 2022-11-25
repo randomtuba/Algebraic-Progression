@@ -26,7 +26,7 @@ const BUYABLES = {
       return format(BUYABLES[2].eff()) + "/s";
     },
     unl() {
-      return player.buyables[1].gte(1) || hasQU(6);
+      return player.buyables[1].gte(1) || hasQU(6) || player.totali.gte(1);
     },
   },
   3: {
@@ -41,7 +41,7 @@ const BUYABLES = {
       return format(BUYABLES[3].eff()) + "/s";
     },
     unl() {
-      return player.buyables[2].gte(1) || hasQU(6);
+      return player.buyables[2].gte(1) || hasQU(6) || player.totali.gte(1);
     },
   },
   4: {
@@ -68,6 +68,7 @@ const BUYABLES = {
       if(hasQU(9)) base = base.add(0.2)
       base = base.add(sacEffect('y'))
       if(hasChallenge(6)) base = base.mul(2)
+      if(hasCU(1,3)) base = base.mul(BCOMP_UPGRADES[3].eff())
       return base
     },
     eff() {
@@ -131,6 +132,8 @@ function buildingMultipliers() {
   if(inSqrtLevel(2)) mult = mult.div("1e5000")
   if(inSqrtLevel(3)) mult = mult.div("1e1650")
   if(inSqrtLevel(4)) mult = mult.div("1e3650")
+  if(hasCU(1,1)) mult = mult.mul(BCOMP_UPGRADES[1].eff())
+  if(hasCU(0,3)) mult = mult.mul(COMP_UPGRADES[3].eff())
   return mult
 }
 
@@ -142,6 +145,7 @@ function buildingExponents() {
   if(hasChallenge(4)) exp = exp.mul(1.03)
   if(player.challenge == 2) exp = exp.mul(player.chalExponents[0])
   if(player.challenge == 9) exp = exp.mul(player.chalExponents[1])
+  if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
   return exp
 }
 
@@ -181,5 +185,6 @@ function funcSoftcapStart() {
   if(hasQU(11)) softcap = softcap.add(10)
   if(hasChallenge(3)) softcap = softcap.add(25)
   softcap = softcap.add(QP_BUYABLES[2].eff())
+  if(hasCU(0,9)) softcap = softcap.add(player.compUpgs[2][0]+player.compUpgs[2][1]+player.compUpgs[2][2])
   return softcap
 }

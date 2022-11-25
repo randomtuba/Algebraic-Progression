@@ -1,5 +1,5 @@
 var player = {};
-
+let hasLoaded = false;
 function start() {
   let a = {
     points: new Decimal(0),
@@ -30,7 +30,7 @@ function start() {
     startingTime: Date.now(),
     lastTick: 0,
     autobuyers: [null,false,false,false,false,false,false,false,false,false,false],
-    currentSubtab: 'upgrades',
+    currentSubtab: ['upgrades','milestones'],
     sacX: new Decimal(0),
     sacY: new Decimal(0),
     sacX2: new Decimal(0),
@@ -48,7 +48,7 @@ function start() {
     chalCompletions: [],
     chalExponents: [new Decimal(1),new Decimal(1)],
     achievements: [],
-    options: [true,true],
+    options: [true,true,true,true,true,true,false,true,true],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
     quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
@@ -58,11 +58,24 @@ function start() {
     hasCompletedLevel4: false,
     hasCompletedLevel5: false,
     sqrtEnters: 0,
+    i: new Decimal(0),
+    totali: new Decimal(0),
+    complexes: new Decimal(0),
+    compUpgs: [[],[],[0,0,0]],
+    upgradePoints: [new Decimal(0),new Decimal(0)],
+    compAutobuyers: [null,false,1,false,false,false,false,false],
+    inputValue2: 0,
+    compPlane: [[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]],
+    triplers: new Decimal(0),
   };
   return a;
 }
 function save() {
   localStorage.setItem("idk", btoa(JSON.stringify(player)));
+  $.notify('Game Saved', {
+    style: 'apcurrent',
+    className:'saving',
+  });
 }
 function fixSave() {
   let defaultData = start();
@@ -91,6 +104,7 @@ function fixData(defaultData, newData) {
   }
 }
 function load() {
+  let startTime = Date.now()
   let get = localStorage.getItem("idk");
 
   if (get === null || get === undefined) {
@@ -102,7 +116,29 @@ function load() {
     );
     fixSave();
   }
+  
   document.getElementById("style").href = player.theme ? "style.css" : "style-dark.css";
+  $.notify.addStyle('apcurrent', {
+    html: "<div><span data-notify-text/></div>",
+    classes: {
+      saving: {
+        "white-space": "nowrap",
+        "background-color": "lightblue",
+        "color": "black",
+        "padding": "5px",
+        "border-radius": "5px",
+        "border-color":"black",
+      },
+      achieves: {
+        "white-space": "nowrap",
+        "background-color": "#d1c700",
+        "color": "black",
+        "padding": "5px",
+        "border-radius": "5px",
+        "border-color":"black",
+      },
+    }
+  });
   app = new Vue({
     el: "#app",
     data: {
@@ -114,11 +150,17 @@ function load() {
   });
 s = document.getElementById("news");
   scrollNextMessage();
+  $.notify('Game Loaded', {
+    style: 'apcurrent',
+    className:'saving',
+  });
+  console.log(Date.now()-startTime)
 }
 
 window.onload = function () {
   load();
-window.saveInterval = player.options[0] ? setInterval(save,5000) : 0
+  hasLoaded = true
+window.saveInterval = player.options[0] ? setInterval(save,30000) : 0
 }
 
 function exportSave() {
@@ -130,19 +172,44 @@ function exportSave() {
   el.setSelectionRange(0, 99999);
   document.execCommand("copy");
   document.body.removeChild(el);
-  alert("Save successfully copied to clipboard!");
+  $.notify('Save successfully copied to clipboard!', {
+    style: 'apcurrent',
+    className:'saving',
+  });
+}
+
+function fileStat() {
+  if (player.totalx2.eq(0) && player.totali.eq(0)) {
+    return format(player.points) + " points"
+  } else if (player.totali.eq(0)) {
+    return format(player.x2) + " x²"
+  } else {
+    return format(player.i) + " i"
+  }
+}
+
+function exportAsFile() {
+  download("Algebraic Progression Save (" + fileStat() + ").txt",btoa(JSON.stringify(player)))
+  $.notify('Save successfully exported as file!', {
+    style: 'apcurrent',
+    className:'saving',
+  });
 }
 
 function importSave(imported = undefined) {
-  if (imported === undefined) imported = prompt("paste your save here");
+  if (imported === undefined) imported = prompt("Paste your save string in the input box below!");
   player = JSON.parse(atob(imported));
   save();
   window.location.reload();
+  $.notify('Save Imported!', {
+    style: 'apcurrent',
+    className:'saving',
+  });
 }
 function hardReset() {
   if (
     confirm(
-      "Are you sure??? It will reset EVERYTHING and you will not get any reward!!!"
+      "Are you sure? It will reset EVERYTHING and you will not get any reward!"
     )
   ) {
     player = start();
@@ -150,4 +217,14 @@ function hardReset() {
     player.startingTime = Date.now()
     save();
   }
+}
+
+function fixOldSave() {
+  player.currentSubtab = [player.currentSubtab,'milestones']
+  player.prestigeTimes[2] = player.timePlayed
+  player.options[7] = false
+  $.notify('Your save is fixed!', {
+    style: 'apcurrent',
+    className:'saving',
+  });
 }

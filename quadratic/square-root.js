@@ -1,10 +1,14 @@
 function reFormula() {
   if(!inSqrtLevel(2)){
     let re = new Decimal(1.1).pow(player.x.div(100).sub(1)).mul(new Decimal(1.25).pow(player.y))
-    re = re.mul(Decimal.pow(2,player.sqrtDoublers))
+    re = re.mul(Decimal.pow(Decimal.add(2,compPlaneEffects(3)),player.sqrtDoublers))
     if(hasSU(11)) re = re.mul(10)
     if(hasSU(15)) re = re.mul(SQRT_UPGRADES[15].eff())
     re = re.mul(ceEffect(1))
+    if(hasCU(1,1)) re = re.mul(10)
+    if(hasCU(0,6)) re = re.mul(COMP_UPGRADES[6].eff())
+    if(hasCU(0,8)) re = re.mul(COMP_UPGRADES[8].eff())
+    // if(re.gt("1e5000")) re = re.div("1e5000").pow(0.75).mul("1e5000")
     re = re.sub(player.rootEssence).max(0).floor()
     return re
   }else{
@@ -12,7 +16,12 @@ function reFormula() {
     if(inSqrtLevel(3)) addend += 0.008
     if(inSqrtLevel(4)) addend += 0.05
     let re = player.points.div(1e12).pow(0.002+addend)
+    if(hasCU(1,1)) re = re.mul(10)
     if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
+    // if(re.gt("1e2000")) {
+      // let y = new Decimal(re).log(new Decimal("1e2000"))
+      // re = new Decimal("1e2000").pow(Decimal.pow(y,Decimal.pow(y,new Decimal("1e2000"))))
+    // }
     re = re.sub(player.challengeEssence).max(0).floor()
     return re
   }
@@ -27,7 +36,7 @@ function enterSqrt() {
         player.rootEssence = player.rootEssence.add(reFormula())
       }
     }
-    goQuadratic();
+    goQuadratic(true);
     if(!player.inSqrt){
       player.sqrtEnters += 1
     }
@@ -98,7 +107,7 @@ const SQRT_UPGRADES = {
     title: "Prestigious",
     desc: "Multiply both point gain and x² gain based on times gone Quadratic.",
     cost: new Decimal(2.5e10),
-    eff() {return player.quadratics.pow(1.5).add(1)},
+    eff() {return player.quadratics.pow(1.5).add(1).pow(hasCU(1,2)?4:1)},
     effectDisplay() {return format(SQRT_UPGRADES[10].eff()) + "x production and x² gain"},
   },
   11: {
@@ -170,7 +179,7 @@ const epicenterDescs = [null,
 "Level √2: Level √1 and Points are divided by 1e5000.<br>(keep in mind that all multiplication and division goes before exponents)",
 "Level √3: Level √2 and Points are divided by 1e1650.",
 "Level √4: Level √3 and Points are divided by 1e3650.<br><i>Completing this will multiply the challenge essence effect softcap starts by 1,000,<br>and multiply the Challenge 1 effect hardcap start by 1e50</i>",
-"Level √-1: Level √4 and sacrificed X,<br>sacrificed Y, and Square Root Upgrade 2 is raised ^0.12.<br><i>Completing this will unlock the next prestige layer.</i>",
+"Level √-1: Level √4 and sacrificed X and Y do nothing,<br>and Square Root Upgrade 2 is raised ^0.12.<br><i>Completing this will unlock the next prestige layer.</i>",
 ]
 
 function inSqrtLevel(x) {
@@ -189,5 +198,21 @@ function ceEffect(x) {
       if(eff2.gt(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))) eff2 = eff2.div(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))
       return eff2
     break;
+  }
+}
+
+function updateRootEpicenter() {
+  if(player.inSqrt && document.getElementById("epicSlider")){
+    document.getElementById("epicSlider").disabled = true;
+  }else if(document.getElementById("epicSlider")){
+    document.getElementById("epicSlider").disabled = false;
+  }
+  
+  if(inSqrtLevel(4) && player.points.gte(1e12)) {
+    player.hasCompletedLevel4 = true;
+  }
+  
+  if(inSqrtLevel(5) && player.points.gte(1e12)) {
+    player.hasCompletedLevel5 = true;
   }
 }

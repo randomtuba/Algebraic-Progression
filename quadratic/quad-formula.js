@@ -5,6 +5,8 @@ function qpGen() {
     if(hasSU(14)) qp = qp.mul(SQRT_UPGRADES[14].eff())
     if(hasSU(15)) qp = qp.mul(SQRT_UPGRADES[15].eff2())
     qp = qp.mul(ceEffect(2))
+    if(hasCU(1,1)) qp = qp.mul(10)
+    if(hasCU(0,10)) qp = qp.mul(COMP_UPGRADES[10].eff2())
     return qp
   }else{
     return new Decimal(0)
@@ -36,7 +38,7 @@ const QP_BUYABLES = {
       return new Decimal(10000).mul(Decimal.pow(100,player.quadBuyables[2])).mul(Decimal.pow(1.7,player.quadBuyables[2].pow(2)))
     },
     eff() {
-      return new Decimal(5).mul(player.quadBuyables[2])
+      return new Decimal(5).mul(player.quadBuyables[2].add(compPlaneEffects(1)))
     },
     effectDisplay() {
       return "Softcap starts " + format(QP_BUYABLES[2].eff()) + " purchases later";
@@ -49,7 +51,7 @@ const QP_BUYABLES = {
       return new Decimal(100000).mul(Decimal.pow(40,player.quadBuyables[3])).mul(Decimal.pow(1.5,player.quadBuyables[3].pow(2)))
     },
     eff() {
-      return new Decimal(1).add(player.quadBuyables[3].div(10))
+      return new Decimal(1).add(player.quadBuyables[3].add(compPlaneEffects(1)).div(10))
     },
     effectDisplay() {
       return "^" + format(QP_BUYABLES[3].eff()) + " C1 reward effect";

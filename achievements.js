@@ -2,6 +2,10 @@ function updateAchs(){
   for(let i in ACHIEVEMENTS){
     if(!player.achievements.includes(i)&&ACHIEVEMENTS[i].done()){
       player.achievements.push(i)
+      $.notify("Achievement Unlocked: " + ACHIEVEMENTS[i].name, {
+        style: 'apcurrent',
+        className:'achieves',
+      });
     }
   }
 }
@@ -152,9 +156,59 @@ const ACHIEVEMENTS = {
     done(){return player.hasCompletedLevel4},
   },
   30: {
+    name: "It's Not Simple",
+    desc: "Go Complex.",
+    done(){return player.totali.gte(1)},
+  },
+  31: {
+    name: "Straight to the Point",
+    desc: "Max the first row of Complex Upgrades.",
+    done(){return hasCU(0,1) && hasCU(0,2) && hasCU(0,3) && hasCU(0,4)},
+  },
+  32: {
+    name: "Not That Complicated",
+    desc: "Go Complex in under 10 minutes.",
+    done(){return player.prestigeTimes[3] <= 600},
+  },
+  33: {
+    name: "One Mechanic Bites The Dust",
+    desc: "Go Complex without using Quadratic Formula.",
+    done(){return false},
+  },
+  34: {
+    name: "Dream Mile",
+    desc: "Obtain all Milestones.",
+    done(){return hasMilestone(12)},
+  },
+  35: {
+    name: "2 Million Quadratics",
+    desc: "Go Quadratic 2,000,000 times.",
+    done(){return player.quadratics.gte(2e6)},
+  },
+  36: {
+    name: "Dedicated Upgrader",
+    desc: "Have 25 total Upgrade Points.",
+    done(){return player.upgradePoints[1].gte(25)},
+  },
+  37: {
+    name: "Get Unreal",
+    desc: "Have at least one of xi, yi, and x²i.",
+    done(){return player.compPlane[0][1].gte(1) && player.compPlane[0][2].gte(1) && player.compPlane[0][3].gte(1)},
+  },
+  38: {
+    name: "You're Still Here?",
+    desc: "Reach 1e60,000 points with no Complex Upgrades.",
+    done(){return player.points.gte("1e60000") && player.compUpgs[0].length === 0},
+  },
+  39: {
+    name: "Triple Tripler",
+    desc: "Have 3 i Triplers.",
+    done(){return player.triplers.gte(3)},
+  },
+  40: {
     name: "The End",
     desc: "...for now.",
-    done(){return player.x2.gt("1e2950") && player.rootEssence.gte("1e660")},
+    done(){return hasCU(1,6)},
   },
 }
 

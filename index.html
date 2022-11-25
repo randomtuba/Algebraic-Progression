@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>Algebraic Progression v2.0</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Algebraic Progression v1.4.1</title>
+    <meta name="description" content="Algebraic Progression by randomtuba" />
     <link rel="stylesheet" href="style.css" id="style" />
     <link rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337">
-    <script src="game.js" defer></script>
     <script src="save.js" defer></script>
-    <script src="break_eternity.js"></script>
-    <script src="format.js" defer></script>
+    <script src="game.js" defer></script>
+    <script src="utils/break_eternity.js"></script>
+    <script src="utils/format.js" defer></script>
+    <script src="utils/notify.js" defer></script>
     <script src="achievements.js" defer></script>
     <script src="news.js" defer></script>
     <script src="normal/buyables.js" defer></script>
@@ -20,24 +22,48 @@
     <script src="quadratic/square-root.js" defer></script>
     <script src="quadratic/challenges.js" defer></script>
     <script src="quadratic/quad-formula.js" defer></script>
+    <script src="complex/prestige.js" defer></script>
+    <script src="complex/milestones.js" defer></script>
+    <script src="complex/comp-upgs.js" defer></script>
+    <script src="complex/complex-plane.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12" defer></script>
+    <script
+    src="https://code.jquery.com/jquery-3.6.1.js"
+    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"></script>
   </head>
   <body>
+    <div id="loading_page">
+      <h2>Loading game...</h2><br>
+      If this is taking too long, consider refreshing or asking about it on the <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord server</a>.
+    </div>
     <div id="app">
-    <div id="game">
-      <div id="news" style="transform: translateX(-2512px); transition: transform 1000s linear 0s; white-space: nowrap"><b>Enter the E</b></div>
-    </div><br>
+    
+    <div id="actualGame">
+    <div v-if="player.currentSubtab.length > 2">
+      <span style="color:red;">It has been detected that your save is a pre-v2.0 save. Click the button to the right to fix the issues with your save.</span> <button onclick="fixOldSave()">Fix Save</button>
+      <br><br>
+    </div>
+    <div id="game" v-if="player.options[3]">
+    <div id="news" style="transform: translateX(-2512px); transition: transform 1000s linear 0s; white-space: nowrap" v-if="player.options[3]"><b>Enter the E</b></div>
+    </div><br v-if="player.options[3]">
     <button id="tab1" class="tab" onclick="tab('gen')">Generation</button>
     <button id="tab2" class="tab" onclick="tab('options')">Options</button>
     <button id="tab3" class="tab" onclick="tab('stats')">Statistics</button>
     <button id="tab4" class="tab" onclick="tab('achs')">Achievements</button>
-    <button id="tab5" class="tab" v-if="player.x.gte(1) || player.totalx2.gte(1)" onclick="tab('upgs')">Upgrades</button>
-    <button id="tab6" class="tabQua" v-if="player.totalx2.gte(1)" onclick="tab('quad')">Quadratic</button><br><br>
-    <button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1)) && !player.inSqrt" onclick="goQuadratic()">
+    <button id="tab5" class="tab" v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)" onclick="tab('upgs')">Upgrades</button>
+    <button id="tab6" class="tabQua" v-if="player.totalx2.gte(1) || player.totali.gte(1)" onclick="tab('quad')">Quadratic</button>
+    <button id="tab7" class="tabComp" v-if="player.totali.gte(1)" onclick="tab('comp')">Complex</button><br><br>
+    <table class="autocenter"><tr>
+    <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && !player.inSqrt" onclick="goQuadratic(false)">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
-    </button><br v-if="player.y.gte(1) || player.totalx2.gte(1)"><br v-if="player.y.gte(1) || player.totalx2.gte(1)">
-    <span v-if="player.hasCompletedLevel5">
-      <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.<br>(next update)</span><br><br>
+    </button></td>
+    <td><button id="prestige2" :class="{prestige2:player.hasCompletedLevel5,compLocked:!player.hasCompletedLevel5}" v-if="(player.x2.gte('1e2950') && player.rootEssence.gte('1e660') && player.hasCompletedLevel5) || player.totali.gte(1)" onclick="goComplex(false)">
+      <span v-html="player.hasCompletedLevel5 ? 'Go Complex for ' + formatWhole(compFormula()) + ' i<br>(C)' : 'Root Epicenter Level √-1 completion required'"></span>
+    </button></td>
+    </tr></table><br v-if="player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">
+    <span v-if="player.hasCompletedLevel5 && player.x2.lt('1e2950') && player.rootEssence.lt('1e660') && player.totali.lt(1)">
+      <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.</span><br><br>
     </span>
     <div id="points">
       Number = {{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
@@ -57,7 +83,7 @@
     <button id="clickButton" class="hoverable" onclick="clickButton()">
       +1 Point
     </button>
-    <button id="maxAll" class="hoverable" v-if="player.totalx2.gte(1)" onclick="buyMax()">
+    <button id="maxAll" class="hoverable" v-if="player.totalx2.gte(1) || player.totali.gte(1)" onclick="buyMax()">
       Buy Max (M)
     </button><br><br>
     <div id="tab1disp" v-if="player.currentTab == 'gen'"> <!--- GENERATION !--->
@@ -66,11 +92,11 @@
         <span>{{BUYABLES[a].title}} - {{formatWhole(player.buyables[a])}}{{hasUpgrade(5) ? ' [+' + format(player.buyables[a+6]) + ']' : ''}} ~ {{BUYABLES[a].effectDisplay()}} [{{format(player.buildingPercent[a])}}%]</span><br>
         <button :class="{buildingLocked:player.points.lt(BUYABLES[a].cost()),buildingBuyable:player.points.gte(BUYABLES[a].cost())}" @click="buyBuyable(a)">Buy for {{format(BUYABLES[a].cost())}} points ({{a}})</button><button v-if="hasQU(5)" class="hoverable" @click="player.autobuyers[a] = !player.autobuyers[a]">Auto: {{player.autobuyers[a] ? 'ON' : 'OFF'}}</button><br><br>
       </div>
-      <button id="xButton" class="xButton" v-if="player.buyables[3].gte(1) || player.totalx2.gte(1)" onclick="buyVariable('x')">
+      <button id="xButton" class="xButton" v-if="player.buyables[3].gte(1) || player.totalx2.gte(1) || player.totali.gte(1)" onclick="buyVariable('x')">
         Gain x for {{format(xCost())}} points (X)
       </button><br>
       <button v-if="hasQU(6)" class="hoverable" onclick="player.autobuyers[7] = !player.autobuyers[7]">Auto: {{player.autobuyers[7] ? 'ON' : 'OFF'}}</button><br v-if="hasQU(6)">
-      <button id="yButton" class="yButton" v-if="hasUpgrade(4) || player.totalx2.gte(1)" onclick="buyVariable('y')">
+      <button id="yButton" class="yButton" v-if="hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1)" onclick="buyVariable('y')">
         Gain y for {{formatWhole(yCost())}}x (Y)
       </button><br>
       <button v-if="hasQU(10)" class="hoverable" onclick="player.autobuyers[8] = !player.autobuyers[8]">Auto: {{player.autobuyers[8] ? 'ON' : 'OFF'}}</button><br v-if="hasQU(10)">
@@ -84,45 +110,64 @@
       </div>
     </div>
     <div id="tab2disp" v-if="player.currentTab == 'options'"> <!--- OPTIONS !--->
-      <button class="hoverable" onclick="save(); notifyMessage('Game Saved!');">
+      <b>Saving</b><br>
+      <button class="hoverable" onclick="save()">
         Save
       </button>
       <button class="hoverable" onclick="exportSave()">
         Export
       </button>
+      <button class="hoverable" onclick="exportAsFile()">
+        Export as File
+      </button>
       <button class="hoverable" onclick="importSave()">
         Import
-      </button>
-      <button class="hoverable" onclick="switchTheme()">
-        {{player.theme ? "Current Theme: Light" : "Current Theme: Dark"}}
       </button>
       <button class="hoverable" onclick="toggleOption(0)">
         Autosave: {{player.options[0] ? "ON" : "OFF"}}
       </button>
-      <button class="hoverable" onclick="toggleOption(1)">
-      Offline Progress: {{player.options[1] ? "ON" : "OFF"}}
-      </button>
       <button id="hardReset" onclick="hardReset()">
         Hard Reset
+      </button><br>
+      <b>Visual</b><br>
+      <button class="hoverable" onclick="switchTheme()">
+        {{player.theme ? "Current Theme: Light" : "Current Theme: Dark"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(3)">
+        {{player.options[3] ? "News Ticker: Shown" : "News Ticker: Hidden"}}
+      </button><br>
+      <b>Gameplay</b><br>
+      <button class="hoverable" onclick="toggleOption(1)">
+        Offline Progress: {{player.options[1] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(2)">
+        Hotkeys: {{player.options[2] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(7)" v-if="player.totalx2.gte(1) || player.totali.gte(1)">
+        Quadratic Confirmation: {{player.options[7] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(8)" v-if="player.totali.gte(1)">
+        Complex Confirmation: {{player.options[8] ? "ON" : "OFF"}}
       </button>
       <br><br>
-      Algebraic Progression v1.4.1<br>
+      Algebraic Progression v2.0<br>
       Made by randomtuba<br>
-      Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing<br>
-      Game made with Vue.js and break_eternity.js<br><br>
-      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/">Original Rewrite</a><br><br>
+      Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
+      Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
+      If you want to make a mod of this game, that's fine, just credit me in some way.<br><br>
+      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
       Note: Earlier versions of the game have bugs that will not be fixed.
       </div>
     <div id="tab3disp" v-if="player.currentTab == 'stats'"> <!--- STATISTICS !--->
       <div>
       <b>General</b><br>
       You have bought a total of {{formatWhole(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]))}} Buildings.<br>
-      You have bought a total of {{formatWhole(player.buyables[4].add(player.buyables[5]).add(player.buyables[6]))}} Functions.<br>
+      <span v-if="hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1)">You have bought a total of {{formatWhole(player.buyables[4].add(player.buyables[5]).add(player.buyables[6]))}} Functions.<br></span>
       You have played this game for {{formatTime(player.timePlayed)}}.<br>
       You have produced {{format(player.totalPoints)}} points in total.<br>
-      You have bought {{player.xUpgs.length}} X Upgrades.
+      <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">You have bought {{player.xUpgs.length}} X Upgrades.</span>
       </div><br>
-      <div v-if="player.totalx2.gte(1)">
+      <div v-if="player.totalx2.gte(1) || player.totali.gte(1)">
       <b style="color: #006DB6">Quadratic</b><br>
       You have collected a total of {{formatWhole(player.totalx2)}} x<sup>2</sup>.<br>
       You have gone Quadratic {{formatWhole(player.quadratics)}} times.<br>
@@ -139,13 +184,21 @@
       The sum of a, b, and c is {{formatWhole(player.abc[1].add(player.abc[2]).add(player.abc[3]))}}.<br>
       You have bought a total of {{format(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula buyables.
       </span>
+      </div><br>
+      <div v-if="player.totali.gte(1)">
+      <b class="compText" style="font-size: 16px;">Complex</b><br>
+      You have collected a total of {{formatWhole(player.totali)}} i.<br>
+      You have gone Complex {{formatWhole(player.complexes)}} times.<br>
+      Your fastest Complex is {{formatTime(player.prestigeTimes[3])}}.<br>
+      You have spent {{formatTime(player.prestigeTimes[2])}} in this Complex.<br>
+      You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades.<br>
       </div>
       </div>
     <div id="tab4disp" v-if="player.currentTab == 'achs'"> <!--- ACHIEVEMENTS !--->
-      {{player.achievements.length}}/30 Achievements completed ({{format(player.achievements.length / 0.3)}}%)<br><br>
+      {{player.achievements.length}}/40 Achievements completed ({{format(player.achievements.length / 0.4)}}%)<br><br>
       <table class="autocenter">
-        <tr v-for="a in 6">
-          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 30}">
+        <tr v-for="a in player.achievements.length == 40 ? 8 : Math.floor(player.achievements.length/5)+1">
+          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 40}">
             <b><span style="font-size:20px">{{ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc}}
           </td>
         </tr>
@@ -166,13 +219,13 @@
     </div>
     <div id="tab6disp" v-if="player.currentTab == 'quad'"> <!--- QUADRATIC !--->
       You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
-      <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
-      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'cplane'" v-if="hasQU(12)">Coordinate Plane</button>
-      <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'sroot'" v-if="hasQU(16)">Square Root</button>
-      <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'chals'" v-if="hasSU(12)">Challenges</button>
-      <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
+      <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
+      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate Plane</button>
+      <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'sroot'" v-if="hasQU(16)">Square Root</button>
+      <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'chals'" v-if="hasSU(12)">Challenges</button>
+      <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
       <br v-if="hasQU(12)"><br v-if="hasQU(12)">
-      <div id="tab6-1disp" v-if="player.currentSubtab == 'upgrades'"> <!--- QUADRATIC UPGRADES !--->
+      <div id="tab6-1disp" v-if="player.currentSubtab[0] == 'upgrades'"> <!--- QUADRATIC UPGRADES !--->
         <table class="autocenter">
         <tr v-for="a in rowAmt(1)">
         <td v-for="b in 4">
@@ -191,30 +244,43 @@
             Double x<sup>2</sup> gain per purchase!<br>
             Amount: {{formatWhole(player.doublers)}}<br>
             Cost: {{format(doublerCost())}}<br>
-            Effect: {{format(Decimal.pow(2,player.doublers))}}x x<sup>2</sup> gain
-          </button><br><br>
+            Effect: {{format(Decimal.pow(Decimal.add(2,compPlaneEffects(3)),player.doublers))}}x x<sup>2</sup> gain
+          </button>
+          <br v-if="hasMilestone(1)">
+          <button v-if="hasMilestone(1)" onclick="player.compAutobuyers[1] = !player.compAutobuyers[1]" class="hoverable">
+            Auto: {{player.compAutobuyers[1] ? "ON" : "OFF"}}
+          </button>
+          <br><br>
         </span>
         <div v-if="hasQU(14)">
-          Auto-Quadratic: Go Quadratic when reaching <input id="quadAuto" size="5"> x<sup>2</sup> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
+          Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
+          <button v-if="hasMilestone(2)" class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > 3){player.compAutobuyers[2] = 1};">
+            Mode: {{player.compAutobuyers[2] > 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
+          </button>
         </div>
       </div>
-      <div id="tab6-2disp" v-if="player.currentSubtab == 'cplane'"> <!--- COORDINATE PLANE !--->
+      <div id="tab6-2disp" v-if="player.currentSubtab[0] == 'cplane'"> <!--- COORDINATE PLANE !--->
         You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">, and <span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second).<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
         <span v-if="hasUpgrade(8)">
         You have <span class="quadText">{{format(player.b)}}</span> b (y-intercept), multiplying slope gain by {{format(bEffect(1))}}, multiplying sacrificed X and Y effects by {{format(bEffect(2))}}, and adding {{format(bEffect(3))}} to the slope effect exponent.<br>
-        <button :class="{buildingLocked:player.slope.lt(bCost()),buildingBuyable:player.slope.gte(bCost())}" @click="buyB()">Buy for {{format(bCost())}} slope (B)</button><br><br>
+        <button :class="{buildingLocked:player.slope.lt(bCost()),buildingBuyable:player.slope.gte(bCost())}" @click="buyB()">Buy for {{format(bCost())}} slope (B)</button>
+        <br v-if="hasMilestone(8)">
+          <button v-if="hasMilestone(8)" onclick="player.compAutobuyers[4] = !player.compAutobuyers[4]" class="hoverable">
+            Auto: {{player.compAutobuyers[4] ? "ON" : "OFF"}}
+          </button>
+        <br><br>
         </span>
         <button @click="sacrifice(player.sacrifice)" class="hoverable">Sacrifice</button><button @click="switchSacrifice()" class="hoverable" v-html="player.sacrifice"></button><br>
         <button v-if="hasQU(19)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button>
       </div>
-      <div id="tab6-3disp" v-if="player.currentSubtab == 'sroot'"> <!--- SQUARE ROOT !--->
+      <div id="tab6-3disp" v-if="player.currentSubtab[0] == 'sroot'"> <!--- SQUARE ROOT !--->
         You have <span style="color:orange;font-size:20px">{{formatWhole(player.rootEssence)}}</span> root essence.<br>
         <span v-if="hasSU(16)">You have <span style="color:#b56700;font-size:20px">{{formatWhole(player.challengeEssence)}}</span> challenge essence, multiplying root essence gain by {{format(ceEffect(1))}}x and quadratic power gain by {{format(ceEffect(2))}}x.</span><br>
         <button id="enterSqrt" onclick="enterSqrt()">{{player.inSqrt ? "Exit Square Root for " + formatWhole(reFormula()) + " " + (inSqrtLevel(2) ? "Challenge" : "Root") + " Essence. (S)" : "Enter Square Root. (S)"}}</button><br><br>
         <span v-if="hasSU(16)">
           <b>Root Epicenter:</b><br>
           <span v-html="epicenterDescs[player.epicenterLevel]"></span><br>
-          <input type="range" min="1" max="5" value="1" class="slider" id="epicSlider">
+          <input oninput="tmp.epicslider=Number(this.value)" v-bind:value="tmp.epicslider" type="range" min="1" max="5" value="1" class="slider" id="epicSlider">
           <br><br>
         </span>
         <button :class="{upgradeLocked:player.rootEssence.lt(sqrtDoublerCost()),upgradeBuyable:player.rootEssence.gte(sqrtDoublerCost())}" style="height: 150px; width: 175px" onclick="buySqrtDoubler()">
@@ -222,7 +288,11 @@
             Double RE gain per purchase!<br>
             Amount: {{formatWhole(player.sqrtDoublers)}}<br>
             Cost: {{format(sqrtDoublerCost())}}<br>
-            Effect: {{format(Decimal.pow(2,player.sqrtDoublers))}}x RE gain
+            Effect: {{format(Decimal.pow(Decimal.add(2,compPlaneEffects(3)),player.sqrtDoublers))}}x RE gain
+          </button>
+          <br v-if="hasMilestone(5)">
+          <button v-if="hasMilestone(5)" onclick="player.compAutobuyers[3] = !player.compAutobuyers[3]" class="hoverable">
+            Auto: {{player.compAutobuyers[3] ? "ON" : "OFF"}}
           </button><br><br>
         <table class="autocenter">
         <tr v-for="a in rowAmt(2)">
@@ -237,7 +307,7 @@
         </tr>
         </table><br>
       </div>
-      <div id="tab6-4disp" v-if="player.currentSubtab == 'chals'"> <!--- CHALLENGES !--->
+      <div id="tab6-4disp" v-if="player.currentSubtab[0] == 'chals'"> <!--- CHALLENGES !--->
         Endure harder Quadratics and reach the goal to get rewards!<br>
         Click a Challenge to enter it. Click it again to exit/finish.<br>
         <i>Note: Going Quadratic or entering Square Root will exit you from your current Challenge.</i><br><br>
@@ -256,26 +326,122 @@
           </tr>
         </table>
       </div>
-      <div id="tab6-5disp" v-if="player.currentSubtab == 'formula'"> <!--- QUADRATIC FORMULA !--->
+      <div id="tab6-5disp" v-if="player.currentSubtab[0] == 'formula'"> <!--- QUADRATIC FORMULA !--->
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
         To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
         Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
-        <span :class="{realSolution: player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0), nonrealSolution: player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).lt(0)}">{{player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
+        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{player.abc[2].pow(2).sub(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])).gte(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
           <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><br>
-        </div><br><br>
+        </div>
+        <button v-if="hasMilestone(10)" onclick="player.compAutobuyers[6] = !player.compAutobuyers[6]" class="hoverable">
+          Auto-Adjust: {{player.compAutobuyers[6] ? "ON" : "OFF"}}
+        </button><br><br>
         <table class="autocenter">
           <td v-for="a in 4">
             <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.quadPower.lt(QP_BUYABLES[a].cost()),qpBuyable:player.quadPower.gte(QP_BUYABLES[a].cost()),upgradeBought:a==1&&player.quadBuyables[1].eq(4)}" @click="buyQPBuyable(a)">
               <b>{{QP_BUYABLES[a].title}}</b><br>
               {{QP_BUYABLES[a].desc}}<br>
-              Amount: {{player.quadBuyables[a]}}{{a == 1 ? "/4" : ""}}<br>
+              Amount: {{player.quadBuyables[a]}}{{a == 1 ? "/4" : ""}}{{player.compPlane[1][1].gte(9) && new Decimal(a).gt(1) && new Decimal(a).lt(4) ? " + " + compPlaneEffects(1) : ""}}<br>
               Cost: {{QP_BUYABLES[a].cost().eq(Infinity) ? "Maxed!" : format(QP_BUYABLES[a].cost())}}<br>
               Effect: {{QP_BUYABLES[a].effectDisplay()}}
             </button>
           </td>
         </table>
+        <br v-if="hasMilestone(9)">
+          <button v-if="hasMilestone(9)" onclick="player.compAutobuyers[5] = !player.compAutobuyers[5]" class="hoverable">
+            Auto: {{player.compAutobuyers[5] ? "ON" : "OFF"}}
+          </button>
+      </div>
+      </div>
+      <div id="tab7disp" v-if="player.currentTab == 'comp'"> <!--- COMPLEX !--->
+        You have <span class="compText">{{formatWhole(player.i)}}</span> i.<br><br>
+        <button id="subtab6" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'milestones'">Milestones</button>
+        <button id="subtab7" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'upgrades'">Complex Upgrades</button>
+        <button id="subtab8" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12)">Complex Plane</button>
+        <br><br>
+        <div id="tab7-1disp" v-if="player.currentSubtab[1] == 'milestones'"> <!--- MILESTONES !--->
+        You have gone Complex {{formatWhole(player.complexes)}} times.<br><br>
+        <div v-for="a in 12">
+          <button :class="{milestoneLocked:player.complexes < MILESTONES[a].requirement,milestoneUnlocked:player.complexes >= MILESTONES[a].requirement}">
+            <b style="font-size: 20px;">{{MILESTONES[a].title}}</b><br>{{MILESTONES[a].desc}}
+          </button><br>
+        </div>
+        </div>
+        <div id="tab7-2disp" v-if="player.currentSubtab[1] == 'upgrades'"> <!--- COMPLEX UPGRADES !--->
+        You have <span>{{formatWhole(player.upgradePoints[0])}}</span> upgrade points. ({{formatWhole(player.upgradePoints[1])}} total)<br>
+        <button onclick="respec()" class="hoverable">Respec</button>
+        <button onclick="toggleOption(6)" class="hoverable">Respec on Complex: {{player.options[6] ? "ON" : "OFF"}}</button>
+        <button class="hoverable" onclick="exportUpgs()">Export Upgrades</button>
+        <button class="hoverable" onclick="loadUpgs()">Load Upgrades</button>
+        <br><br>
+        <table class="autocenter">
+        <tr v-for="a in 3">
+        <td v-for="b in 4">
+          <button :class="{compUpgradeLocked:player.upgradePoints[0].lt(COMP_UPGRADES[a*4-4+b].cost) && !hasCU(0,a*4-4+b),firstRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 1 && !hasCU(0,a*4-4+b),secondRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 2 && !hasCU(0,a*4-4+b),thirdRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 3 && !hasCU(0,a*4-4+b),firstRowBought:hasCU(0,a*4-4+b) && a == 1,secondRowBought:hasCU(0,a*4-4+b) && a == 2,thirdRowBought:hasCU(0,a*4-4+b) && a == 3}" style="height: 125px; width: 175px" @click="buyCU(0,a*4-4+b)">
+            {{COMP_UPGRADES[a*4-4+b].desc}}<br>
+            Cost: {{formatWhole(COMP_UPGRADES[a*4-4+b].cost)}} UP<br>
+            {{COMP_UPGRADES[a*4-4+b].effectDisplay() != null ? 'Currently: ' + COMP_UPGRADES[a*4-4+b].effectDisplay() : ''}}<br>
+          </button>
+        </td>
+        </tr>
+        </table><br>
+        <table class="autocenter"><tr>
+        <td><button :class="{compUpgradeLocked:player.points.lt(upgradePointCost(1)),compUpgradeBuyable:player.points.gte(upgradePointCost(1))}" style="height: 125px; width: 175px" onclick="buyUP(1)">
+          Buy an upgrade point<br>
+          Cost: {{format(upgradePointCost(1))}} points
+        </button></td>
+        <td><button :class="{compUpgradeLocked:player.x2.lt(upgradePointCost(2)),compUpgradeBuyable:player.x2.gte(upgradePointCost(2))}" style="height: 125px; width: 175px" onclick="buyUP(2)">
+          Buy an upgrade point<br>
+          Cost: {{format(upgradePointCost(2))}} x<sup>2</sup>
+        </button></td>
+        <td><button :class="{compUpgradeLocked:player.i.lt(upgradePointCost(3)) || player.complexes < 2,compUpgradeBuyable:player.i.gte(upgradePointCost(3)) && player.complexes >= 2}" style="height: 125px; width: 175px" onclick="buyUP(3)">
+          Buy an upgrade point<br>
+          Cost: {{formatWhole(upgradePointCost(3))}} i<br v-if="player.complexes < 2">
+          <span v-if="player.complexes < 2" style="color:red;">(2 Complexes required)</span>
+        </button></td>
+        </tr></table><br>
+        Use the 3 buttons above to purchase Upgrade Points with some of your previous currencies.<br>
+        Upgrade points are spent on the 12 Complex Upgrades that can be respecced.<br>
+        Once all 12 Complex Upgrades are bought once, a second level of each upgrade is unlocked.
+        <br><br>
+        <b>Basic Complex Upgrades:</b>
+        <table class="autocenter">
+        <tr v-for="a in 2">
+        <td v-for="b in 3">
+          <button :class="{upgradeLocked:player.i.lt(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBuyable:player.i.gte(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBought:hasCU(1,a*3-3+b)}" style="height: 160px; width: 185px" @click="buyCU(1,a*3-3+b)">
+            <span><b>{{BCOMP_UPGRADES[a*3-3+b].title}}</b></span><br>
+            <span v-html="BCOMP_UPGRADES[a*3-3+b].desc"></span><br>
+            Cost: {{formatWhole(BCOMP_UPGRADES[a*3-3+b].cost)}} i<br>
+            {{BCOMP_UPGRADES[a*3-3+b].effectDisplay() != null ? 'Currently: ' + BCOMP_UPGRADES[a*3-3+b].effectDisplay() : ''}}<br>
+          </button>
+        </td>
+        </tr>
+        </table><br>
+        <div v-if="hasMilestone(12)">
+          Auto-Complex: Go Complex when reaching <input id="compAuto" v-bind:value="player.inputValue2" size="5"> i <button onclick="player.compAutobuyers[7] = !player.compAutobuyers[7]" class="hoverable">{{player.compAutobuyers[7] ? 'ON' : 'OFF'}}</button>
+        </div>
+        </div>
+        <div id="tab7-3disp" v-if="player.currentSubtab[1] == 'cplane'"> <!--- COMPLEX PLANE !--->
+          <div v-for="a in 3">
+            You have <span class="compText">{{formatWhole(player.compPlane[0][a])}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i, producing <span class="compText">{{format(compPlaneGen(a))}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i power per second.<br>
+            You have <span class="compText">{{format(player.compPlane[1][a])}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i power, {{compPlaneEffectDisplay(a)}}<br>
+            <button v-if="player.compPlane[0][a].eq(0)" :class="{buildingLocked:whyAreThereSoManyFunctionsNeededForThisMechanic(a).lt(tmp.compPlaneCosts[a*2-1]) || player.i.lt(tmp.compPlaneCosts[a*2]),buildingBuyable:whyAreThereSoManyFunctionsNeededForThisMechanic(a).gte(tmp.compPlaneCosts[a*2-1]) && player.i.gte(tmp.compPlaneCosts[a*2])}" @click="buyCplaneVar(a)">Unlock for {{format(tmp.compPlaneCosts[a*2-1])}} sacrificed <span v-html="tmp.compPlaneVars[a]"></span> and {{format(tmp.compPlaneCosts[a*2])}} i</button>
+            <button v-if="player.compPlane[0][a].gt(0)" :class="{buildingLocked:player.i.lt(compPlaneBuyCosts(a)),buildingBuyable:player.i.gte(compPlaneBuyCosts(a))}" @click="buyCplaneVar(a)">Upgrade for {{format(compPlaneBuyCosts(a))}} i</button>
+            <br><br>
+          </div>
+          <br>
+          <span v-if="player.compPlane[0][3].gt(0)">
+            <button class="iTripler" onclick="buyTripler()">
+            <b>i Tripler</b><br>
+            Triple i gain per purchase!<br>
+            Amount: {{formatWhole(player.triplers)}}<br>
+            Cost: {{format(triplerCost())}} of each Complex Plane power<br>
+            Effect: {{format(Decimal.pow(3,player.triplers))}}x i gain
+            </button>
+          </span>
+        </div>
       </div>
       </div>
     </div>

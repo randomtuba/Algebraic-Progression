@@ -16,7 +16,8 @@ button {
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 24px;
+  font-style: bold;
 }
 
 span{
@@ -151,9 +152,31 @@ span{
   transition-duration: 0.2s;
 }
 
+.prestige2 {
+  height: 75px;
+  width: 115px;
+  color: #5dde5d;
+  border-color: #5dde5d;
+  background-color: #006600;
+  transition-duration: 0.2s;
+}
+
+.tabComp {
+  font-size: 20px;
+  border-color: #5dde5d;
+  color: #5dde5d;
+  background-color: #006600;
+  transition-duration: 0.2s;
+}
+
 #prestige:hover, .tabQua:hover {
   background-color: blue;
   color: #A1C7CC;
+}
+
+.prestige2:hover, .tabComp:hover {
+  background-color: #5dde5d;
+  color: #006600;
 }
 
 #enterSqrt {
@@ -284,4 +307,98 @@ span{
   background-color: #5fe1ed;
   color: black;
   border-color: #5fe1ed;
+}
+
+.compText {
+  color: #5dde5d;
+  font-size: 20px;
+}
+
+.milestoneLocked {
+  background-color: crimson;
+  border-color: white;
+  border-radius: 5px;
+  border-width: 5px;
+  width: 500px;
+  height: 100px;
+}
+
+.milestoneUnlocked {
+  background-color: green;
+  border-color: white;
+  border-radius: 5px;
+  border-width: 5px;
+  width: 500px;
+  height: 100px;
+}
+
+.compUpgradeLocked {
+  background-color: gray;
+  color: black;
+  border-color: gray;
+}
+
+.compUpgradeBuyable {
+  background-color: white;
+  color: black;
+  border-color: white;
+}
+
+.firstRowBuyable {
+  background-color: #ffa6f8;
+  color: black;
+  border-color: #ffa6f8;
+}
+
+.firstRowBought {
+  background-color: #910086;
+  color: white;
+  border-color: #910086;
+}
+
+.secondRowBuyable {
+  background-color: #91e5ff;
+  color: black;
+  border-color: #91e5ff;
+}
+
+.secondRowBought {
+  background-color: #007fa6;
+  color: white;
+  border-color: #007fa6;
+}
+
+.thirdRowBuyable {
+  background-color: #8aff8c;
+  color: black;
+  border-color: #8aff8c;
+}
+
+.thirdRowBought {
+  background-color: #279629;
+  color: white;
+  border-color: #279629;
+}
+
+.compLocked {
+  height: 75px;
+  width: 115px;
+  background-color: #bbbbbb;
+  border-color: red;
+  color: black;
+}
+
+.iTripler {
+  color: white;
+  background-color: black;
+  width: 175px;
+  height: 150px;
+  font-size: 12px;
+  text-align: center; 
+  border-color: green;
+  border-width: 5px;
+}
+
+.iTripler:hover {
+  background-color: green;
 }

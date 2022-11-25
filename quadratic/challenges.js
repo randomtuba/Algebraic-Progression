@@ -52,7 +52,7 @@ const CHALLENGES = {
     title: "Diminishing Returns",
     desc: "Production gets slower over time.",
     goal: new Decimal("1e310"),
-    effect() {return new Decimal(player.prestigeTimes[0]).pow(10).max(1).pow(hasChallenge(10)?QP_BUYABLES[3].eff():1)},
+    effect() {return new Decimal(player.prestigeTimes[0]).pow(10).max(1).pow(hasChallenge(10)?QP_BUYABLES[3].eff():1).pow(hasCU(0,4)?COMP_UPGRADES[4].eff():1)},
     rewardDesc: "Gain more points based on time in this Quadratic.",
   },
   10: {
@@ -66,9 +66,9 @@ const CHALLENGES = {
 function startChallenge(x) {
   if(player.challenge == x){
     if(player.points.gte(CHALLENGES[x].goal) && !hasChallenge(x)) player.chalCompletions.push(x)
-    goQuadratic()
+    goQuadratic(true)
   }else{
-    goQuadratic()
+    goQuadratic(true)
     player.challenge = x
   }
 }

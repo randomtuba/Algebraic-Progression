@@ -144,19 +144,19 @@ function rowAmt(x){
       if(player.quadUpgs.length >= 4)row++
       if(player.quadUpgs.length >= 8)row++
       if(player.quadUpgs.length >= 12)row++
-      if(hasChallenge(2))row++
+      if(hasChallenge(2) || hasMilestone(3))row++
       return row
     break;
     case 2: // SQRT UPGRADES
       let row2=1
       if(player.sqrtUpgs.length >= 4)row2++
       if(player.sqrtUpgs.length >= 8)row2++
-      if(hasChallenge(5))row2++
+      if(hasChallenge(5) || hasMilestone(5))row2++
       return row2
     break;
     case 3: // X UPGRADES
       let row3=1
-      if(hasSU(3))row3++
+      if(hasSU(3) || player.xUpgs.length > 4)row3++
       return row3
   }
 }
