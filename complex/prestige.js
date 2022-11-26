@@ -4,6 +4,7 @@ function compFormula() {
     neg = neg.mul(Decimal.pow(3,player.triplers))
     if(hasCU(0,9)) neg = neg.mul(COMP_UPGRADES[9].eff())
     if(hasCU(0,10)) neg = neg.mul(COMP_UPGRADES[10].eff())
+    if(hasCU(0,12)) neg = neg.mul(COMP_UPGRADES[12].eff())
     if(hasMilestone(11)) neg = neg.mul(2)
     neg = neg.floor()
     return neg
