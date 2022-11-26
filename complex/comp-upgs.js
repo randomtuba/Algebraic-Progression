@@ -114,7 +114,7 @@ const COMP_UPGRADES = {
   12: {
     desc: "Gain more i based on unspent i.",
     cost: new Decimal(7),
-    eff() {return player.i.pow(0.1).add(1)},
+    eff() {return player.i.pow(0.1).div(300).add(1)},
     effectDisplay() {return format(COMP_UPGRADES[12].eff()) + "x i"},
   },
 }
