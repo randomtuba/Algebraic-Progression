@@ -4,13 +4,14 @@ function quadFormula() {
     x2 = x2.mul(Decimal.pow(Decimal.add(2,compPlaneEffects(3)),player.doublers))
     if(hasSU(5)) x2 = x2.mul(SQRT_UPGRADES[5].eff())
     if(hasSU(10)) x2 = x2.mul(SQRT_UPGRADES[10].eff())
-    if(hasCU(1,1)) x2 = x2.mul(BCOMP_UPGRADES[1].eff2()).floor()
+    if(hasCU(1,1)) x2 = x2.mul(BCOMP_UPGRADES[1].eff2())
     if(hasCU(0,5)) x2 = x2.mul(COMP_UPGRADES[5].eff())
     if(hasCU(1,4)) x2 = x2.pow(BCOMP_UPGRADES[4].eff())
+    x2 = x2.floor()
     return x2
   }else{
     if(player.y.gte(1)){
-      return Decimal.pow(2,player.doublers).mul(hasSU(5)?SQRT_UPGRADES[5].eff():1).mul(hasSU(10)?SQRT_UPGRADES[10].eff():1);
+      return Decimal.pow(2,player.doublers).mul(hasSU(5)?SQRT_UPGRADES[5].eff():1).mul(hasSU(10)?SQRT_UPGRADES[10].eff():1).floor();
     }else{
       return new Decimal(0);
     }
