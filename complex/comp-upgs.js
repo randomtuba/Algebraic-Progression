@@ -75,7 +75,7 @@ const COMP_UPGRADES = {
     effectDisplay() {return format(COMP_UPGRADES[5].eff()) + "x x²"},
   },
   6: {
-    desc: "Gain more root essence based on times gone Quadratic.",
+    desc: "Gain more root essence based on times gone Quadratic. (hardcaps at 20,000,000 Quadratics)",
     cost: new Decimal(5),
     eff() {return player.quadratics.min(2e7).pow(player.quadratics.min(2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1)},
     effectDisplay() {return format(COMP_UPGRADES[6].eff()) + "x root essence"},

@@ -44,6 +44,7 @@ const UPGRADES = {
 function buyUpgrade(x) {
   if(player.x.gte(UPGRADES[x].cost) && !hasUpgrade(x)){
     player.xUpgs.push(x)
+    player.x = player.x.sub(UPGRADES[x].cost.div(2).floor())
   }
 }
 

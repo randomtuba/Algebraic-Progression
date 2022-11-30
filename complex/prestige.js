@@ -49,7 +49,7 @@ function goComplex(force) {
     player.prestigeTimes[2] = 0
     if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1]; player.compUpgs[0] = []}
     player.options[6] = false
-  }else if(!force && compFormula().gte(1) && player.hasCompletedLevel5){
+  }else if(!force && player.x2.gte("1e2950") && player.rootEssence.gte("1e660") && player.hasCompletedLevel5){
     if(!player.options[8] || player.compAutobuyers[7] || confirm("Going Complex will reset everything Quadratic resets, and will also reset all Quadratic-level content, but you will receive i in return. Are you sure you want to do this?")) {
       player.i = player.i.add(compFormula())
       player.totali = player.totali.add(compFormula())

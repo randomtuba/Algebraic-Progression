@@ -86,7 +86,7 @@ const SQRT_UPGRADES = {
   },
   7: {
     title: "Loopover",
-    desc: "Bought Autoclickers produce Point Portals.",
+    desc: "Bought Autoclickers produce Point Portals. (\"Algebraic Dimensions\" is required for the effect to occur)",
     cost: new Decimal(9000000),
     effectDisplay() {return null},
   },

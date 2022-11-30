@@ -29,44 +29,44 @@ const QUAD_UPGRADES = {
   5: {
     title: "Automation I",
     desc: "Unlock autobuyers for Buildings.",
-    cost: new Decimal(25),
+    cost: new Decimal(15),
     effectDisplay() {return null},
   },
   6: {
     title: "Automation II",
     desc: "Unlock the X Autobuyer and keep X Upgrades on Quadratic.",
-    cost: new Decimal(30),
+    cost: new Decimal(20),
     effectDisplay() {return null},
   },
   7: {
     title: "Synergized Portals",
     desc: "Point Portals are stronger based on total Buildings bought.",
-    cost: new Decimal(50),
+    cost: new Decimal(25),
     eff() {return player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).div(4).add(1).pow(1.4)},
     effectDisplay() {return format(QUAD_UPGRADES[7].eff()) + "x Point Portal effectiveness"},
   },
   8: {
     title: "Point Hoarder",
     desc: "Buying things no longer subtracts from your point amount, and you start with 25 points.",
-    cost: new Decimal(100),
+    cost: new Decimal(50),
     effectDisplay() {return null},
   },
   9: {
     title: "Base Addend",
     desc: "Add 0.2 to the bases of g(x) and h(x), and unlock autobuyers for Functions.",
-    cost: new Decimal(200),
+    cost: new Decimal(100),
     effectDisplay() {return null},
   },
   10: {
     title: "Automation III",
     desc: "Unlock the Y autobuyer.",
-    cost: new Decimal(300),
+    cost: new Decimal(200),
     effectDisplay() {return null},
   },
   11: {
     title: "Softcap Delay",
     desc: "The g(x) and h(x) softcaps start 10 purchases later.",
-    cost: new Decimal(750),
+    cost: new Decimal(500),
     effectDisplay() {return null},
   },
   12: {
@@ -78,14 +78,14 @@ const QUAD_UPGRADES = {
   13: {
     title: "Self-Synergy",
     desc: "Gain more points based on points.",
-    cost: new Decimal(100000),
+    cost: new Decimal(10000),
     eff() {return player.points.max(0).pow(0.2).add(1)},
     effectDisplay() {return format(QUAD_UPGRADES[4].eff()) + "x production"},
   },
   14: {
     title: "Automation IV",
     desc: "Unlock Auto-Quadratic, and make sacrificed Y more effective.",
-    cost: new Decimal(1e6),
+    cost: new Decimal(250000),
     effectDisplay() {return null},
   },
   15: {

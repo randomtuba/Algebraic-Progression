@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.0</title>
+    <title>Algebraic Progression v2.0.1</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -90,6 +90,7 @@
       <span v-if="hasUpgrade(6)">Note: Produced Buildings do not reset on Quadratic!<br><br></span>
       <div v-for="a in 3" v-if="BUYABLES[a].unl()">
         <span>{{BUYABLES[a].title}} - {{formatWhole(player.buyables[a])}}{{hasUpgrade(5) ? ' [+' + format(player.buyables[a+6]) + ']' : ''}} ~ {{BUYABLES[a].effectDisplay()}} [{{format(player.buildingPercent[a])}}%]</span><br>
+        <span>{{"Production Per Building: " + format(BUYABLES[a].baseProd()) + "/s"}}</span><br>
         <button :class="{buildingLocked:player.points.lt(BUYABLES[a].cost()),buildingBuyable:player.points.gte(BUYABLES[a].cost())}" @click="buyBuyable(a)">Buy for {{format(BUYABLES[a].cost())}} points ({{a}})</button><button v-if="hasQU(5)" class="hoverable" @click="player.autobuyers[a] = !player.autobuyers[a]">Auto: {{player.autobuyers[a] ? 'ON' : 'OFF'}}</button><br><br>
       </div>
       <button id="xButton" class="xButton" v-if="player.buyables[3].gte(1) || player.totalx2.gte(1) || player.totali.gte(1)" onclick="buyVariable('x')">
@@ -150,7 +151,7 @@
         Complex Confirmation: {{player.options[8] ? "ON" : "OFF"}}
       </button>
       <br><br>
-      Algebraic Progression v2.0<br>
+      Algebraic Progression v2.0.1<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
@@ -205,6 +206,7 @@
       </table>  
     </div>
     <div id="tab5disp" v-if="player.currentTab == 'upgs'"> <!--- UPGRADES !--->
+      Buying an X Upgrade will remove 50% of the X Upgrade's cost (rounded down) from your X amount.<br><br>
       <table class="autocenter">
       <tr v-for="a in rowAmt(3)">
       <td v-for="b in 4">
@@ -219,6 +221,12 @@
     </div>
     <div id="tab6disp" v-if="player.currentTab == 'quad'"> <!--- QUADRATIC !--->
       You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
+      <div v-if="hasQU(14)">
+          Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
+          <button v-if="hasMilestone(2)" class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > 3){player.compAutobuyers[2] = 1};">
+            Mode: {{player.compAutobuyers[2] > 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
+          </button><br><br>
+        </div>
       <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
       <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate Plane</button>
       <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'sroot'" v-if="hasQU(16)">Square Root</button>
@@ -252,12 +260,6 @@
           </button>
           <br><br>
         </span>
-        <div v-if="hasQU(14)">
-          Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
-          <button v-if="hasMilestone(2)" class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > 3){player.compAutobuyers[2] = 1};">
-            Mode: {{player.compAutobuyers[2] > 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
-          </button>
-        </div>
       </div>
       <div id="tab6-2disp" v-if="player.currentSubtab[0] == 'cplane'"> <!--- COORDINATE PLANE !--->
         You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">, and <span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second).<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
@@ -279,6 +281,7 @@
         <button id="enterSqrt" onclick="enterSqrt()">{{player.inSqrt ? "Exit Square Root for " + formatWhole(reFormula()) + " " + (inSqrtLevel(2) ? "Challenge" : "Root") + " Essence. (S)" : "Enter Square Root. (S)"}}</button><br><br>
         <span v-if="hasSU(16)">
           <b>Root Epicenter:</b><br>
+          Note: A Root Epicenter level is considered "complete" when reaching at least 1e12 points inside of the level.<br>
           <span v-html="epicenterDescs[player.epicenterLevel]"></span><br>
           <input oninput="tmp.epicslider=Number(this.value)" v-bind:value="tmp.epicslider" type="range" min="1" max="5" value="1" class="slider" id="epicSlider">
           <br><br>
@@ -329,6 +332,7 @@
       <div id="tab6-5disp" v-if="player.currentSubtab[0] == 'formula'"> <!--- QUADRATIC FORMULA !--->
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
         To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
+        (The one I'm talking about is (-b±√b²-4ac) / 2a)<br>
         Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
         <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{qpGen().gt(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
         <div v-for="a in 3">
@@ -357,6 +361,9 @@
       </div>
       <div id="tab7disp" v-if="player.currentTab == 'comp'"> <!--- COMPLEX !--->
         You have <span class="compText">{{formatWhole(player.i)}}</span> i.<br><br>
+        <div v-if="hasMilestone(12)">
+          Auto-Complex: Go Complex when reaching <input id="compAuto" v-bind:value="player.inputValue2" size="5"> i <button onclick="player.compAutobuyers[7] = !player.compAutobuyers[7]" class="hoverable">{{player.compAutobuyers[7] ? 'ON' : 'OFF'}}</button><br><br>
+        </div>
         <button id="subtab6" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'milestones'">Milestones</button>
         <button id="subtab7" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'upgrades'">Complex Upgrades</button>
         <button id="subtab8" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12)">Complex Plane</button>
@@ -419,9 +426,6 @@
         </td>
         </tr>
         </table><br>
-        <div v-if="hasMilestone(12)">
-          Auto-Complex: Go Complex when reaching <input id="compAuto" v-bind:value="player.inputValue2" size="5"> i <button onclick="player.compAutobuyers[7] = !player.compAutobuyers[7]" class="hoverable">{{player.compAutobuyers[7] ? 'ON' : 'OFF'}}</button>
-        </div>
         </div>
         <div id="tab7-3disp" v-if="player.currentSubtab[1] == 'cplane'"> <!--- COMPLEX PLANE !--->
           <div v-for="a in 3">

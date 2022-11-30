@@ -7,6 +7,9 @@ const BUYABLES = {
     eff() {
       return player.challenge == 1 ? new Decimal(0) : player.buyables[1].add(player.buyables[7].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(buildingMultipliers()).mul(hasQU(2)?QUAD_UPGRADES[2].eff():1).pow(buildingExponents())
     },
+    baseProd() {
+      return player.challenge == 1 ? new Decimal(0) : buildingMultipliers().mul(hasQU(2)?QUAD_UPGRADES[2].eff():1).pow(buildingExponents())
+    },
     effectDisplay() {
       return format(BUYABLES[1].eff()) + "/s";
     },
@@ -22,6 +25,9 @@ const BUYABLES = {
     eff() {
       return player.challenge == 1 ? new Decimal(0) : player.buyables[2].add(player.buyables[8].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(10).mul(buildingMultipliers()).mul(hasQU(4)?QUAD_UPGRADES[4].eff():1).pow(buildingExponents())
     },
+    baseProd() {
+      return player.challenge == 1 ? new Decimal(0) : buildingMultipliers().mul(10).mul(hasQU(4)?QUAD_UPGRADES[4].eff():1).pow(buildingExponents())
+    },
     effectDisplay() {
       return format(BUYABLES[2].eff()) + "/s";
     },
@@ -36,6 +42,9 @@ const BUYABLES = {
     },
     eff() {
       return player.buyables[3].add(player.buyables[9].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(1000).mul(buildingMultipliers()).mul(hasQU(7)?QUAD_UPGRADES[7].eff():1).pow(buildingExponents())
+    },
+    baseProd() {
+      return buildingMultipliers().mul(1000).mul(hasQU(7)?QUAD_UPGRADES[7].eff():1).pow(buildingExponents())
     },
     effectDisplay() {
       return format(BUYABLES[3].eff()) + "/s";
