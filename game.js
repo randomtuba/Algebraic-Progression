@@ -286,14 +286,14 @@ function updateExps(diff) {
 
 function updateValues() {
   // Auto-Quadratic
-  if(player.currentTab == 'quad' && player.currentSubtab[0] == 'upgrades' && document.getElementById("quadAuto")?.value == "" && player.inputValue != ""){
+  if(player.currentTab == 'quad' && document.getElementById("quadAuto")?.value == "" && player.inputValue != ""){
     changedQAdisplay = false
   }
-  if(!changedQAdisplay && player.currentTab == 'quad' && player.currentSubtab[0] == 'upgrades'){
+  if(!changedQAdisplay && player.currentTab == 'quad'){
     changedQAdisplay = true
     if(document.getElementById("quadAuto"))document.getElementById("quadAuto").value = player.inputValue
   }
-  if(player.quadUpgs.includes(14) && document.getElementById("quadAuto") && player.currentTab == 'quad' && player.currentSubtab[0] == 'upgrades'){
+  if(player.quadUpgs.includes(14) && document.getElementById("quadAuto") && player.currentTab == 'quad'){
     player.inputValue = document.getElementById("quadAuto").value
   }
   
@@ -306,14 +306,14 @@ function updateValues() {
   if(changedESdisplay && document.getElementById("epicSlider")) player.epicenterLevel = document.getElementById("epicSlider").value
   
   // Auto-Complex
-  if(player.currentTab == 'comp' && player.currentSubtab[1] == 'upgrades' && document.getElementById("compAuto")?.value == "" && player.inputValue2 != ""){
+  if(player.currentTab == 'comp'&& document.getElementById("compAuto")?.value == "" && player.inputValue2 != ""){
     changedCAdisplay = false
   }
-  if(!changedCAdisplay && player.currentTab == 'comp' && player.currentSubtab[1] == 'upgrades'){
+  if(!changedCAdisplay && player.currentTab == 'comp'){
     changedCAdisplay = true
     if(document.getElementById("compAuto"))document.getElementById("compAuto").value = player.inputValue2
   }
-  if(hasMilestone(12) && document.getElementById("compAuto") && player.currentTab == 'comp' && player.currentSubtab[1] == 'upgrades'){
+  if(hasMilestone(12) && document.getElementById("compAuto") && player.currentTab == 'comp'){
     player.inputValue2 = document.getElementById("compAuto").value
   }
 }
