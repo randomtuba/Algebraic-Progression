@@ -332,7 +332,7 @@
       <div id="tab6-5disp" v-if="player.currentSubtab[0] == 'formula'"> <!--- QUADRATIC FORMULA !--->
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
         To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
-        (The one I'm talking about is (-b±√b²-4ac) / 2a)<br>
+        (The one I'm talking about is (-b±√(b²-4ac) / 2a)<br>
         Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
         <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{qpGen().gt(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
         <div v-for="a in 3">

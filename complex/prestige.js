@@ -7,6 +7,7 @@ function compFormula() {
     if(hasCU(0,12)) neg = neg.mul(COMP_UPGRADES[12].eff())
     if(hasMilestone(11)) neg = neg.mul(2)
     neg = neg.floor()
+    if(player.x2.lt("1e2950") || player.rootEssence.lt("1e660")) neg = new Decimal(0)
     return neg
   }else{
     return new Decimal(1);
