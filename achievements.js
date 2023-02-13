@@ -235,6 +235,56 @@ const ACHIEVEMENTS = {
     desc: "...for now.",
     done(){return player.y.gte(2222)},
   },
+  46: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  47: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  48: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  49: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  50: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  51: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  52: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  53: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  54: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  55: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
 }
 
 function hasAchievement(x) {

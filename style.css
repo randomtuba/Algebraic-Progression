@@ -99,6 +99,17 @@ span{
   border-color: #446622;
 }
 
+.zButton {
+  background-color: #ffbdbd;
+  font-size: 18px;
+}
+
+.zButton:hover {
+  color: #572828;
+  background-color: #ff9999;
+  border-color: #572828;
+}
+
 .upgradeLocked {
   background-color: red;
   color: white;

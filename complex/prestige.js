@@ -51,7 +51,7 @@ function goComplex(force) {
     player.prestigeTimes[2] = 0
     if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked > 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : 0); player.compUpgs[0] = []}
     player.options[6] = false
-    if(player.options[4] && player.compChallenge == 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
+    if(player.options[4] && player.compChallenge == 0 && player.unlocked > 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
     player.options[4] = false
     player.compChallenge = 0
     player.antiSlope = new Decimal(1)
@@ -108,7 +108,7 @@ function goComplex(force) {
       player.prestigeTimes[2] = 0
       if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked > 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : 0); player.compUpgs[0] = []}
       player.options[6] = false
-      if(player.options[4]){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
+      if(player.options[4] && player.compChallenge == 0 && player.unlocked > 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
       player.options[4] = false
       player.compChallenge = 0
       player.antiSlope = new Decimal(1)

@@ -79,7 +79,7 @@
       <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.</span><br><br>
     </span>
     <div id="points">
-      Number = {{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
+      Number = {{player.z.gte(1) ? formatWhole(player.z) + 'z+' : ''}}{{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
     </div>
     <div id="pps">
       You are getting {{formatSmall(pps())}} points per second
@@ -126,6 +126,9 @@
         Gain y for {{formatWhole(yCost())}}x (Y)
       </button><br>
       <button v-if="hasQU(10)" class="hoverable" onclick="player.autobuyers[8] = !player.autobuyers[8]">Auto: {{player.autobuyers[8] ? 'ON' : 'OFF'}}</button><br v-if="hasQU(10)">
+      <button id="zButton" class="zButton" v-if="false" onclick="buyVariable('z')">
+        Gain z for {{formatWhole(zCost())}}y (Z)
+      </button><br v-if="false">
       <br>
       <span v-if="hasUpgrade(4)">Instead of adding to your production, Functions multiply your point production.</span><br>
       <span v-if="hasUpgrade(4)"><b>f(x) * g(x) * h(x):</b> {{format(BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()))}}</span><br><br>

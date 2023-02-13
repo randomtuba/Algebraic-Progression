@@ -44,6 +44,10 @@ function yCost() {
   return player.compChallenge == 5 ? new Decimal(Infinity) : new Decimal(100).div(hasQU(18)?1.1:1).div(hasChallenge(8)?5:1).mul(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff()))).pow(player.y)).pow(player.compChallenge == 3 ? 4 : 1).floor()
 }
 
+function zCost() {
+  return new Decimal(2222).add(new Decimal(111).add(player.z.sub(1).mul(10)).mul(player.z)).floor()
+}
+
 function buyVariable(x) {
   switch (x) {
     case "x":
@@ -59,12 +63,12 @@ function buyVariable(x) {
         player.purchases -= 1
       }
       break;
-    // case "z":
-      // if (player.y.gte(zCost()) && (player.purchases > 0 || player.challenge != 10)){
-        // player.z = player.z.add(1)
-        // player.purchases -= 1
-      // }
-      // break;
+    case "z":
+      if (player.y.gte(zCost()) && (player.purchases > 0 || player.challenge != 10)){
+        player.z = player.z.add(1)
+        player.purchases -= 1
+      }
+      break;
   }
 }
 
@@ -103,7 +107,7 @@ function mainLoop(){
   }
   player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05)).min(player.totalPoints.pow(player.prestigeTimes[2])).mul(diff))
   
-  // CHECKS IF CC4'S QUADRATICS CONDITION HAS BEEN FAILED
+  // CHECK IF CC4'S QUADRATICS CONDITION HAS BEEN FAILED
   if(player.quadratics.gte(new Decimal(20).sub(player.compChalCompletions[4]*5).max(0)) && player.compChallenge == 4) {
     goComplex(true);
     if(!hasAchievement(41)) {
@@ -382,6 +386,9 @@ function checkForEndgame() {
   if (player.achievements.length >= 45 && !player.gameWon) {
     player.gameWon = true
     player.winTime = player.timePlayed
+  /* } else {
+    player.gameWon = false;
+  } */
   }
 }
 
