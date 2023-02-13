@@ -230,7 +230,7 @@ function exportUpgs() {
 function loadUpgs(imported = undefined) {
   if (imported === undefined) imported = prompt("Paste your Complex Upgrades preset in the input box below! (This will reset your run with no reward!)")
     let arr = imported.split(",");
-    player.upgradePoints[0] = player.upgradePoints[1]
+    player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked == 0 ? 0 : COMP_CHALLENGES[player.unlocked].unlockCost)
     player.compUpgs[0] = []
     goComplex(true)
     for (let i = 0; i < arr.length; i++) {
@@ -242,7 +242,7 @@ function loadUpgs(imported = undefined) {
 
 function loadPreset(x) {
   let arr = player.presets.info[x].split(",");
-    player.upgradePoints[0] = player.upgradePoints[1]
+    player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked == 0 ? 0 : COMP_CHALLENGES[player.unlocked].unlockCost)
     player.compUpgs[0] = []
     goComplex(true)
     for (let i = 0; i < arr.length; i++) {
