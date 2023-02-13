@@ -5,7 +5,7 @@ const BUYABLES = {
       return new Decimal(25).mul(new Decimal(buildingCostScaling()).pow(player.buyables[1]))
     },
     eff() {
-      return player.challenge == 1 ? new Decimal(0) : player.buyables[1].add(player.buyables[7].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(buildingMultipliers()).mul(hasQU(2)?QUAD_UPGRADES[2].eff():1).pow(buildingExponents())
+      return player.challenge == 1 ? new Decimal(0) : player.buyables[1].add(player.buyables[7].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 || player.compChallenge == 2 ? 0 : 1)).mul(buildingMultipliers()).mul(hasQU(2)?QUAD_UPGRADES[2].eff():1).pow(buildingExponents())
     },
     baseProd() {
       return player.challenge == 1 ? new Decimal(0) : buildingMultipliers().mul(hasQU(2)?QUAD_UPGRADES[2].eff():1).pow(buildingExponents())
@@ -23,7 +23,7 @@ const BUYABLES = {
       return new Decimal(200).mul(new Decimal(buildingCostScaling()).pow(player.buyables[2]))
     },
     eff() {
-      return player.challenge == 1 ? new Decimal(0) : player.buyables[2].add(player.buyables[8].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(10).mul(buildingMultipliers()).mul(hasQU(4)?QUAD_UPGRADES[4].eff():1).pow(buildingExponents())
+      return player.challenge == 1 ? new Decimal(0) : player.buyables[2].add(player.buyables[8].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 || player.compChallenge == 2 ? 0 : 1)).mul(10).mul(buildingMultipliers()).mul(hasQU(4)?QUAD_UPGRADES[4].eff():1).pow(buildingExponents())
     },
     baseProd() {
       return player.challenge == 1 ? new Decimal(0) : buildingMultipliers().mul(10).mul(hasQU(4)?QUAD_UPGRADES[4].eff():1).pow(buildingExponents())
@@ -41,7 +41,7 @@ const BUYABLES = {
       return new Decimal(15000).mul(new Decimal(buildingCostScaling()).pow(player.buyables[3]))
     },
     eff() {
-      return player.buyables[3].add(player.buyables[9].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 ? 0 : 1)).mul(1000).mul(buildingMultipliers()).mul(hasQU(7)?QUAD_UPGRADES[7].eff():1).pow(buildingExponents())
+      return player.buyables[3].add(player.buyables[9].mul(player.challenge == 3 || player.challenge == 5 || player.challenge == 10 || player.compChallenge == 2 ? 0 : 1)).mul(1000).mul(buildingMultipliers()).mul(hasQU(7)?QUAD_UPGRADES[7].eff():1).pow(buildingExponents())
     },
     baseProd() {
       return buildingMultipliers().mul(1000).mul(hasQU(7)?QUAD_UPGRADES[7].eff():1).pow(buildingExponents())
@@ -134,7 +134,7 @@ function buildingMultipliers() {
   if(hasQU(13)) mult = mult.mul(QUAD_UPGRADES[13].eff())
   if(hasSU(2)) mult = mult.mul(SQRT_UPGRADES[2].eff())
   if(player.challenge != 5) if(hasUpgrade(5)) mult = mult.mul(1000)
-  if(hasSU(9)) mult = mult.mul(SQRT_UPGRADES[9].eff())
+  if(hasSU(9)) mult = mult.mul(SQRT_UPGRADES[9].eff()) // non-static
   if(hasSU(10)) mult = mult.mul(SQRT_UPGRADES[10].eff())
   if(hasChallenge(9)) mult = mult.mul(CHALLENGES[9].effect())
   if(player.challenge == 5) mult = mult.div(Decimal.pow(5**0.01,player.x))
@@ -142,7 +142,8 @@ function buildingMultipliers() {
   if(inSqrtLevel(3)) mult = mult.div("1e1650")
   if(inSqrtLevel(4)) mult = mult.div("1e3650")
   if(hasCU(1,1)) mult = mult.mul(BCOMP_UPGRADES[1].eff())
-  if(hasCU(0,3)) mult = mult.mul(COMP_UPGRADES[3].eff())
+  if(hasCU(0,3)) mult = mult.mul(COMP_UPGRADES[3].eff()) // non-static
+  if(player.compChallenge == 2) mult = mult.div(player.antiSlope)
   return mult
 }
 
@@ -155,6 +156,7 @@ function buildingExponents() {
   if(player.challenge == 2) exp = exp.mul(player.chalExponents[0])
   if(player.challenge == 9) exp = exp.mul(player.chalExponents[1])
   if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
+  if(player.compChallenge == 3) exp = exp.mul(Decimal.div(1,new Decimal(gcd_two_numbers(player.x.toNumber(),player.y.toNumber())).sqrt().max(1)))
   return exp
 }
 

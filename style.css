@@ -197,6 +197,24 @@ span{
   border-color: green;
 }
 
+.compChalDefault {
+  border-color: #de5d5d;
+  color: #de5d5d;
+  background-color: #660000;
+}
+
+.compChalIncomplete {
+  border-color: #006600;
+  color: #006600;
+  background-color: #5dde5d;
+}
+
+.compChalComplete {
+  border-color: #5dde5d;
+  color: #5dde5d;
+  background-color: #006600;
+}
+
 .autocenter {
   margin-left: auto;
   margin-right: auto;
@@ -375,8 +393,8 @@ span{
 }
 
 .iTripler {
-  color: white;
-  background-color: black;
+  color: green;
+  background-color: white;
   width: 175px;
   height: 150px;
   font-size: 12px;
@@ -387,4 +405,22 @@ span{
 
 .iTripler:hover {
   background-color: green;
+  color: white;
+}
+
+@keyframes a-existence-glow {
+  0% {
+    color: white;
+    text-shadow: 0.1rem 0.1rem 0.2rem black;
+  }
+
+  50% {
+    color: white;
+    text-shadow: 0.1rem 0.1rem 0.8rem black;
+  }
+
+  100% {
+    color: white;
+    text-shadow: 0.1rem 0.1rem 0.2rem black;
+  }
 }

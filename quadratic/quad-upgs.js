@@ -3,7 +3,7 @@ const QUAD_UPGRADES = {
     title: "Quadratic Bonus",
     desc: "Multiply production based on unspent x².",
     cost: new Decimal(1),
-    eff() {return new Decimal(4).mul(new Decimal(1).add(player.x2.pow(0.5)))},
+    eff() {return new Decimal(4).mul(new Decimal(1).add(player.x2.pow(new Decimal(0.5).add(COMP_CHALLENGES[1].eff()))))},
     effectDisplay() {return format(QUAD_UPGRADES[1].eff()) + "x production"},
   },
   2: {
@@ -80,7 +80,7 @@ const QUAD_UPGRADES = {
     desc: "Gain more points based on points.",
     cost: new Decimal(10000),
     eff() {return player.points.max(0).pow(0.2).add(1)},
-    effectDisplay() {return format(QUAD_UPGRADES[4].eff()) + "x production"},
+    effectDisplay() {return format(QUAD_UPGRADES[13].eff()) + "x production"},
   },
   14: {
     title: "Automation IV",
@@ -158,6 +158,18 @@ function rowAmt(x){
       let row3=1
       if(hasSU(3) || player.xUpgs.length > 4)row3++
       return row3
+    break;
+    case 4: // MILESTONES
+      let row4=12
+      if(hasCU(1,6))row4 += 4
+      return row4
+    break;
+    case 5: // COMP UPGRADES
+      let row5=1
+      if(player.compUpgs[1].length >= 3)row5++
+      if(player.compUpgs[1].length >= 6)row5++
+      return row5
+    break;
   }
 }
 

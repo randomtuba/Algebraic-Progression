@@ -206,9 +206,34 @@ const ACHIEVEMENTS = {
     done(){return player.triplers.gte(3)},
   },
   40: {
+    name: "Challenges, Round 2",
+    desc: "Unlock Complex Challenges.",
+    done(){return hasCU(1,6)},
+  },
+  41: {
+    name: "Not Following Directions",
+    desc: "Fail Complex Challenge 4.",
+    done(){return false},
+  },
+  42: {
+    name: "We're Not Done Yet",
+    desc: "Complete 10 CC tiers in total.",
+    done(){return ccTiers() >= 10 /* player.upgradePoints[1].gte(60) && player.upgradePoints[0].lte(player.upgradePoints[1].sub(60)) */},
+  },
+  43: {
+    name: "Completing the Square",
+    desc: "Complete Complex Challenge 1 five times.",
+    done(){return player.compChalCompletions[1] == 5},
+  },
+  44: {
+    name: "I've Been Everywhere",
+    desc: "Have at least 2 Translations, Reflections, and Rotations.",
+    done(){return player.transformations.bought[1].gte(2) && player.transformations.bought[2].gte(2) && player.transformations.bought[3].gte(2)},
+  },
+  45: {
     name: "The End",
     desc: "...for now.",
-    done(){return hasCU(1,6)},
+    done(){return player.y.gte(2222)},
   },
 }
 

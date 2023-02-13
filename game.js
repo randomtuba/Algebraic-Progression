@@ -3,7 +3,16 @@ var tmp = {
   letters: [null,"a","b","c"],
   epicslider: 1,
   compPlaneVars: [null,"x","y","x<sup>2</sup>"],
-  compPlaneCosts: [null,new Decimal(3500000),new Decimal(100000),new Decimal(1323),new Decimal(1e8),new Decimal("1e16600"),new Decimal(1e18)]
+  compPlaneCosts: [null,new Decimal(3500000),new Decimal(100000),new Decimal(1323),new Decimal(1e8),new Decimal("1e16600"),new Decimal(1e18)],
+  disses: [
+    "Oh, please, that's basically nothing.",
+    "Pretty close to zero if you ask me.",
+    "Probably a rounding error.",
+    "Those are rookie numbers!",
+    "Did you miss a zero somewhere?",
+    "Did you forget an exponent?",
+  ],
+  keptGoing: false,
 };
 function clickButton() {
   player.points = player.points.add(1)
@@ -20,18 +29,19 @@ function tab(x) {
 }
 
 function xCost() {
-  return new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,xDivision())).pow(player.x)).div(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).div(hasUpgrade(5) && player.challenge != 5 ?1000000:1).div(hasChallenge(5)?1e9:1)
+  return player.compChallenge == 5 ? new Decimal(Infinity) : new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,xDivision())).pow(player.x)).div(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).div(hasUpgrade(5) && player.challenge != 5 ?1000000:1).div(hasChallenge(5)?1e9:1).pow(player.compChallenge == 3 ? 10 : 1)
 }
          
-function xDivision() {
+function xDivision() { // returns the X cost scaling per purchase divisor                                                                          
   let div = new Decimal(1)
   if(hasSU(1)) div = div.mul(SQRT_UPGRADES[1].eff())
   div = div.mul(QP_BUYABLES[1].eff())
+  div = div.mul(COMP_CHALLENGES[3].eff())
   return div
 }
 
 function yCost() {
-  return new Decimal(100).div(hasQU(18)?1.1:1).div(hasChallenge(8)?5:1).mul(new Decimal(1).add(Decimal.div(0.25,sacEffect('x'))).pow(player.y)).floor()
+  return player.compChallenge == 5 ? new Decimal(Infinity) : new Decimal(100).div(hasQU(18)?1.1:1).div(hasChallenge(8)?5:1).mul(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff()))).pow(player.y)).pow(player.compChallenge == 3 ? 4 : 1).floor()
 }
 
 function buyVariable(x) {
@@ -73,8 +83,9 @@ var changedCAdisplay = false
 
 function mainLoop(){
   if(hasLoaded){document.getElementById("loading_page").style = "display: none";document.getElementById("app").style = ""}
-  if(!window["player"]||!player.points)return;
-  let diff = player.options[1] ? ((Date.now()-player.lastTick)/1000) : 0.04
+  if(!window["player"]||!player.points||!hasLoaded)return requestAnimationFrame(mainLoop);
+  let diff = (Date.now()-player.lastTick)/1000
+  if(!player.options[9])diff = document.hidden?0:Math.min(diff,0.075)
   player.lastTick = Date.now()
   
   // UPDATE TIMES
@@ -90,15 +101,32 @@ function mainLoop(){
   for (let i = 1; i <= 3; i++) {
     player.compPlane[1][i] = player.compPlane[1][i].add(compPlaneGen(i).mul(diff))
   }
+  player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05)).min(player.totalPoints.pow(player.prestigeTimes[2])).mul(diff))
   
-  updateAuto()
-  if(hasUpgrade(6)) produceBuildings(diff)
-  updatePercent()
-  updateExps(diff)
-  updateAchs()
-  updateValues()
-  updateRootEpicenter()
-  fixUnixEpoch()
+  // CHECKS IF CC4'S QUADRATICS CONDITION HAS BEEN FAILED
+  if(player.quadratics.gte(new Decimal(20).sub(player.compChalCompletions[4]*5).max(0)) && player.compChallenge == 4) {
+    goComplex(true);
+    if(!hasAchievement(41)) {
+        player.achievements.push('41')
+        $.notify("Achievement Unlocked: Not Following Directions", {
+          style: 'apcurrent',
+          className:'achieves',
+        });
+      }
+  }
+  
+  updateAuto() //runs the autobuyers
+  if(hasUpgrade(6)) produceBuildings(diff) //makes buildings produce other buildings
+  updatePercent() //updates the building production percentages
+  updateExps(diff) //updates the Challenge exponents
+  updateAchs() //detects achievement completions
+  updateValues() //makes sure that the values for input elements throughout the game don't reset
+  updateRootEpicenter() //disables slider when in Square Root and detects Level 4 and -1 completion
+  fixUnixEpoch() //fixes the bug where Quadratic and Complex times jump a Unix Epoch
+  trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5
+  if(hasMilestone(15)) simulateEssence(1) //passively generates RE
+  if(hasMilestone(16)) simulateEssence(4) //passively generates CE
+  checkForEndgame() //detects if the player has all achievements
   
   if(isNaN(player.points)) {
     exportSave()
@@ -106,17 +134,26 @@ function mainLoop(){
     hardReset()
     importSave()
   }
+  requestAnimationFrame(mainLoop)
 }
 
-setInterval(mainLoop, 40);
+requestAnimationFrame(mainLoop)
 
 function updateAuto() {
   // VARIABLES
-  if(player.autobuyers[8] && player.points.gte(yCost()) && player.challenge != 10){
-    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
+  if(player.autobuyers[8] && player.points.gte(yCost()) && player.challenge != 10 && player.compChallenge != 5){
+    if(player.compChallenge == 3) {
+      player.y = player.x.add(1).root(4).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff())))).floor().add(player.x.gte(100)?1:0)
+    } else {
+      player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff())))).floor().add(player.x.gte(100)?1:0)
+    }
   }
-  if(player.autobuyers[7] && player.points.gte(xCost()) && player.challenge != 10){
-    player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+  if(player.autobuyers[7] && player.points.gte(xCost()) && player.challenge != 10 && player.compChallenge != 5){
+    if(player.compChallenge == 3) {
+      player.x = player.points.root(10).div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    } else {
+      player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    }
     if(!hasQU(8)) player.points = player.points.sub(xCost())
     player.x = player.x.add(1)
   }
@@ -162,7 +199,7 @@ function updateAuto() {
   }
   
   // QUADRATIC
-  if(player.autobuyers[9] && !player.inSqrt && player.challenge == 0){
+  if(player.autobuyers[9] && (!player.inSqrt || player.compChallenge == 5) && player.challenge == 0){
     if (player.compAutobuyers[2] == 1 && quadFormula().gte(player.inputValue)) goQuadratic(false)
     if (player.compAutobuyers[2] == 2 && player.prestigeTimes[0] >= player.inputValue) goQuadratic(false)
     if (player.compAutobuyers[2] == 3 && quadFormula().gte(player.x2.mul(player.inputValue))) goQuadratic(false)
@@ -211,10 +248,18 @@ function updateAuto() {
 function buyMax() {
   // VARIABLES
   if(player.points.gte(yCost()) && player.challenge != 10){
-    player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x')))).floor().add(player.x.gte(100)?1:0)
+    if(player.compChallenge == 3) {
+      player.y = player.x.add(1).root(4).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff())))).floor().add(player.x.gte(100)?1:0)
+    } else {
+      player.y = player.x.add(1).div(100).mul(hasQU(18)?1.1:1).mul(hasChallenge(8)?5:1).max(1).log(new Decimal(1).add(Decimal.div(0.25,sacEffect('x').mul(COMP_CHALLENGES[3].eff())))).floor().add(player.x.gte(100)?1:0)
+    }
   }
   if(player.points.gte(xCost()) && player.challenge != 10){
-    player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    if(player.compChallenge == 3) {
+      player.x = player.points.root(10).div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    } else {
+      player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    }
     if(!hasQU(8)) player.points = player.points.sub(xCost())
     player.x = player.x.add(1)
   }
@@ -316,11 +361,28 @@ function updateValues() {
   if(hasMilestone(12) && document.getElementById("compAuto") && player.currentTab == 'comp'){
     player.inputValue2 = document.getElementById("compAuto").value
   }
+  
+  // Best Points in Square Root
+  if(player.points.gte(player.bestPointsInSqrt) && player.inSqrt) player.bestPointsInSqrt = player.points
 }
 
 function fixUnixEpoch() {
   if(player.prestigeTimes[0] >= 1639872000) player.prestigeTimes[0] = player.timePlayed
   if(player.prestigeTimes[2] >= 1639872000) player.prestigeTimes[2] = player.timePlayed
+}
+
+function trappedInSqrt() {
+  if(player.compChallenge == 5) {
+    player.inSqrt = true;
+    player.epicenterLevel = Math.min(player.compChalCompletions[5]+1,5).toString();
+  }
+}
+
+function checkForEndgame() {
+  if (player.achievements.length >= 45 && !player.gameWon) {
+    player.gameWon = true
+    player.winTime = player.timePlayed
+  }
 }
 
 function download(filename, text) {
@@ -349,13 +411,13 @@ document.addEventListener("keydown", function onEvent(event) {
       if(player.options[2]) buyBuyable(3)
       break;
     case "4":
-      if(player.options[2]) buyBuyable(4)
+      if(player.options[2] && hasUpgrade(4)) buyBuyable(4)
       break;
     case "5":
-      if(player.options[2]) buyBuyable(5)
+      if(player.options[2] && hasUpgrade(4)) buyBuyable(5)
       break;
     case "6":
-      if(player.options[2]) buyBuyable(6)
+      if(player.options[2] && hasUpgrade(4)) buyBuyable(6)
       break;
     case "x":
       if(player.options[2]) buyVariable('x')
@@ -367,7 +429,7 @@ document.addEventListener("keydown", function onEvent(event) {
       if(player.options[2] && (player.totalx2.gte(1) || player.totali.gte(1))) buyMax()
       break;
     case "q":
-      if(player.options[2] && !player.inSqrt) goQuadratic(false)
+      if(player.options[2] && (!player.inSqrt || player.compChallenge == 5)) goQuadratic(false)
       break;
     case "s":
       if(player.options[2] && hasQU(16)) enterSqrt()
@@ -379,4 +441,4 @@ document.addEventListener("keydown", function onEvent(event) {
       if(player.options[2]) goComplex(false)
       break;
   }
-});34
+});

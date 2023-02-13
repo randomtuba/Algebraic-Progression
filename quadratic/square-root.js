@@ -8,7 +8,6 @@ function reFormula() {
     if(hasCU(1,1)) re = re.mul(10)
     if(hasCU(0,6)) re = re.mul(COMP_UPGRADES[6].eff())
     if(hasCU(0,8)) re = re.mul(COMP_UPGRADES[8].eff())
-    // if(re.gt("1e5000")) re = re.div("1e5000").pow(0.75).mul("1e5000")
     re = re.sub(player.rootEssence).max(0).floor()
     return re
   }else{
@@ -18,13 +17,19 @@ function reFormula() {
     let re = player.points.div(1e12).pow(0.002+addend)
     if(hasCU(1,1)) re = re.mul(10)
     if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
-    // if(re.gt("1e2000")) {
-      // let y = new Decimal(re).log(new Decimal("1e2000"))
-      // re = new Decimal("1e2000").pow(Decimal.pow(y,Decimal.pow(y,new Decimal("1e2000"))))
-    // }
+    if(re.gt(ceSoftcapStart())) {
+      let y = new Decimal(re).log(ceSoftcapStart())
+      re = new Decimal(ceSoftcapStart()).pow(y.pow(0.9))
+    }
     re = re.sub(player.challengeEssence).max(0).floor()
     return re
   }
+}
+
+function ceSoftcapStart() {
+  let softcap = new Decimal("1e2000")
+  if(hasCU(1,8)) softcap = softcap.mul(BCOMP_UPGRADES[8].eff())
+  return softcap;
 }
 
 function enterSqrt() {
@@ -51,6 +56,7 @@ const SQRT_UPGRADES = {
     cost: new Decimal(20),
     eff() {return player.rootEssence.max(10).log10().log10().add(1)},
     effectDisplay() {return "/" + format(SQRT_UPGRADES[1].eff()) + " X cost scaling"},
+    
   },
   2: {
     title: "Uprooted Points",
@@ -107,7 +113,7 @@ const SQRT_UPGRADES = {
     title: "Prestigious",
     desc: "Multiply both point gain and x² gain based on times gone Quadratic.",
     cost: new Decimal(2.5e10),
-    eff() {return player.quadratics.pow(1.5).add(1).pow(hasCU(1,2)?4:1)},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).pow(1.5).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(SQRT_UPGRADES[10].eff()) + "x production and x² gain"},
   },
   11: {
@@ -191,11 +197,13 @@ function ceEffect(x) {
     case 1:
       let eff1 = player.challengeEssence.max(1).pow(2)
       if(eff1.gt(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))) eff1 = eff1.div(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))
+      if(eff1.gt("1e1500") && !hasCU(1,8)) eff1 = eff1.div("1e1500").pow(0.3).mul("1e1500")
       return eff1
     break;
     case 2:
       let eff2 = player.challengeEssence.max(1).pow(1.2)
       if(eff2.gt(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))) eff2 = eff2.div(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))
+      if(eff2.gt("1e900") && !hasCU(1,8)) eff2 = eff2.div("1e900").pow(0.3).mul("1e900")
       return eff2
     break;
   }

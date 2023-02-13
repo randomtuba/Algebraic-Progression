@@ -19,6 +19,7 @@ function goComplex(force) {
     player.buyables[7] = new Decimal(0)
     player.buyables[8] = new Decimal(0)
     player.buyables[9] = new Decimal(0)
+    if(hasMilestone(13)) player.bankedQuadratics = player.bankedQuadratics.add(player.quadratics.div(10).floor())
     player.quadratics = new Decimal(0)
     if(!hasMilestone(3)) player.autobuyers = [null,false,false,false,false,false,false,false,false,false,false]
     if(!hasMilestone(3)) player.quadUpgs = []
@@ -48,12 +49,19 @@ function goComplex(force) {
     player.x2 = new Decimal(0)
     player.totalx2 = new Decimal(0)
     player.prestigeTimes[2] = 0
-    if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1]; player.compUpgs[0] = []}
+    if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked > 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : 0); player.compUpgs[0] = []}
     player.options[6] = false
+    if(player.options[4] && player.compChallenge == 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
+    player.options[4] = false
+    player.compChallenge = 0
+    player.antiSlope = new Decimal(1)
   }else if(!force && player.x2.gte("1e2950") && player.rootEssence.gte("1e660") && player.hasCompletedLevel5){
     if(!player.options[8] || player.compAutobuyers[7] || confirm("Going Complex will reset everything Quadratic resets, and will also reset all Quadratic-level content, but you will receive i in return. Are you sure you want to do this?")) {
-      player.i = player.i.add(compFormula())
-      player.totali = player.totali.add(compFormula())
+      let c = compFormula()
+      player.i = player.i.add(c)
+      player.totali = player.totali.add(c)
+      player.last10runs.complex.splice(0,0,{gain:c,time:player.prestigeTimes[2]})
+      player.last10runs.complex = player.last10runs.complex.slice(0,-1)
       player.complexes = player.complexes.add(1)
       if(player.quadPower.eq(0) && !hasAchievement(33)) {
         player.achievements.push('33')
@@ -66,6 +74,7 @@ function goComplex(force) {
       player.buyables[7] = new Decimal(0)
       player.buyables[8] = new Decimal(0)
       player.buyables[9] = new Decimal(0)
+      if(hasMilestone(13)) player.bankedQuadratics = player.bankedQuadratics.add(player.quadratics.div(10).floor())
       player.quadratics = new Decimal(0)
       if(!hasMilestone(3)) player.autobuyers = [null,false,false,false,false,false,false,false,false,false,false]
       if(!hasMilestone(3)) player.quadUpgs = []
@@ -97,8 +106,12 @@ function goComplex(force) {
     
       if(player.prestigeTimes[2] < player.prestigeTimes[3]) player.prestigeTimes[3] = player.prestigeTimes[2]
       player.prestigeTimes[2] = 0
-      if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1]; player.compUpgs[0] = []}
+      if(player.options[6]){player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked > 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : 0); player.compUpgs[0] = []}
       player.options[6] = false
+      if(player.options[4]){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
+      player.options[4] = false
+      player.compChallenge = 0
+      player.antiSlope = new Decimal(1)
     }
   }
 }

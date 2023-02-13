@@ -65,7 +65,8 @@ const CHALLENGES = {
 
 function startChallenge(x) {
   if(player.challenge == x){
-    if(player.points.gte(CHALLENGES[x].goal) && !hasChallenge(x)) player.chalCompletions.push(x)
+    if(player.points.gte(CHALLENGES[x].goal) && !hasChallenge(x)) player.chalCompletions.push(x) // completes challenge if you have reached the goal and if it is not completed
+    if(player.points.gte(CHALLENGES[x].goal) && player.prestigeTimes[0] < player.challengeRecords[x]) player.challengeRecords[x] = player.prestigeTimes[0] // changes challenge record if chal time < best time
     goQuadratic(true)
   }else{
     goQuadratic(true)
@@ -81,4 +82,12 @@ const isPrime = num => {
     for(let i = 2, s = Math.sqrt(num); i <= s; i++)
         if(num % i === 0) return false; 
     return num > 1;
+}
+
+function chalRecordsSum() {
+  let sum = 0;
+  for (let i = 1; i < player.challengeRecords.length; i++) {
+    sum += player.challengeRecords[i];
+  }
+  return sum;
 }

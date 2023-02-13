@@ -210,6 +210,18 @@ span{
   border-color: white;
 }
 
+.compChalDefault {
+  border-color: #de5d5d;
+  color: #de5d5d;
+  background-color: #660000;
+}
+
+.compChalComplete {
+  border-color: #5dde5d;
+  color: #5dde5d;
+  background-color: #006600;
+}
+
 .autocenter {
   margin-left: auto;
   margin-right: auto;
@@ -401,4 +413,21 @@ span{
 
 .iTripler:hover {
   background-color: green;
+}
+
+@keyframes a-existence-glow {
+  0% {
+    color: black;
+    text-shadow: 0.1rem 0.1rem 0.2rem white;
+  }
+
+  50% {
+    color: black;
+    text-shadow: 0.1rem 0.1rem 0.8rem white;
+  }
+
+  100% {
+    color: black;
+    text-shadow: 0.1rem 0.1rem 0.2rem white;
+  }
 }

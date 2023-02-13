@@ -30,7 +30,7 @@ function start() {
     startingTime: Date.now(),
     lastTick: 0,
     autobuyers: [null,false,false,false,false,false,false,false,false,false,false],
-    currentSubtab: ['upgrades','milestones'],
+    currentSubtab: ['upgrades','milestones','stats'],
     sacX: new Decimal(0),
     sacY: new Decimal(0),
     sacX2: new Decimal(0),
@@ -48,7 +48,19 @@ function start() {
     chalCompletions: [],
     chalExponents: [new Decimal(1),new Decimal(1)],
     achievements: [],
-    options: [true,true,true,true,true,true,false,true,true],
+    options: [
+      true, // autosave (0)
+      true, // offline progress (1)
+      true, // hotkeys (2)
+      true, // show news ticker (3)
+      false, // respec CC on complex (4)
+      true, // transformation type switch confirmation (5)
+      false, // respec complex upgrades on complex (6)
+      true, // quadratic confirmation (7)
+      true, // complex confirmation (8)
+      true, // inactive progress (9)
+      false, // show presets (10)
+    ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
     quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
@@ -67,6 +79,30 @@ function start() {
     inputValue2: 0,
     compPlane: [[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]],
     triplers: new Decimal(0),
+    compChalCompletions: [null,0,0,0,0,0,0,0,0,0,0],
+    compChallenge: 0,
+    unlocked: 0,
+    bestPointsInSqrt: new Decimal(0),
+    antiSlope: new Decimal(1),
+    bankedQuadratics: new Decimal(0),
+    transformations: {
+      bought: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+      names: [null,"Translations","Reflections","Rotations","Dilations"],
+      activated: 0,
+    },
+    newsMessagesSeen: 0,
+    last10runs:{
+      quadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+      complex: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+    },
+    challengeRecords: [null,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8],
+    presets: {
+      info: [null,"","","","","",""],
+      names: [null,"Preset 1","Preset 2","Preset 3","Preset 4","Preset 5","Preset 6"],
+      selected: 0,
+    },
+    gameWon: false,
+    winTime: 0,
   };
   return a;
 }
@@ -136,6 +172,14 @@ function load() {
         "border-radius": "5px",
         "border-color":"black",
       },
+      unlock: {
+        "white-space": "nowrap",
+        "background-color": "#5eff79",
+        "color": "black",
+        "padding": "5px",
+        "border-radius": "5px",
+        "border-color":"black",
+      },
     }
   });
   app = new Vue({
@@ -158,6 +202,7 @@ s = document.getElementById("news");
 window.onload = function () {
   load();
   hasLoaded = true
+  if(!player.options[1])player.lastTick = Date.now()
 window.saveInterval = player.options[0] ? setInterval(save,30000) : 0
 }
 
@@ -186,8 +231,28 @@ function fileStat() {
   }
 }
 
+function fileStat2() {
+  if (player.totalx2.gt(0) && !hasQU(16)) {
+    return ", " + formatWhole(player.quadratics) + " Quadratics"
+  } else if (hasQU(16) && !hasQU(20)) {
+    return ", " + format(player.rootEssence) + " RE"
+  } else if (hasQU(20) && !hasSU(16)) {
+    return ", " + format(player.quadPower) + " QP"
+  } else if (hasSU(16) && player.complexes.eq(0)) {
+    return ", " + format(player.challengeEssence) + " CE"
+  } else if (player.complexes.gte(1) && player.complexes.lt(20)) {
+    return ", " + formatWhole(player.complexes) + " Complexes"
+  } else if (player.complexes.gte(20) && player.compChalCompletions[1] == 0) {
+    return ", " + formatWhole(player.upgradePoints[1]) + " UP"
+  } else if (player.compChalCompletions[1] > 0) {
+    return ", " + formatWhole(ccTiers()) + " CC tiers"
+  } else {
+    return ""
+  }
+}
+
 function exportAsFile() {
-  download("Algebraic Progression Save (" + fileStat() + ").txt",btoa(JSON.stringify(player)))
+  download("Algebraic Progression Save (" + fileStat() + fileStat2() + ").txt",btoa(JSON.stringify(player)))
   $.notify('Save successfully exported as file!', {
     style: 'apcurrent',
     className:'saving',

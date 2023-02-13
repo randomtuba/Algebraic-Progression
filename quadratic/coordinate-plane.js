@@ -4,6 +4,7 @@ function sacEffect(x) {
       let x = player.sacX.add(1).log(3).add(1).log2().div(hasQU(15)?1.5:3)
       if(hasSU(4)) x = x.mul(1.1)
       x = x.mul(bEffect(2))
+      if(player.transformations.activated == 1) x = x.mul(transformEffect(1))
       x = x.add(1)
       if(player.challenge == 7 || inSqrtLevel(5)) x = new Decimal(1)
       return x
@@ -13,6 +14,7 @@ function sacEffect(x) {
       if(hasQU(14)) base = base.mul(1.5)
       if(hasSU(4)) base = base.mul(1.1)
       base = base.mul(bEffect(2))
+      if(player.transformations.activated == 2) base = base.mul(transformEffect(2))
       if(base.gt(1.5) && !hasQU(17)) base = base.div(1.5).pow(0.25).mul(1.5)
       if(player.challenge == 7 || inSqrtLevel(5)) base = new Decimal(0)
       return base
@@ -23,6 +25,8 @@ function sacEffect(x) {
       if(x2.gt(1e150)) player.x2.div(1e150).pow(0.7).mul(1e150)
       if(hasCU(0,2)) x2 = x2.mul(COMP_UPGRADES[2].eff())
       if(x2.gt("1e1000")) player.x2.div("1e1000").pow(0.5).mul("1e1000")
+      if(player.transformations.activated == 3) x2 = x2.pow(transformEffect(3))
+      if(player.compChallenge == 2) x2 = new Decimal(0)
       return x2
     break;
   }
@@ -51,30 +55,30 @@ function switchSacrifice() {
 function sacrifice(x){
   switch (x) {
     case 'x':
-      if(player.x.gt(player.sacX.div(compPlaneEffects(2)))){
-        player.sacX = player.x.mul(compPlaneEffects(2))
+      if(player.x.gt(player.sacX.div(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff())))){
+        player.sacX = player.x.mul(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff()))
         if(!hasQU(19)) player.x = new Decimal(0)
       }
     break;
     case 'y':
-      if(player.y.gt(player.sacY.div(compPlaneEffects(2)))){
-        player.sacY = player.y.mul(compPlaneEffects(2))
+      if(player.y.gt(player.sacY.div(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff())))){
+        player.sacY = player.y.mul(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff()))
         if(!hasQU(19)) player.y = new Decimal(0)
       }
     break;
     case 'x<sup>2</sup>':
-      if(player.x2.gt(player.sacX2)){
-        player.sacX2 = player.sacX2.add(player.x2.mul(hasCU(0,8)?COMP_UPGRADES[8].eff():1))
-        if(!hasQU(19)) player.x2 = new Decimal(0)
-      }
+      player.sacX2 = player.sacX2.add(player.x2.mul(hasCU(0,8)?COMP_UPGRADES[8].eff():1))
+      if(!hasQU(19)) player.x2 = new Decimal(0)
     break;
   }
 }
 
+// calculates the multiplier to polynomial building production based on slope
 function slopeEffect() {
   let mult = player.slope.pow(Decimal.add(1.5,bEffect(3))).add(1)
   if(mult.gt(1e15)) mult = mult.pow(0.5).mul(31622776.6016837)
   if(mult.gt("1e1111")) mult = mult.div("1e1111").pow(0.5).mul("1e1111")
+  if (mult.gt("1e20000")) mult=mult.log10().div(2).pow(5000)
   if(player.challenge == 7) mult = new Decimal(1)
   return mult
 }
@@ -90,16 +94,57 @@ function buyB() {
   }
 }
 
+// the 3 effects of b
 function bEffect(x) {
   switch (x) {
     case 1:
-      return player.challenge != 5 ? Decimal.pow(3,player.b).pow(1.5) : new Decimal(1)
+      return player.challenge != 5 && player.compChallenge != 2 ? Decimal.pow(3,player.b).pow(1.5) : new Decimal(1)
     break;
     case 2:
-      return player.challenge != 5 ? new Decimal(1).add(player.b.pow(1.2).div(10)).min(8.87) : new Decimal(1)
+      return player.challenge != 5 && player.compChallenge != 2 ? new Decimal(1).add(player.b.pow(1.2).div(10)).min(new Decimal(8.87).mul(COMP_CHALLENGES[2].eff())) : new Decimal(1)
     break;
     case 3:
-      return player.challenge != 5 ? player.b.div(20).add(1).pow(1.2).sub(1).mul(hasChallenge(7)?1.05:1).min(2.72) : new Decimal(1)
+      return player.challenge != 5 && player.compChallenge != 2 ? player.b.div(20).add(1).pow(1.2).sub(1).mul(hasChallenge(7)?1.05:1).min(new Decimal(2.72).mul(COMP_CHALLENGES[2].eff())) : new Decimal(1)
     break;
+  }
+}
+
+// the effect for each Transformation, 1 is translation, 2 is reflection, 3 is rotation, etc.
+function transformEffect(x) {
+  if (x == 1) {
+    return new Decimal(1.03).pow(player.transformations.bought[1])
+  } else if (x == 2) {
+    return new Decimal(1.05).pow(player.transformations.bought[2])
+  } else {
+    return Decimal.add(1,Decimal.mul(0.02,player.transformations.bought[3]))
+  }
+}
+
+function transformCosts(x) {
+  switch (x) {
+    case 1:
+      return new Decimal("1e30000").mul(Decimal.pow("1e1600",player.transformations.bought[x].pow(1.3).floor()))
+    break;
+    case 2:
+      return new Decimal("1e23500").mul(Decimal.pow("1e300",player.transformations.bought[x].pow(1.3).floor()))
+    break;
+    case 3:
+      return new Decimal("1e21000").mul(Decimal.pow("1e500",player.transformations.bought[x].pow(1.3).floor()))
+    break;
+  }
+}
+
+// is called when the "Activate" button for a Transformation type is clicked
+function activateTransform(x) {
+  if (!player.options[5] || confirm("Are you sure you want to switch your activated Transformation? You will go Complex with no reward!")) {
+    player.transformations.activated = x
+    goComplex(true)
+  }
+}
+
+function buyTransform(x) {
+  if(player.slope.gte(transformCosts(x))){
+    player.slope = player.slope.sub(transformCosts(x))
+    player.transformations.bought[x] = player.transformations.bought[x].add(1)
   }
 }

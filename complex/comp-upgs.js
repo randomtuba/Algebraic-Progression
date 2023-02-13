@@ -16,10 +16,10 @@ const BCOMP_UPGRADES = {
   },
   3: {
     title: "Achievement Bonus",
-    desc: "Multiply the g(x) and h(x) bases based on Achievements completed.",
+    desc: "Multiply the g(x) base based on Achievements completed.",
     cost: new Decimal(1e9),
     eff() {return new Decimal(player.achievements.length).div(20)},
-    effectDisplay() {return format(BCOMP_UPGRADES[3].eff()) + "x g(x) and h(x) bases"},
+    effectDisplay() {return format(BCOMP_UPGRADES[3].eff()) + "x g(x) base"},
   },
   4: {
     title: "S-UP-er Boost",
@@ -33,12 +33,33 @@ const BCOMP_UPGRADES = {
     desc: "Multiply Complex Plane powers gain based on time in this Complex.",
     cost: new Decimal(2.4e24),
     eff() {return new Decimal(player.prestigeTimes[2]).pow(0.75).add(1).div(100).pow(0.5).mul(10)},
-    effectDisplay() {return format(BCOMP_UPGRADES[5].eff()) + "x"},
+    effectDisplay() {return format(BCOMP_UPGRADES[5].eff()) + "x Complex Plane powers gain"},
   },
   6: {
-    title: "Polar Rotation",
-    desc: "Unlock the ability to exponentiate i, and unlock Complex Challenges.<br>(next update)",
-    cost: new Decimal(1e29),
+    title: "Discontinuities II",
+    desc: "Unlock Complex Challenges.",
+    cost: new Decimal(1e32),
+    effectDisplay() {return null},
+  },
+  7: {
+    title: "Complex Bonus",
+    desc: "Gain more x<sup>2</sup> based on unspent i.",
+    cost: new Decimal(1e43),
+    eff() {return player.i.pow(8).add(1)},
+    effectDisplay() {return format(BCOMP_UPGRADES[7].eff()) + "x x² gain"},
+  },
+  8: {
+    title: "Uprooted Delay",
+    desc: "Remove the nerfs to both CE effects, and delay the 2nd challenge essence softcap start based on root essence.",
+    cost: new Decimal(1e50),
+    eff() {return player.rootEssence.max(1).pow(0.02)},
+    effectDisplay() {return format(BCOMP_UPGRADES[8].eff()) + "x CE softcap start"},
+  },
+  9: {
+    title: "TBD",
+    desc: "???",
+    cost: new Decimal("1.79e3008"),
+    eff() {return new Decimal(1)},
     effectDisplay() {return null},
   },
 };
@@ -53,7 +74,7 @@ const COMP_UPGRADES = {
   2: {
     desc: "Gain more slope based on times gone Quadratic, applied after the first slope softcap.",
     cost: new Decimal(3),
-    eff() {return player.quadratics.pow(player.quadratics.min(2e7).add(1).log10().mul(2.5)).add(1).pow(hasCU(1,2)?4:1)},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).pow(player.quadratics.add(player.bankedQuadratics).min(2e7).add(1).log10().mul(2.5)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(COMP_UPGRADES[2].eff()) + "x slope"},
   },
   3: {
@@ -77,7 +98,7 @@ const COMP_UPGRADES = {
   6: {
     desc: "Gain more root essence based on times gone Quadratic. (hardcaps at 20,000,000 Quadratics)",
     cost: new Decimal(5),
-    eff() {return player.quadratics.min(2e7).pow(player.quadratics.min(2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1)},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).min(2e7).pow(player.quadratics.add(player.bankedQuadratics).min(2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(COMP_UPGRADES[6].eff()) + "x root essence"},
   },
   7: {
@@ -89,7 +110,7 @@ const COMP_UPGRADES = {
   8: {
     desc: "Gain more root essence and sacrificed x² based on total i.",
     cost: new Decimal(5),
-    eff() {return player.totali.pow(2)},
+    eff() {return player.totali.pow(2).gte(1e200) ? player.totali.pow(2).div(1e200).pow(0.75).mul(1e200) : player.totali.pow(2)},
     effectDisplay() {return format(COMP_UPGRADES[8].eff()) + "x RE and sacrificed x²"},
   },
   9: {
@@ -101,7 +122,7 @@ const COMP_UPGRADES = {
   10: {
     desc: "i and Quadratic Power boost each other.",
     cost: new Decimal(7),
-    eff() {return player.quadPower.pow(0.005).add(1)}, //QP boost to i
+    eff() {return player.quadPower.pow(0.005).add(1).gte(1e6) ? player.quadPower.pow(0.005).add(1).div(1e6).pow(0.5).mul(1e6) : player.quadPower.pow(0.005).add(1)}, //QP boost to i
     eff2() {return player.i.pow(1.5).add(1)}, //i boost to QP
     effectDisplay() {return format(COMP_UPGRADES[10].eff()) + "x i, " + format(COMP_UPGRADES[10].eff2()) + "x QP"},
   },
@@ -185,7 +206,7 @@ function buyUP(x) {
 
 function respec() {
   if (confirm("Are you sure you want to respec your Complex Upgrades? You will go Complex with no reward!")) {
-    player.upgradePoints[0] = player.upgradePoints[1]
+    player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked != 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : new Decimal(0))
     player.compUpgs[0] = []
     goComplex(true)
   }
@@ -217,4 +238,20 @@ function loadUpgs(imported = undefined) {
         buyCU(0,new Decimal(arr[i]).toNumber())
       }
     }
+}
+
+function loadPreset(x) {
+  let arr = player.presets.info[x].split(",");
+    player.upgradePoints[0] = player.upgradePoints[1]
+    player.compUpgs[0] = []
+    goComplex(true)
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] > 0 && arr[i] < 13) {
+        buyCU(0,new Decimal(arr[i]).toNumber())
+      }
+    }
+}
+
+function renamePreset(x) {
+  player.presets.names[x] = prompt("Type in the new name for this preset below!")
 }

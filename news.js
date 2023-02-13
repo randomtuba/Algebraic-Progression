@@ -19,7 +19,7 @@ function updateNewsArray() {
   ["When your game inflates so hard your numbers reach the Small Dropping Ordinal 🤔",true,"a15"], //v1.0
   ["AP Desmos% Speedrun",true,"a16"], //v1.0
   ["But Y?",player.y.gte(1),"a17"], //v1.0
-  ["Z might be real, but W isn't",player.totalx2.gte(1),"a18"], //v1.0
+  ["Z might be real, but W isn't",player.y.gte(10),"a18"], //v1.0
   ["Calculus do what AP don't",true,"a19"], //v1.0
   ["Unreal Engine should be renamed to Imaginary Engine",true,"a20"], //v1.0
   ["imagine not having spaghetti code",true,"a21"], //v1.0
@@ -41,9 +41,9 @@ function updateNewsArray() {
   ["You can't kill News Ticker Man, look at me go!",true,"a37"], //v1.1
   ["Square Root is just Time Dilation but harder, deal with it",player.rootEssence.gt(0),"a38"], //v1.2
   ["Is this a Synergism reference???????",true,"a39"], //v1.2
-  ["Fun Fact: Offline time exists! You'll get a boost to production when you go back online based on how long you spend away from the game.",true,"a40"], //v1.2
+  ["Fun Fact: Offline progress exists! Most currencies will keep growing at the same rate as if you were online, even when the game is closed. However, take note that automation does not work while offline.",true,"a40"], //v1.2
   ["\"hmmm today I will dev AP\" -randomtuba, 5 seconds before disaster struck",true,"a41"], //v1.2
-  ["Want another game to play while you're idling? Check out randomtuba's main website! Link: https://randomtuba.github.io/ (Warning: outdated and under renovation)",true,"a42"], //v1.2
+  ["Want another game to play while you're idling? Check out randomtuba's main website! Link: <a href='https://randomtuba.github.io/'>https://randomtuba.github.io/</a>",true,"a42"], //v1.2
   ["If you're wondering about new content, there is now a 2nd prestige layer in this game! Go play it and stuff!",player.totalx2.gte(1),"a43"], //v1.2
   ["\"shit game remove timewalls\" -reda",true,"a44"], //v1.2
   ["if i see one more 5 hours joke i will die in real life",true,"a45"], //v1.2
@@ -70,7 +70,7 @@ function updateNewsArray() {
   ["never gonna give you up...", true, "a66"], //Incrementy Planet
   ["...never gonna let you down", true, "a67"], //Incrementy Planet
   ["Why are you playing this game? It's just a meaningless number going up with no implications on reality.",true,"a68"], //Incrementy Planet
-  ["'why are you @unpogged 77 centimeters tal?? 1047 pixels ( add this to incement plant news )' -DEMEMZEA",true,"a69"], //Incrementy Planet
+  ["\"why are you @unpogged 77 centimeters tal?? 1047 pixels ( add this to incement plant news )\"  -DEMEMZEA",true,"a69"], //Incrementy Planet
   ["go solve today's wordle if you haven't already",true,"a70"], //Incrementy Planet
   ["In the land of X and Y, we are not judged. Here we have peace. Here we are free.",player.y.gte(2),"a71"], //Incrementy Planet
   ["AP stands for Algebraic Progression, not Advanced Placement.",true,"a72"], //Incrementy Planet
@@ -109,13 +109,13 @@ function updateNewsArray() {
   ["Hi, I'm just another news ticker...I appear to have lost the <span style='color:red'>will to live</span>.",true,"a105"], //v1.4
   ["You've just been news tickered, send a screenshot of this news ticker to someone else to get un-news tickered",true,"a106"], //Prestige Game
   ["RIP to those under 13 that haven't taken algebra 1 yet",true,"a107"], //v1.4
-  ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news tickers are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
+  ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news messages are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
   ["What's the second prestige layer, you ask? Well...it's complicated.",player.totali.gte(1),"a109"], //v2.0
   ["\"Where did my progress go?\" -Players after going Complex for the first time",player.totali.gte(1),"a110"], //v2.0
   ["Congratulations, you're in the midgame!",player.totali.gte(1),"a111"], //v2.0
   ["Why is the obtuse angle always sad? Because it is never right.",true,"a112"], //v2.0
   ["6 confronts 7 about eating 9",true,"a113"], //v2.0
-  ["y<sup>2</sup> when",player.totalx2.gte(1),"a114"], //v2.0
+  ["y<sup>2</sup> when?",player.totalx2.gte(1),"a114"], //v2.0
   ["Integers can sometimes be negative. Let's try to be more positive!",true,"a115"], //v2.0
   ["Who was the inventor of fractions? Henry the Eighth.",true,"a116"], //v2.0
   ["39 buried 0 found",true,"a117"], //v2.0
@@ -132,6 +132,26 @@ function updateNewsArray() {
   ["That last news message was pretty funny.",true,"a128"], //v2.0
   ["<i style='color: #969696;'>[removed]</i>",true,"a129"], //v2.0
   ["While incremental games can be fun and even healthy in certain contexts, they can start or perpetuate video game addiction even more than other genres. If you feel like playing incremental games is taking priority over other things in your life, or manipulating your sleep schedule, it may be well advised to seek help.",true,"a130"], //The Modding Tree Forums
+  ["this can't be real...",player.complexes.gte(1),"a131"], //v2.1
+  ["Maybe the real Z was in our hearts all along.",player.y.gte(100),"a132"], //v2.1
+  ["BREAKING NEWS: After years of testing, we've finally found the value of x: 5. \"This is a monumental milestone for our goal,\" dedicated scientists say. \"Before you know it, we'll have all these pesky letters figured out and finally know the value of Number.\" More at 7 where we reveal the real value of i.",player.x.gte(1),"a133"], //v2.1
+  ["Join our Discord server for a stable economy!",true,"a134"], //v2.1
+  ["\"why do we exists\" -Saber",true,"a135"], //v2.1
+  ["<span style='font-size:8px;'>Hopefully no one sees this...</span>",true,"a136"], //v2.1
+  [`${format(player.points)} points? ${tmp.disses[Math.floor(Math.random() * tmp.disses.length)]}`,player.points.gte("1e1000"),"a137"], //v2.1
+  ["BREAKING NEWS: Population complains about mathematical formula in an incremental game. 'I forgot how to solve a quadratic equation, it's not even useful, why is this in the game?' local complainer admits.",hasQU(20) || player.totali.gte(1),"a138"], //v2.1
+  ["Congratulations! You have all of the achievements!",player.achievements.length >= 45,"a139"], //v2.1
+  ["Have you realized that the Milestones are button elements yet?",player.complexes.gte(5),"a140"], //v2.1
+  ["What happens when anti-slope comes in contact with antimatter? No one has survived to find out.",player.compChalCompletions[2] >= 1,"a141"], //v2.1
+  ["Did you inflate the game or something?",player.i.gte("1e100000"),"a142"], //v2.1
+  ["<span style='color:blue'>Why should news messages be black or white? So boring. Blue looks so much nicer.</span>",true,"a143"], //v2.1
+  ["SEVERE WEATHER WARNING: Major cubic storm crossing y-axis and travelling towards (2,8)-ville. Ends are approaching negative and positive infinity, respectively. Stay indoors and stay at low elevations. Thank you for your cooperation.",true,"a144"], //v2.1
+  ["BREAKING NEWS: randomtuba doesn't know how his own automation code works!",hasQU(5) || hasQU(6) || player.totali.gte(1),"a145"], //v2.1
+  ["<img src='https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/True%20Cubert.png?v=1675015469227' width='16' height='16'>",true,"a146"], //v2.1
+  ["BREAKING NEWS: Developer messing with <span style='color: white; animation: a-existence-glow 3s infinite'>new text animation!</span>",true,"a147"], //v2.1
+  ["INSIDE LOOK: What are Upgrade Points made out of? Research and analysis has discovered that they contain, on average, 62% dreams, 33% water vapor, and 5% sulfuric acid.",player.upgradePoints[1].gte(1),"a148"], //v2.1
+  ["Your Ad Here",true,"a149"], //v2.1
+  ["BREAKING NEWS: Complex Challenges deemed too easy, 10 tiers have already been finished!",ccTiers() >= 10,"a150"], //v2.1
   ]
 }
 var s;
@@ -149,6 +169,7 @@ if(!s)return
   try {
     do {
       nextMsgIndex = Math.floor(Math.random() * newsArray.length);
+      player.newsMessagesSeen++;
     } while (!eval(newsArray[nextMsgIndex][1]));
   } catch (e) {
     console.error("Newsarray doesn't work at idx " + nextMsgIndex);
