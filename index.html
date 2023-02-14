@@ -197,7 +197,7 @@
       <div>
         <button id="statsubtab1" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[2] = 'stats'" v-if="player.totalx2.gte(1) || player.totali.gte(1)">Statistics</button>
         <button id="statsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[2] = 'tenruns'" v-if="player.totalx2.gte(1) || player.totali.gte(1)">Last Ten Runs</button>
-        <button id="statsubtab3" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[2] = 'chalrecords'" v-if="hasSU(12)">Challenge Records</button><br><br>
+        <button id="statsubtab3" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[2] = 'chalrecords'" v-if="hasSU(12) || player.totali.gte(1)">Challenge Records</button><br v-if="player.totalx2.gte(1) || player.totali.gte(1)"><br v-if="player.totalx2.gte(1) || player.totali.gte(1)">
       </div>
       <div id="tab3-1disp" v-if="player.currentSubtab[2] == 'stats'"> <!--- STATISTICS (subtab) !--->
         <div>
