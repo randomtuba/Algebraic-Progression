@@ -103,6 +103,20 @@ function start() {
       names: [null,"Preset 1","Preset 2","Preset 3","Preset 4","Preset 5","Preset 6"],
       selected: 0,
     },
+    tabDisplays: [
+      null,
+      true, // Generation
+      true, // Options
+      true, // Statistics
+      true, // Achievements
+      true, // Textbook
+      true, // Upgrades
+      true, // Quadratic
+      true, // ??????
+      true, // Complex
+      true, // ??????
+    ],
+    
     gameWon: false,
     winTime: 0,
   };

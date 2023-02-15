@@ -71,9 +71,9 @@ function simulateEssence(level) {
     let re = getFinalPoints(4).div(1e12).pow(0.06)
     if(hasCU(1,1)) re = re.mul(10)
     if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
-    if(re.gt("1e2000")) {
-      let y = new Decimal(re).log(new Decimal("1e2000"))
-      re = new Decimal("1e2000").pow(y.pow(0.9))
+    if(re.gt(ceSoftcapStart())) {
+      let y = new Decimal(re).log(ceSoftcapStart())
+      re = ceSoftcapStart().pow(y.pow(0.9))
     }
     // If simulated CE > real CE, real CE equals simulated CE
     if (re.gte(player.challengeEssence)) player.challengeEssence = re;

@@ -29,7 +29,9 @@ function tab(x) {
 }
 
 function xCost() {
-  return player.compChallenge == 5 ? new Decimal(Infinity) : new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,xDivision())).pow(player.x)).div(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).div(hasUpgrade(5) && player.challenge != 5 ?1000000:1).div(hasChallenge(5)?1e9:1).pow(player.compChallenge == 3 ? 10 : 1)
+  if(player.compChallenge == 5)return new Decimal(Infinity)
+  // formual: 1e5*(1+(0.11/xDivision())^x)
+  return new Decimal(100000).mul(new Decimal(1).add(Decimal.div(0.11,xDivision())).pow(player.x)).div(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).div(hasUpgrade(5) && player.challenge != 5 ?1000000:1).div(hasChallenge(5)?1e9:1).pow(player.compChallenge == 3 ? 10 : 1)
 }
          
 function xDivision() { // returns the X cost scaling per purchase divisor                                                                          
@@ -306,6 +308,20 @@ function buyMax() {
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[1].cost())
     player.buyables[1] = player.buyables[1].add(1)
     player.chalExponents[0] = new Decimal(0)
+  }
+}
+
+function accurateBuyMax(){
+  // by gapples2, to be finished soon
+  // variables
+  if(player.points.gte(xCost()) && player.challenge != 10){
+    if(player.compChallenge == 3) {
+      player.x = player.points.root(10).div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    } else {
+      player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    }
+    if(!hasQU(8)) player.points = player.points.sub(xCost())
+    player.x = player.x.add(1)
   }
 }
 
