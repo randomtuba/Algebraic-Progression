@@ -114,7 +114,7 @@ const QUAD_UPGRADES = {
   },
   19: {
     title: "Automation V",
-    desc: "Sacrificing no longer resets anything, and unlock Auto-Sacrifice.",
+    desc: "Sacrificing no longer resets anything, and Auto-Sacrifice now sacrifices x².",
     cost: new Decimal(1e96),
     effectDisplay() {return null},
   },

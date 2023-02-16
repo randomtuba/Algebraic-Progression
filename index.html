@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.1</title>
+    <title>Algebraic Progression v2.1.1</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -190,7 +190,7 @@
       <!--- <b>Tabs</b><br>
       <input type="checkbox" checked="player.tabDisplays[1]" change="player.tabDisplays[1] != player.tabDisplays[1]"> Generation !--->
       <br><br>
-      Algebraic Progression v2.1<br>
+      Algebraic Progression v2.1.1<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
@@ -211,7 +211,8 @@
           <span v-if="hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1)">You have bought a total of {{formatWhole(player.buyables[4].add(player.buyables[5]).add(player.buyables[6]))}} Functions.<br></span>
           You have played this game for {{formatTime(player.timePlayed)}}.<br>
           You have produced {{format(player.totalPoints)}} points in total.<br>
-          You have seen {{player.newsMessagesSeen}} news ticker messages.<br>
+          You have seen {{formatWhole(player.newsMessagesSeen)}} news ticker messages.<br>
+          You have seen {{formatWhole(player.uniqueNews.length)}} unique news ticker messages.<br>
           <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">You have bought {{player.xUpgs.length}} X Upgrades.</span>
         </div><br>
         <div v-if="player.totalx2.gte(1) || player.totali.gte(1)">
@@ -243,6 +244,7 @@
           Your fastest Complex is {{formatTime(player.prestigeTimes[3])}}.<br>
           You have spent {{formatTime(player.prestigeTimes[2])}} in this Complex.<br>
           You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades.<br>
+          <span v-if="hasMilestone(14)">You have bought a total of</span>
         </div>
       </div>
       <div id="tab3-2disp" v-if="player.currentSubtab[2]=='tenruns'"> <!--- LAST TEN RUNS !--->
@@ -298,8 +300,8 @@
       You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
       <div v-if="hasQU(14)">
           Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
-          <button v-if="hasMilestone(2)" class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > 3){player.compAutobuyers[2] = 1};">
-            Mode: {{player.compAutobuyers[2] > 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
+          <button class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
+            Mode: {{player.compAutobuyers[2] != 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
           </button><br><br>
         </div>
       <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
@@ -348,7 +350,7 @@
         <br><br>
         </span>
         <button @click="sacrifice(player.sacrifice)" class="hoverable">Sacrifice</button><button @click="switchSacrifice()" class="hoverable" v-html="player.sacrifice"></button><br>
-        <button v-if="hasQU(19)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button><br><br>
+        <button v-if="hasSU(6)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button><br><br>
         By default, clicking the "Sacrifice" button will set whatever currency you're sacrificing to 0.<br>
         If your sacrificed currency is greater than your current sacrificed amount, your sacrificed amount will increase.<br>
         Clicking the second button will change what currency you're sacrificing.<br>

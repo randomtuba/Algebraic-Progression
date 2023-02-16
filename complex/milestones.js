@@ -6,7 +6,7 @@ const MILESTONES = {
   },
   2: {
     title: "2 Complexes",
-    desc: "Unlock new Auto-Quadratic options.",
+    desc: "Unlock a new Auto-Quadratic mode.",
     requirement: 2,
   },
   3: {

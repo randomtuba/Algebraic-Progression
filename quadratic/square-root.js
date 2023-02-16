@@ -86,7 +86,7 @@ const SQRT_UPGRADES = {
   },
   6: {
     title: "Extra Opportunities",
-    desc: "Unlock the ability to sacrifice x² to the Coordinate Plane.",
+    desc: "Unlock Auto-Sacrifice, and the ability to sacrifice x² to the Coordinate Plane. X and Y don't reset on sacrifice.",
     cost: new Decimal(600000),
     effectDisplay() {return null},
   },

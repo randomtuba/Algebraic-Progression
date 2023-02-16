@@ -124,7 +124,7 @@ function updateNewsArray() {
   ["Fun Fact: There is a difference between the terms \"undefined\" and \"no solution\". Undefined means that the expression has not been assigned a meaning/interpretation. No solution means that there is no value of x to make the equation true.",true,"a120"], //v2.0
   ["Quadratic grinding is a fun and essential part of the game",player.quadratics.gte(1e6),"a121"], //v2.0
   ["I can't believe this game was so popular that math was invented",true,"a122"], //v2.0
-  ["The fog is coming. 2.47.73.43. Expansion Rate: 1.73924773 * 10^-8 m/s.",true,"a123"], //v2.0
+  [`The fog is coming. ${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}.${Math.floor(Math.random()*256)}. Expansion Rate: ${format(Decimal.pow(2,new Decimal(player.newsMessagesSeen).add(1).ln()).div(1000))} m/s.`,true,"a123"], //v2.0
   ["It takes 12 bees their entire life to make a single teaspoon of honey. How does that make you feel?",true,"a124"], //v2.0
   ["The devs, mods, and testers are all awesome, with the exception of whoever stole all the eggs.",true,"a125"], //v2.0
   ["guys who's joe??? plz i need to find out who joe is",true,"a126"], //v2.0
@@ -170,6 +170,7 @@ if(!s)return
     do {
       nextMsgIndex = Math.floor(Math.random() * newsArray.length);
       player.newsMessagesSeen++;
+      if(!player.uniqueNews.includes(newsArray[nextMsgIndex][2])) player.uniqueNews.push(newsArray[nextMsgIndex][2])
     } while (!eval(newsArray[nextMsgIndex][1]));
   } catch (e) {
     console.error("Newsarray doesn't work at idx " + nextMsgIndex);

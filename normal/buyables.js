@@ -56,7 +56,7 @@ const BUYABLES = {
   4: {
     title: "f(",
     cost() {
-      return new Decimal(5000000).mul(new Decimal(functionCostScaling(1)).pow(player.challenge == 6 ? player.buyables[4].add(player.buyables[5]).add(player.buyables[6]) : player.buyables[4]))
+      return new Decimal(5000000).mul(new Decimal(functionCostScaling(1)).pow(player.buyables[4]))
     },
     formula(){return hasQU(3) || hasChallenge(2) ? "(x + 1)<sup>" + (hasChallenge(2) ? '4' : '2') + "</sup>" : "x + 1"},
     eff() {
@@ -69,7 +69,7 @@ const BUYABLES = {
   5: {
     title: "g(",
     cost() {
-      return new Decimal(30000000).mul(new Decimal(functionCostScaling(2)).pow(player.challenge == 6 ? player.buyables[4].add(player.buyables[5]).add(player.buyables[6]) : player.buyables[5]))
+      return new Decimal(30000000).mul(new Decimal(functionCostScaling(2)).pow(player.buyables[5]))
     },
     formula() {return player.buyables[5].gte(funcSoftcapStart()) ? format(BUYABLES[5].base()) + "<sup>" + funcSoftcapStart() + "</sup>*" + format(BUYABLES[5].base()) + "<sup>(x-" + funcSoftcapStart() + ")<sup>0.5</sup></sup>" : format(BUYABLES[5].base()) + "<sup>x</sup>"},
     base() {
@@ -94,7 +94,7 @@ const BUYABLES = {
   6: {
     title: "h(",
     cost() {
-      return new Decimal(100000000).mul(new Decimal(functionCostScaling(3)).pow(player.challenge == 6 ? player.buyables[4].add(player.buyables[5]).add(player.buyables[6]) : player.buyables[6]))
+      return new Decimal(100000000).mul(new Decimal(functionCostScaling(3)).pow(player.buyables[6]))
     },
     formula() {return player.buyables[6].gte(funcSoftcapStart()) ? format(BUYABLES[6].base()) + "<sup>" + funcSoftcapStart() + "</sup>*" + format(BUYABLES[6].base()) + "<sup>(x-" + funcSoftcapStart() + ")<sup>0.5</sup></sup>" : format(BUYABLES[6].base()) + "<sup>x</sup>"},
     base() {
@@ -174,18 +174,21 @@ function functionCostScaling(x) {
       let scale1 = 2
       if(hasChallenge(3)) scale1 = scale1 / 1.25
       if(player.challenge == 3) scale1 = scale1 * 3
+      if(player.challenge == 6) scale1 = scale1 * 10
       return scale1
     break;
     case 2:
       let scale2 = 5
       if(hasChallenge(3)) scale2 = scale2 / 1.25
       if(player.challenge == 3) scale2 = scale2 * 3
+      if(player.challenge == 6) scale2 = scale2 * 10
       return scale2
     break;
     case 3:
       let scale3 = 7
       if(hasChallenge(3)) scale3 = scale3 / 1.25
       if(player.challenge == 3) scale3 = scale3 * 3
+      if(player.challenge == 6) scale3 = scale3 * 10
       return scale3
     break;
   }

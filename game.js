@@ -157,6 +157,8 @@ function updateAuto() {
   if(player.autobuyers[7] && player.points.gte(xCost()) && player.challenge != 10 && player.compChallenge != 5){
     if(player.compChallenge == 3) {
       player.x = player.points.root(10).div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+    } else if (player.challenge == 5) {
+      buyVariable("x");
     } else {
       player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
     }
@@ -165,19 +167,19 @@ function updateAuto() {
   }
   
   // FUNCTIONS
-  if(player.autobuyers[6] && player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.autobuyers[6] && player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[6] = player.points.div(100000000).max(1).log(functionCostScaling(3)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[6].cost())
     player.buyables[6] = player.buyables[6].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[5] && player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.autobuyers[5] && player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[5] = player.points.div(30000000).max(1).log(functionCostScaling(2)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[5].cost())
     player.buyables[5] = player.buyables[5].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.autobuyers[4] && player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.autobuyers[4] && player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[4] = player.points.div(5000000).max(1).log(functionCostScaling(1)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[4].cost())
     player.buyables[4] = player.buyables[4].add(1)
@@ -220,7 +222,7 @@ function updateAuto() {
   if(player.autobuyers[10]){
     sacrifice('x')
     sacrifice('y')
-    sacrifice('x<sup>2</sup>')
+    if(hasQU(19)) sacrifice('x<sup>2</sup>')
   }
   
   // DOUBLERS
@@ -271,19 +273,19 @@ function buyMax() {
   }
   
   // FUNCTIONS
-  if(player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.points.gte(BUYABLES[6].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[6] = player.points.div(100000000).max(1).log(functionCostScaling(3)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[6].cost())
     player.buyables[6] = player.buyables[6].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.points.gte(BUYABLES[5].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[5] = player.points.div(30000000).max(1).log(functionCostScaling(2)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[5].cost())
     player.buyables[5] = player.buyables[5].add(1)
     player.chalExponents[0] = new Decimal(0)
   }
-  if(player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 6 && player.challenge != 10){
+  if(player.points.gte(BUYABLES[4].cost()) && hasUpgrade(4) && player.challenge != 10){
     player.buyables[4] = player.points.div(5000000).max(1).log(functionCostScaling(1)).floor()
     if(!hasQU(8)) player.points = player.points.sub(BUYABLES[4].cost())
     player.buyables[4] = player.buyables[4].add(1)

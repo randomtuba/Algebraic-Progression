@@ -26,14 +26,14 @@ const CHALLENGES = {
   },
   5: {
     title: "Weighted Xs",
-    desc: "X Upgrades are useless (that also means Functions, Produced Buildings, and Y-Intercept do nothing), and every time you buy an X, production is divided by about 1.016 (5^0.01).",
+    desc: "X Upgrades are useless (that also means Functions, Produced Buildings, and Y-Intercept do nothing), and every time you buy an X, production is divided by about 1.016 (5^0.01). Your X autobuyer will single-buy.",
     goal: new Decimal("1e660"),
     rewardDesc: "Divide the X cost by 1e9, and unlock 4 new Square Root upgrades.",
   },
   6: {
     title: "Hyperinflation",
-    desc: "Every time you buy a Function, all Functions increase one cost step. Your Function Autobuyers are disabled.",
-    goal: new Decimal("1e8000"),
+    desc: "Function costs scale 10 times faster.",
+    goal: new Decimal("1e8500"),
     rewardDesc: "Double the g(x) and h(x) bases.",
   },
   7: {

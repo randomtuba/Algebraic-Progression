@@ -37,9 +37,9 @@ function nonStaticMultipliers(points) {
 function getFinalPoints(level){
   let currentPointsValue = player.points.pow(0.55).div(level == 4 ? "1e5665" : 1)
   let exp = new Decimal(1)
-      if(hasUpgrade(7) && player.challenge != 5) exp = exp.mul(1.01)
-if(hasChallenge(4)) exp = exp.mul(1.03)
-if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
+  if(hasUpgrade(7) && player.challenge != 5) exp = exp.mul(1.01)
+  if(hasChallenge(4)) exp = exp.mul(1.03)
+  if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
   for(let i=0; i<10; i++){
     currentPointsValue=nonStaticMultipliers(currentPointsValue).mul(staticMultipliers()).pow(0.55).div(level == 4 ? "1e5665" : 1).pow(exp)
   }

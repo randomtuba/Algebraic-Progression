@@ -57,13 +57,13 @@ function sacrifice(x){
     case 'x':
       if(player.x.gt(player.sacX.div(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff())))){
         player.sacX = player.x.mul(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff()))
-        if(!hasQU(19)) player.x = new Decimal(0)
+        if(!hasSU(6)) player.x = new Decimal(0)
       }
     break;
     case 'y':
       if(player.y.gt(player.sacY.div(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff())))){
         player.sacY = player.y.mul(compPlaneEffects(2).mul(COMP_CHALLENGES[5].eff()))
-        if(!hasQU(19)) player.y = new Decimal(0)
+        if(!hasSU(6)) player.y = new Decimal(0)
       }
     break;
     case 'x<sup>2</sup>':
