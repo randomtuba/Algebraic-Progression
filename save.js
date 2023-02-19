@@ -93,7 +93,6 @@ function start() {
       activated: 0,
     },
     newsMessagesSeen: 0,
-    uniqueNews: [],
     last10runs:{
       quadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
       complex: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],

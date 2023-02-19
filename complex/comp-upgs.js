@@ -1,3 +1,4 @@
+// row 1 in compUpgs
 const BCOMP_UPGRADES = {
   1: {
     title: "Starter Pack",
@@ -64,6 +65,7 @@ const BCOMP_UPGRADES = {
   },
 };
 
+// row 0 in compUpgs
 const COMP_UPGRADES = {
   1: {
     desc: "The h(x) base powers point gain at a heavily reduced rate. (^0.01)",
@@ -157,6 +159,7 @@ function buyCU(x,y) {
   }
 }
 
+// x=0 is complex upgrades, x=1 is basic complex upgrades
 function hasCU(x,y) {
   return player.compUpgs[x].includes(y);
 }

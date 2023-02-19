@@ -170,7 +170,6 @@ if(!s)return
     do {
       nextMsgIndex = Math.floor(Math.random() * newsArray.length);
       player.newsMessagesSeen++;
-      if(!player.uniqueNews.includes(newsArray[nextMsgIndex][2])) player.uniqueNews.push(newsArray[nextMsgIndex][2])
     } while (!eval(newsArray[nextMsgIndex][1]));
   } catch (e) {
     console.error("Newsarray doesn't work at idx " + nextMsgIndex);

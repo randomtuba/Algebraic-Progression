@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.1.1</title>
+    <title>Algebraic Progression v2.1.2</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -14,6 +14,7 @@
     <script src="utils/notify.js" defer></script>
     <script src="achievements.js" defer></script>
     <script src="news.js" defer></script>
+    <script src="textbook.js" defer></script>
     <script src="normal/buyables.js" defer></script>
     <script src="normal/upgrades.js" defer></script>
     <script src="normal/simulation.js" defer></script>
@@ -60,15 +61,15 @@
     <div id="game" v-if="player.options[3]">
     <div id="news" style="transform: translateX(-2512px); transition: transform 1000s linear 0s; white-space: nowrap; display: inline-block;" v-if="player.options[3]"><b>Enter the E</b></div>
     </div><br v-if="player.options[3]">
-    <button id="tab1" class="tab" onclick="tab('gen')">Generation</button>
-    <button id="tab2" class="tab" onclick="tab('options')">Options</button>
-    <button id="tab3" class="tab" onclick="tab('stats')">Statistics</button>
-    <button id="tab4" class="tab" onclick="tab('achs')">Achievements</button>
-    <button id="tab5" class="tab" onclick="tab('tbook')" v-if="false">Textbook</button>
-    <button id="tab6" class="tab" v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)" onclick="tab('upgs')">Upgrades</button>
-    <button id="tab7" class="tabQua" v-if="player.totalx2.gte(1) || player.totali.gte(1)" onclick="tab('quad')">Quadratic</button>
+    <button id="tab1" class="tab" onclick="tab('gen')" v-if="player.tabDisplays[1]">Generation</button>
+    <button id="tab2" class="tab" onclick="tab('options')" v-if="player.tabDisplays[2]">Options</button>
+    <button id="tab3" class="tab" onclick="tab('stats')" v-if="player.tabDisplays[3]">Statistics</button>
+    <button id="tab4" class="tab" onclick="tab('achs')" v-if="player.tabDisplays[4]">Achievements</button>
+    <button id="tab5" class="tab" onclick="tab('tbook')" v-if="player.tabDisplays[5]">Textbook</button>
+    <button id="tab6" class="tab" v-if="(player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[6]" onclick="tab('upgs')">Upgrades</button>
+    <button id="tab7" class="tabQua" v-if="(player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]" onclick="tab('quad')">Quadratic</button>
     <button id="tab8" class="???" v-if="false" onclick="tab('???')">???</button>
-    <button id="tab9" class="tabComp" v-if="player.totali.gte(1)" onclick="tab('comp')">Complex</button><br><br>
+    <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">Complex</button><br><br>
     <button id="tab10" class="???" v-if="false" onclick="tab('???')">???</button>
     <table class="autocenter"><tr>
     <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && (!player.inSqrt || player.compChallenge == 5)" onclick="goQuadratic(false)">
@@ -187,10 +188,17 @@
       <button class="hoverable" onclick="toggleOption(5)" v-if="hasMilestone(14)">
         Transformation Type Switch Confirmation: {{player.options[5] ? "ON" : "OFF"}}
       </button><br>
-      <!--- <b>Tabs</b><br>
-      <input type="checkbox" checked="player.tabDisplays[1]" change="player.tabDisplays[1] != player.tabDisplays[1]"> Generation !--->
+      <b>Tabs</b><br>
+      Generation: <button class="hoverable" onclick="player.tabDisplays[1] = !player.tabDisplays[1]">{{player.tabDisplays[1] ? "SHOWN" : "HIDDEN"}}</button><br>
+      Options: cannot be hidden<br>
+      Statistics: <button class="hoverable" onclick="player.tabDisplays[3] = !player.tabDisplays[3]">{{player.tabDisplays[3] ? "SHOWN" : "HIDDEN"}}</button><br>
+      Achievements: <button class="hoverable" onclick="player.tabDisplays[4] = !player.tabDisplays[4]">{{player.tabDisplays[4] ? "SHOWN" : "HIDDEN"}}</button><br>
+      Textbook: <button class="hoverable" onclick="player.tabDisplays[5] = !player.tabDisplays[5]">{{player.tabDisplays[5] ? "SHOWN" : "HIDDEN"}}</button><br>
+      <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">Upgrades: <button class="hoverable" onclick="player.tabDisplays[6] = !player.tabDisplays[6]">{{player.tabDisplays[6] ? "SHOWN" : "HIDDEN"}}</button><br></span>
+      <span v-if="player.totalx2.gte(1) || player.totali.gte(1)">Quadratic: <button class="hoverable" onclick="player.tabDisplays[7] = !player.tabDisplays[7]">{{player.tabDisplays[7] ? "SHOWN" : "HIDDEN"}}</button><br></span>
+      <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.1.1<br>
+      Algebraic Progression v2.1.2<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
@@ -212,7 +220,6 @@
           You have played this game for {{formatTime(player.timePlayed)}}.<br>
           You have produced {{format(player.totalPoints)}} points in total.<br>
           You have seen {{formatWhole(player.newsMessagesSeen)}} news ticker messages.<br>
-          You have seen {{formatWhole(player.uniqueNews.length)}} unique news ticker messages.<br>
           <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">You have bought {{player.xUpgs.length}} X Upgrades.</span>
         </div><br>
         <div v-if="player.totalx2.gte(1) || player.totali.gte(1)">
@@ -244,7 +251,7 @@
           Your fastest Complex is {{formatTime(player.prestigeTimes[3])}}.<br>
           You have spent {{formatTime(player.prestigeTimes[2])}} in this Complex.<br>
           You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades.<br>
-          <span v-if="hasMilestone(14)">You have bought a total of</span>
+          <span v-if="hasMilestone(14)">You have bought a total of {{formatWhole(player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]))}} Transformations.</span>
         </div>
       </div>
       <div id="tab3-2disp" v-if="player.currentSubtab[2]=='tenruns'"> <!--- LAST TEN RUNS !--->
@@ -282,6 +289,14 @@
         </tr>
       </table>  
     </div>
+    <div id="tab5disp" v-if="player.currentTab == 'tbook'"> <!--- TEXTBOOK !--->
+      <div v-for="a in tmp.textbook.names.length - 1">
+        <span v-if="tbookConditions(a)">
+        <b>{{tmp.textbook.names[a]}}</b> <button class="hoverable" @click="tmp.textbook.expands[a] = !tmp.textbook.expands[a]">{{!tmp.textbook.expands[a] ? "Expand" : "Collapse"}}</button><br>
+        <span v-if="tmp.textbook.expands[a]"><span v-html="tbookDescriptions(a)"></span><br></span><br>
+        </span>
+      </div>
+    </div>
     <div id="tab6disp" v-if="player.currentTab == 'upgs'"> <!--- UPGRADES !--->
       Buying an X Upgrade will remove 50% of the X Upgrade's cost (rounded down) from your X amount.<br><br>
       <table class="autocenter">
@@ -300,7 +315,7 @@
       You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
       <div v-if="hasQU(14)">
           Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
-          <button class="hoverable" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
+          <button class="hoverable" v-if="hasSU(3)" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
             Mode: {{player.compAutobuyers[2] != 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
           </button><br><br>
         </div>

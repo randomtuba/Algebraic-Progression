@@ -12,13 +12,18 @@ var tmp = {
     "Did you miss a zero somewhere?",
     "Did you forget an exponent?",
   ],
+  textbook: {
+    names: [null,"Preface","Terminology","Buildings","Variables","Upgrades","Functions","Quadratic","Coordinate Plane","Square Root","Challenges","Quadratic Formula","Root Epicenter","Complex","Milestones","Complex Upgrades","Complex Plane","Complex Challenges"],
+    expands: [null,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+  },
   keptGoing: false,
 };
+
 function clickButton() {
   player.points = player.points.add(1)
 }
 
-function pps() {
+function pps() { // points per second
   let pps = new Decimal(0);
   pps = pps.add(BUYABLES[1].eff()).add(BUYABLES[2].eff()).add(BUYABLES[3].eff())
   return pps;

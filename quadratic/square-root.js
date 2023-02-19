@@ -67,7 +67,7 @@ const SQRT_UPGRADES = {
   },
   3: {
     title: "X-pansion",
-    desc: "Unlock a new row of X Upgrades.",
+    desc: "Unlock a new row of X Upgrades, and a new Auto-Quadratic mode.",
     cost: new Decimal(2500),
     effectDisplay() {return null},
   },
