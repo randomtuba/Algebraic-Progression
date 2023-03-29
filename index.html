@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.1.2</title>
+    <title>Algebraic Progression v2.2</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
     <link rel="stylesheet" href="style.css" id="style" />
-    <link rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337">
+    <link id="favicon" rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337">
     <script src="save.js" defer></script>
     <script src="game.js" defer></script>
     <script src="utils/break_eternity.js"></script>
@@ -29,6 +29,11 @@
     <script src="complex/comp-upgs.js" defer></script>
     <script src="complex/complex-plane.js" defer></script>
     <script src="complex/comp-challenges.js" defer></script>
+    <script src="complex/z-lab.js" defer></script>
+    <script src="y-quadratic/prestige.js" defer></script>
+    <script src="y-quadratic/y-quad-upgs.js" defer></script>
+    <script src="y-quadratic/var-synthesizer.js" defer></script>
+    <script src="y-quadratic/y-challenges.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12" defer></script>
     <script
     src="https://code.jquery.com/jquery-3.6.1.js"
@@ -43,7 +48,7 @@
     <div id="app">
     <div id="gameWon" v-if="player.gameWon && !tmp.keptGoing">
       <b style="font-size:20px;">Congratulations! You have beaten the game.</b><br><br>
-      You reached 2,222y in {{formatTime(player.winTime)}}.<br><br>
+      You reached 50 CC tiers in {{formatTime(player.winTime)}}.<br><br>
       <button class="hoverable" onclick="tmp.keptGoing = true; setTimeout(() => { doodooWater(); }, 1);">
         Keep Going
       </button>
@@ -53,10 +58,6 @@
     </div>
     
     <div id="actualGame" v-if="player.gameWon == false || tmp.keptGoing">
-    <div v-if="player.currentSubtab.length > 3">
-      <span style="color:red;">It has been detected that your save is a pre-v2.0 save. Click the button to the right to fix the issues with your save.</span> <button onclick="fixOldSave()" class="hoverable">Fix Save</button>
-      <br><br>
-    </div>
     <span style="color:red;" v-if="tmp.keptGoing == true">Warning: You are beyond endgame. Gameplay may be unbalanced beyond this point.<br><br></span>
     <div id="game" v-if="player.options[3]">
     <div id="news" style="transform: translateX(-2512px); transition: transform 1000s linear 0s; white-space: nowrap; display: inline-block;" v-if="player.options[3]"><b>Enter the E</b></div>
@@ -68,12 +69,15 @@
     <button id="tab5" class="tab" onclick="tab('tbook')" v-if="player.tabDisplays[5]">Textbook</button>
     <button id="tab6" class="tab" v-if="(player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[6]" onclick="tab('upgs')">Upgrades</button>
     <button id="tab7" class="tabQua" v-if="(player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]" onclick="tab('quad')">Quadratic</button>
-    <button id="tab8" class="???" v-if="false" onclick="tab('???')">???</button>
+    <button id="tab8" class="tabYqua" v-if="player.totaly2.gte(1) && player.tabDisplays[8]" onclick="tab('yquad')">Y-Quadratic</button>
     <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">Complex</button><br><br>
     <button id="tab10" class="???" v-if="false" onclick="tab('???')">???</button>
     <table class="autocenter"><tr>
     <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && (!player.inSqrt || player.compChallenge == 5)" onclick="goQuadratic(false)">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
+    </button></td>
+    <td><button id="prestige3" class="prestige3" v-if="player.zUnlocked" onclick="goYQuadratic(false)">
+      Go Y-Quadratic for {{formatWhole(yQuadFormula())}} y<sup>2</sup><br>(U)
     </button></td>
     <td><button id="prestige2" :class="{prestige2:player.hasCompletedLevel5,compLocked:!player.hasCompletedLevel5}" v-if="(player.x2.gte('1e2950') && player.rootEssence.gte('1e660') && player.hasCompletedLevel5) || player.totali.gte(1)" onclick="goComplex(false)">
       <span v-html="player.hasCompletedLevel5 ? 'Go Complex for ' + formatWhole(compFormula()) + ' i<br>(C)' : 'Root Epicenter Level √-1 completion required'"></span>
@@ -83,18 +87,18 @@
       <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.</span><br><br>
     </span>
     <div id="points">
-      Number = {{player.z.gte(1) ? formatWhole(player.z) + 'z+' : ''}}{{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
+      Number {{player.compChallenge == 6 && player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).gt(player.buyables[4].add(player.buyables[5]).add(player.buyables[6])) ? "&lt;" : "="}} {{player.z.gte(1) ? formatWhole(player.z) + 'z+' : ''}}{{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
     </div>
     <div id="pps">
-      You are getting {{formatSmall(pps())}} points per second
+      You are getting {{player.compChallenge == 6 && player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).gt(player.buyables[4].add(player.buyables[5]).add(player.buyables[6])) ? "less than " : ""}}{{formatSmall(pps())}} points per second
     </div>
-    <div v-if="player.challenge == 2">
-      C2 Exponent: ^{{format(player.chalExponents[0])}}
+    <div v-if="player.challenge == 2 || player.compChallenge == 8">
+      C2 Exponent: ^{{format(player.chalExponents[0])}}<br v-if="player.compChallenge == 8">
     </div>
     <div v-if="player.challenge == 9">
       C9 Exponent: ^{{format(player.chalExponents[1])}}
     </div>
-    <div v-if="player.challenge == 10">
+    <div v-if="player.challenge == 10 || player.compChallenge == 8">
       Purchases Left: {{player.purchases}}
     </div>
     <div v-if="player.compChallenge == 1">
@@ -109,6 +113,12 @@
     <div v-if="player.compChallenge == 4">
       Quadratics Used: {{formatWhole(player.quadratics)}}/{{formatWhole(new Decimal(20).sub(player.compChalCompletions[4]*5).max(0))}}
     </div>
+    <div v-if="player.compChallenge == 7">
+      CC7 Exponent: ^{{regularFormat(player.chalExponents[2],6)}}
+    </div>
+    <div v-if="player.compChallenge == 9">
+      Quadratic Formula Buyable Purchases: {{formatWhole(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}}/{{formatWhole(new Decimal(20).sub(player.compChalCompletions[9]*5).max(0))}}
+    </div>
     <button id="clickButton" class="hoverable" onclick="clickButton()">
       +1 Point
     </button>
@@ -116,7 +126,7 @@
       Buy Max (M)
     </button><br><br>
     <div id="tab1disp" v-if="player.currentTab == 'gen'"> <!--- GENERATION !--->
-      <span v-if="hasUpgrade(6)">Note: Produced Buildings do not reset on Quadratic!<br><br></span>
+      <span v-if="hasUpgrade(6)">Note: Produced Buildings{{player.zUnlocked ? " and Z" : ""}} do not reset on Quadratic!<br><br></span>
       <div v-for="a in 3" v-if="BUYABLES[a].unl()">
         <span>{{BUYABLES[a].title}} - {{formatWhole(player.buyables[a])}}{{hasUpgrade(5) ? ' [+' + format(player.buyables[a+6]) + ']' : ''}} ~ {{BUYABLES[a].effectDisplay()}} [{{format(player.buildingPercent[a])}}%]</span><br>
         <span>{{"Production Per Building: " + format(BUYABLES[a].baseProd()) + "/s"}}</span><br>
@@ -130,11 +140,13 @@
         Gain y for {{formatWhole(yCost())}}x (Y)
       </button><br>
       <button v-if="hasQU(10)" class="hoverable" onclick="player.autobuyers[8] = !player.autobuyers[8]">Auto: {{player.autobuyers[8] ? 'ON' : 'OFF'}}</button><br v-if="hasQU(10)">
-      <button id="zButton" class="zButton" v-if="false" onclick="buyVariable('z')">
+      <button id="zButton" class="zButton" v-if="player.y.gte(2222) || player.zUnlocked" onclick="buyVariable('z')">
         Gain z for {{formatWhole(zCost())}}y (Z)
-      </button><br v-if="false">
+      </button><br v-if="player.y.gte(2222) || player.zUnlocked">
+      <button v-if="hasYQU(2,'bought')" class="hoverable" onclick="player.autobuyers[11] = !player.autobuyers[11]">Auto: {{player.autobuyers[11] ? 'ON' : 'OFF'}}</button><br v-if="hasYQU(2,'bought')">
       <br>
       <span v-if="hasUpgrade(4)">Instead of adding to your production, Functions multiply your point production.<br>Note: The "x" in the Function formulas should not be confused with your x variable.</span><br>
+      <span v-if="hasUpgrade(4) && BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2)">Multipliers to the g(x) and h(x) bases are softcapped at 50,000,000 if Dilations are currently active.<br></span>
       <span v-if="hasUpgrade(4)"><b>f(x) * g(x) * h(x):</b> {{format(BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()))}}</span><br><br>
       <div v-for="a in 3" v-if="BUYABLES[a+3].unl()">
         <span><b>{{BUYABLES[a+3].title}}x) = <span v-html="BUYABLES[a+3].formula()"></span></b></span><br>
@@ -168,6 +180,9 @@
       </button>
       <button class="hoverable" onclick="toggleOption(3)">
         {{player.options[3] ? "News Ticker: Shown" : "News Ticker: Hidden"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(14)" v-if="player.zUnlocked">
+        Title Flickering: {{player.options[14] ? "ON" : "OFF"}}
       </button><br>
       <b>Gameplay</b><br>
       <button class="hoverable" onclick="toggleOption(1)">
@@ -184,9 +199,12 @@
       </button>
       <button class="hoverable" onclick="toggleOption(8)" v-if="player.totali.gte(1)">
         Complex Confirmation: {{player.options[8] ? "ON" : "OFF"}}
-      </button>
+      </button><br v-if="hasMilestone(14)">
       <button class="hoverable" onclick="toggleOption(5)" v-if="hasMilestone(14)">
         Transformation Type Switch Confirmation: {{player.options[5] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(11)" v-if="player.totaly2.gte(1)">
+        Y-Quadratic Confirmation: {{player.options[11] ? "ON" : "OFF"}}
       </button><br>
       <b>Tabs</b><br>
       Generation: <button class="hoverable" onclick="player.tabDisplays[1] = !player.tabDisplays[1]">{{player.tabDisplays[1] ? "SHOWN" : "HIDDEN"}}</button><br>
@@ -196,14 +214,15 @@
       Textbook: <button class="hoverable" onclick="player.tabDisplays[5] = !player.tabDisplays[5]">{{player.tabDisplays[5] ? "SHOWN" : "HIDDEN"}}</button><br>
       <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">Upgrades: <button class="hoverable" onclick="player.tabDisplays[6] = !player.tabDisplays[6]">{{player.tabDisplays[6] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="player.totalx2.gte(1) || player.totali.gte(1)">Quadratic: <button class="hoverable" onclick="player.tabDisplays[7] = !player.tabDisplays[7]">{{player.tabDisplays[7] ? "SHOWN" : "HIDDEN"}}</button><br></span>
+      <span v-if="player.zUnlocked">Y-Quadratic: <button class="hoverable" onclick="player.tabDisplays[8] = !player.tabDisplays[8]">{{player.tabDisplays[8] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.1.2<br>
+      Algebraic Progression v2.2<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
       If you want to make a mod of this game, that's fine, just credit me in some way.<br><br>
-      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
+      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="/changelog.html" target="_blank">Changelog</a><br><br>
       Note: Earlier versions of the game have bugs that will not be fixed.
       </div>
     <div id="tab3disp" v-if="player.currentTab == 'stats'"> <!--- STATISTICS !--->
@@ -241,17 +260,31 @@
         <span v-if="hasQU(20)">
           <br>
           The sum of a, b, and c is {{formatWhole(player.abc[1].add(player.abc[2]).add(player.abc[3]))}}.<br>
-          You have bought a total of {{format(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula buyables.
+          You have bought a total of {{formatWhole(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula Buyables.
         </span>
         </div><br>
+        <div v-if="player.totaly2.gte(1)">
+          <b class="yquadText" style="font-size: 16px;">Y-Quadratic</b><br>
+          You have collected a total of {{formatWhole(player.totaly2)}} y<sup>2</sup>.<br>
+          You have gone Y-Quadratic {{formatWhole(player.yQuadratics)}} times.<br>
+          Your fastest Y-Quadratic is {{formatTime(player.prestigeTimes[5])}}.<br>
+          You have spent {{formatTime(player.prestigeTimes[4])}} in this Y-Quadratic.<br>
+          You have bought {{player.yQuadUpgs[0].length}} Y-Quadratic Upgrades.<br>
+          <span v-if="player.varSynth.unlocked[2]">You have bought a total of {{formatWhole(player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]))}} Revolution Buyables.<br></span>
+          <span v-if="player.yChalsUnlocked[1]">You have completed a total of {{formatWhole(player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]))}} Y-Challenge tiers.<br></span>
+          <br>
+        </div>
         <div v-if="player.totali.gte(1)">
           <b class="compText" style="font-size: 16px;">Complex</b><br>
           You have collected a total of {{formatWhole(player.totali)}} i.<br>
           You have gone Complex {{formatWhole(player.complexes)}} times.<br>
           Your fastest Complex is {{formatTime(player.prestigeTimes[3])}}.<br>
           You have spent {{formatTime(player.prestigeTimes[2])}} in this Complex.<br>
-          You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades.<br>
-          <span v-if="hasMilestone(14)">You have bought a total of {{formatWhole(player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]))}} Transformations.</span>
+          You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades<span v-if="hasZlabMilestone(1,5)"> (excluding fourth-row Complex Upgrades)</span>.<br>
+          <span v-if="hasZlabMilestone(1,5)">You have bought {{player.fourthRowCompUpgs[1].add(player.fourthRowCompUpgs[2]).add(player.fourthRowCompUpgs[3]).add(player.fourthRowCompUpgs[4])}} levels of fourth-row Complex Upgrades.<br></span>
+          <span v-if="hasMilestone(14)">You have bought a total of {{formatWhole(player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]))}} Transformations.<br></span>
+          <span v-if="hasYQU(8,'bought')">You have a total of {{totalColliderLevels()}} Z-Collider levels.<br></span>
+          <span v-if="hasZlabMilestone(1,2)">You have bought a total of {{formatWhole(player.quadBuyables[5].add(player.quadBuyables[6]).add(player.quadBuyables[7]).add(player.quadBuyables[8]))}} Imaginary Power Buyables.</span>
         </div>
       </div>
       <div id="tab3-2disp" v-if="player.currentSubtab[2]=='tenruns'"> <!--- LAST TEN RUNS !--->
@@ -262,6 +295,13 @@
             <span v-if="player.last10runs.quadratic[a-1].gain == 0 && player.last10runs.quadratic[a-1].time == 1e8">{{a}}. Not happened yet</span>
           <br></span>
         </div><br>
+        <div v-if="player.totaly2.gte(1)">
+          <b class="yquadText" style="font-size: 16px;">Y-Quadratic</b><br>
+          <span v-for="a in 10">
+            <span v-if="player.last10runs.yQuadratic[a-1].gain != 0 && player.last10runs.yQuadratic[a-1].time != 1e8">{{a}}. {{format(player.last10runs.yQuadratic[a-1].gain)}} y<sup>2</sup> [+{{format(player.last10runs.yQuadratic[a-1].gain.div(player.last10runs.yQuadratic[a-1].time))}}/sec], {{formatTime(player.last10runs.yQuadratic[a-1].time)}}</span>
+            <span v-if="player.last10runs.yQuadratic[a-1].gain == 0 && player.last10runs.yQuadratic[a-1].time == 1e8">{{a}}. Not happened yet</span>
+          <br></span><br>
+        </div>
         <div v-if="player.totali.gte(1)">
           <b class="compText" style="font-size: 16px;">Complex</b><br>
           <span v-for="a in 10">
@@ -280,14 +320,30 @@
       </div>
     </div>
     <div id="tab4disp" v-if="player.currentTab == 'achs'"> <!--- ACHIEVEMENTS !--->
-      {{player.achievements.length}}/45 Achievements completed ({{format(player.achievements.length / 0.45)}}%)<br><br>
+      <div>
+        <button id="achsubtab1" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'regular'">Achievements</button>
+        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'secret'">Secret Achievements</button>
+      </div><br>
+      <div id="tab4-1disp" v-if="player.currentSubtab[4] == 'regular'"> <!--- REGULAR ACHIEVEMENTS !--->
+      {{player.achievements.length}}/55 Achievements completed ({{format(player.achievements.length / 0.55)}}%)<br><br>
       <table class="autocenter">
-        <tr v-for="a in player.achievements.length == 45 ? 9 : Math.floor(player.achievements.length/5)+1">
-          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 45}">
-            <b><span style="font-size:20px">{{ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc}}
+        <tr v-for="a in player.achievements.length == 55 ? 11 : Math.floor(player.achievements.length/5)+1">
+          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 55}">
+            <b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{a*5-5+b == 10 ? ACHIEVEMENTS[a*5-5+b].desc() : ACHIEVEMENTS[a*5-5+b].desc}}
           </td>
         </tr>
-      </table>  
+      </table>
+      </div>
+      <div id="tab4-2disp" v-if="player.currentSubtab[4] == 'secret'"> <!--- SECRET ACHIEVEMENTS !--->
+      {{player.secretAchievements.length}}/15 Secret Achievements completed ({{format(player.secretAchievements.length / 0.15)}}%)<br><br>
+      <table class="autocenter">
+        <tr v-for="a in 3">
+          <td v-for="b in 5" :class="{achievementLocked:!hasSecretAchievement(a*5-5+b),achievementUnlocked:hasSecretAchievement(a*5-5+b),achievementGolden:player.secretAchievements.length == 15}">
+            <b><span style="font-size:20px">{{SECRET_ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{hasSecretAchievement(a*5-5+b) ? (a*5-5+b == 9 ? SECRET_ACHIEVEMENTS[a*5-5+b].desc() : SECRET_ACHIEVEMENTS[a*5-5+b].desc) : "???"}}
+          </td>
+        </tr>
+      </table>
+      </div>
     </div>
     <div id="tab5disp" v-if="player.currentTab == 'tbook'"> <!--- TEXTBOOK !--->
       <div v-for="a in tmp.textbook.names.length - 1">
@@ -298,13 +354,20 @@
       </div>
     </div>
     <div id="tab6disp" v-if="player.currentTab == 'upgs'"> <!--- UPGRADES !--->
-      Buying an X Upgrade will remove 50% of the X Upgrade's cost (rounded down) from your X amount.<br><br>
+      Buying an X Upgrade will remove 50% of the X Upgrade's cost (rounded down) from your X amount.<br>
+      <span v-if="player.varSynth.unlocked[0]">
+      You have charged {{player.varSynth.chargedXUpgs.length}}/{{player.varSynth.totalxy}} X Upgrades. Charging an X Upgrade costs 1 xy.<br>
+      X Upgrade charges can be respecced on Y-Quadratic, if desired.<br>
+      <button class="hoverable" onclick="toggleOption(13)">Respec Charged X Upgrades on Y-Quadratic: {{player.options[13] ? "ON" : "OFF"}}</button>
+      <br><br>
+      You have {{formatWhole(player.varSynth.xy)}} xy.<br>
+      </span><br>
       <table class="autocenter">
       <tr v-for="a in rowAmt(3)">
       <td v-for="b in 4">
-          <button :class="{upgradeLocked:player.x.lt(UPGRADES[a*4-4+b].cost) && !hasUpgrade(a*4-4+b),upgradeBuyable:player.x.gte(UPGRADES[a*4-4+b].cost)&&!hasUpgrade(a*4-4+b),upgradeBought:hasUpgrade(a*4-4+b)}" style="height: 110px; width: 160px" @click="buyUpgrade(a*4-4+b)">
-            <span><b>{{UPGRADES[a*4-4+b].title}}</b></span><br>
-            {{UPGRADES[a*4-4+b].desc}}<br>
+          <button :class="{upgradeLocked:player.x.lt(UPGRADES[a*4-4+b].cost) && !hasUpgrade(a*4-4+b),upgradeBuyable:player.x.gte(UPGRADES[a*4-4+b].cost)&&!hasUpgrade(a*4-4+b),upgradeBought:hasUpgrade(a*4-4+b) && player.varSynth.xy.eq(0),upgradeChargeable:hasUpgrade(a*4-4+b) && player.varSynth.xy.gte(1) && !hasChargedUpgrade(a*4-4+b),upgradeCharged:hasChargedUpgrade(a*4-4+b)}" style="height: 125px; width: 175px" @click="buyUpgrade(a*4-4+b)" @mouseover="if(player.varSynth.xy.gt(0)){tmp.hovers[a*4-4+b] = true}" @mouseleave="tmp.hovers[a*4-4+b] = false">
+            <b>{{UPGRADES[a*4-4+b].title}}</b><br>
+            {{tmp.hovers[a*4-4+b] || hasChargedUpgrade(a*4-4+b) ? UPGRADES[a*4-4+b].chargedDesc : UPGRADES[a*4-4+b].desc}}<br>
             Cost: {{formatWhole(UPGRADES[a*4-4+b].cost)}}x<br>
           </button>
       </td>
@@ -320,7 +383,7 @@
           </button><br><br>
         </div>
       <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
-      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate Plane</button>
+      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate {{player.zUnlocked ? "Realm" : "Plane"}}</button>
       <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'sroot'" v-if="hasQU(16)">Square Root</button>
       <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'chals'" v-if="hasSU(12)">Challenges</button>
       <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
@@ -331,7 +394,7 @@
         <td v-for="b in 4">
           <button :class="{upgradeLocked:player.x2.lt(QUAD_UPGRADES[a*4-4+b].cost) && !hasQU(a*4-4+b),upgradeBuyable:player.x2.gte(QUAD_UPGRADES[a*4-4+b].cost) && !hasQU(a*4-4+b),upgradeBought:hasQU(a*4-4+b)}" style="height: 150px; width: 175px" @click="buyQU(a*4-4+b)">
             <span><b>{{QUAD_UPGRADES[a*4-4+b].title}}</b></span><br>
-            {{QUAD_UPGRADES[a*4-4+b].desc}}<br>
+            {{a*4-4+b == 12 ? QUAD_UPGRADES[a*4-4+b].desc() : QUAD_UPGRADES[a*4-4+b].desc}}<br>
             Cost: {{formatWhole(QUAD_UPGRADES[a*4-4+b].cost)}} x²<br>
             {{QUAD_UPGRADES[a*4-4+b].effectDisplay() != null ? 'Currently: ' + QUAD_UPGRADES[a*4-4+b].effectDisplay() : ''}}<br>
           </button>
@@ -353,8 +416,8 @@
           <br><br>
         </span>
       </div>
-      <div id="tab7-2disp" v-if="player.currentSubtab[0] == 'cplane'"> <!--- COORDINATE PLANE !--->
-        You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">, and <span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second).<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
+      <div id="tab7-2disp" v-if="player.currentSubtab[0] == 'cplane'"> <!--- COORDINATE PLANE/REALM !--->
+        You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">{{player.zUnlocked ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second)<span v-if="player.zUnlocked">, and <span class="quadText">{{formatWhole(player.sacZ)}}</span> z (multiplying the f(x) exponent by {{format(sacEffect('z'))}})</span>.<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
         <span v-if="hasUpgrade(8)">
         You have <span class="quadText">{{formatWhole(player.b)}}</span> b (y-intercept), multiplying slope gain by {{format(bEffect(1))}}, multiplying sacrificed X and Y effects by {{format(bEffect(2))}}, and adding {{format(bEffect(3))}} to the slope effect exponent.<br>
         <button :class="{buildingLocked:player.slope.lt(bCost()),buildingBuyable:player.slope.gte(bCost())}" @click="buyB()">Buy for {{format(bCost())}} slope (B)</button>
@@ -364,18 +427,28 @@
           </button>
         <br><br>
         </span>
-        <button @click="sacrifice(player.sacrifice)" class="hoverable">Sacrifice</button><button @click="switchSacrifice()" class="hoverable" v-html="player.sacrifice"></button><br>
+        <button @click="sacrifice(player.sacrifice)" class="hoverable">Sacrifice</button><button @click="switchSacrifice()" class="hoverable" v-html="player.sacrifice"></button>
+        <!--- <select @change="player.sacrifice = document.getElementById('sacrificeSelect').value.toLowerCase()" id="sacrificeSelect">
+          <option>X</option>
+          <option v-if="hasSU(6)">x²</option>
+          <option>Y</option>
+          <option v-if="player.zUnlocked">Z</option>
+        </select> !--->
+        <br>
         <button v-if="hasSU(6)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button><br><br>
         By default, clicking the "Sacrifice" button will set whatever currency you're sacrificing to 0.<br>
         If your sacrificed currency is greater than your current sacrificed amount, your sacrificed amount will increase.<br>
         Clicking the second button will change what currency you're sacrificing.<br>
-        You currently have {{hasSU(6)?"3":"2"}} sacrifice options. (x, y{{hasSU(6)?", x²":""}})<br><br>
+        You currently have {{hasSU(6)?(player.zUnlocked?"4":"3"):"2"}} sacrifice options. (x, y{{hasSU(6)?", x²":""}}{{player.zUnlocked?", z":""}})<br><br>
         <span v-if="hasMilestone(14)">
         <b>Transformations</b><br>
         Each Transformation type boosts the effect of a sacrificed currency, but only one can be activated at a time.<br>
-        <div v-for="a in 3">
-          {{player.transformations.names[a]}} ({{formatWhole(player.transformations.bought[a])}}) - {{a == 3 ? "^" : ""}}{{format(transformEffect(a))}}{{a != 3 ? "x" : ""}} sacrificed <span v-html="tmp.compPlaneVars[a]"></span> effect <button :class="{buildingLocked:player.slope.lt(transformCosts(a)),buildingBuyable:player.slope.gte(transformCosts(a))}" @click="buyTransform(a)">Buy for {{format(transformCosts(a))}} slope</button> <button :class="{buildingLocked:player.transformations.activated == a,buildingBuyable:player.transformations.activated != a}" @click="if(player.transformations.activated != a){activateTransform(a)}">{{player.transformations.activated == a ? "Currently Active" : "Activate"}}</button>
+        All Transformation types (except for Translations) cap at 40 levels.
+        <div v-for="a in rowAmt(6)">
+          {{player.transformations.names[a]}} ({{formatWhole(player.transformations.bought[a])}}{{a == 1 ? "" : "/40"}}) - {{a == 3 ? "^" : ""}}{{format(transformEffect(a))}}{{a != 3 ? "x" : ""}} sacrificed <span v-html="tmp.compPlaneVars[a]"></span> effect <button :class="{buildingLocked:player.slope.lt(transformCosts(a)),buildingBuyable:player.slope.gte(transformCosts(a))}" @click="buyTransform(a)">{{player.transformations.bought[a].gte(40) && a != 1 ? "Maxed!" : "Buy for " + format(transformCosts(a)) + " slope"}}</button> <button :class="{buildingLocked:player.transformations.activated == a || player.transformations.extrusions.includes(a),buildingBuyable:player.transformations.activated != a && !player.transformations.extrusions.includes(a)}" @click="if(player.transformations.activated != a){activateTransform(a)}">{{player.transformations.activated == a ? "Currently Active" : (player.transformations.extrusions.includes(a) ? "Permanently Active" : "Activate")}}</button> <button :class="{buildingLocked:player.slope.lt(extrudeCosts(a)),extrusionBuyable:player.slope.gte(extrudeCosts(a))}" v-if="hasZlabMilestone(1,4) && a < 4 && !player.transformations.extrusions.includes(a)" @click="extrudeTransform(a)">Extrude for {{format(extrudeCosts(a))}} slope</button>
         </div>
+        <b v-if="hasZlabMilestone(1,2)">Your Dilations are multiplying all other Transformation effects by {{format(transformEffect(5))}}x (applied after all softcaps), even if they're not active.<br></b>
+        <button v-if="hasMilestone(17)" class="hoverable" onclick="player.compAutobuyers[9] = !player.compAutobuyers[9]">Auto: {{player.compAutobuyers[9] ? "ON" : "OFF"}}</button>
       </span>
       </div>
       <div id="tab7-3disp" v-if="player.currentSubtab[0] == 'sroot'"> <!--- SQUARE ROOT !--->
@@ -412,7 +485,7 @@
         <td v-for="b in 4">
           <button :class="{upgradeLocked:player.rootEssence.lt(SQRT_UPGRADES[a*4-4+b].cost) && !hasSU(a*4-4+b),upgradeBuyable:player.rootEssence.gte(SQRT_UPGRADES[a*4-4+b].cost) && !hasSU(a*4-4+b),upgradeBought:hasSU(a*4-4+b)}" style="height: 150px; width: 175px" @click="buySU(a*4-4+b)">
             <span><b>{{SQRT_UPGRADES[a*4-4+b].title}}</b></span><br>
-            {{SQRT_UPGRADES[a*4-4+b].desc}}<br>
+            {{a*4-4+b == 6 ? SQRT_UPGRADES[a*4-4+b].desc() : SQRT_UPGRADES[a*4-4+b].desc}}<br>
             Cost: {{formatWhole(SQRT_UPGRADES[a*4-4+b].cost)}} root essence<br>
             {{SQRT_UPGRADES[a*4-4+b].effectDisplay() != null ? 'Currently: ' + SQRT_UPGRADES[a*4-4+b].effectDisplay() : ''}}<br>
           </button>
@@ -441,56 +514,198 @@
       </div>
       <div id="tab7-5disp" v-if="player.currentSubtab[0] == 'formula'"> <!--- QUADRATIC FORMULA !--->
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
-        To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a real solution.<br>
-        (The one I'm talking about is (-b±√(b²-4ac) / 2a)<br>
-        Base QP Generation Formula: (bc)<sup>a/2 - 0.5</sup><br>
-        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: qpGen().lte(0)}">{{qpGen().gt(0) ? "a, b, and c return a real solution!" : "a, b, and c return a nonreal solution..."}}</span><br><br>
+        <span v-if="hasZlabMilestone(1,3)">You have <span class="compText">{{format(player.imagPower)}}</span> imaginary power. ({{format(ipGen())}}/sec)<br></span>
+        To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a {{!hasMilestone(19) ? "real" : ""}}<s v-if="hasMilestone(19)" class="nonrealSolution">real</s> solution.<br>
+        (The one I'm talking about is (-b±√(b²-4ac)) / 2a)<br>
+        <span v-if="hasZlabMilestone(1,3)">To generate Imaginary Power, a, b, and c must return a nonreal solution instead.<br></span>
+        Base QP{{hasZlabMilestone(1,3) ? " and IP" : ""}} Generation Formula{{hasZlabMilestone(1,3) ? "s" : ""}}: (bc)<sup>a/2 - 0.5</sup><br>
+        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && !hasMilestone(19), realishSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
-          <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><br>
+          <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.ab[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.abc[a] = maxABC()">max</button><br>
         </div>
         <button v-if="hasMilestone(10)" onclick="player.compAutobuyers[6] = !player.compAutobuyers[6]" class="hoverable">
           Auto-Adjust: {{player.compAutobuyers[6] ? "ON" : "OFF"}}
+        </button>
+        <button v-if="hasZlabMilestone(1,3)" onclick="player.compAutobuyers[11] = !player.compAutobuyers[11]" class="hoverable">
+          Mode: {{player.compAutobuyers[11] ? "IP Gen" : "QP Gen"}}
         </button><br><br>
         <table class="autocenter">
+          <tr>
           <td v-for="a in 4">
-            <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.quadPower.lt(QP_BUYABLES[a].cost()),qpBuyable:player.quadPower.gte(QP_BUYABLES[a].cost()),upgradeBought:a==1&&player.quadBuyables[1].eq(4)}" @click="buyQPBuyable(a)">
+            <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.quadPower.lt(QP_BUYABLES[a].cost()),qpBuyable:player.quadPower.gte(QP_BUYABLES[a].cost()),upgradeBought:a==1&&player.quadBuyables[1].eq(hasZlabMilestone(3,2) ? 5 : 4)}" @click="buyQPBuyable(a)">
               <b>{{QP_BUYABLES[a].title}}</b><br>
               {{QP_BUYABLES[a].desc}}<br>
-              Amount: {{player.quadBuyables[a]}}{{a == 1 ? "/4" : ""}}{{player.compPlane[1][1].gte(9) && new Decimal(a).gt(1) && new Decimal(a).lt(4) ? " + " + compPlaneEffects(1) : ""}}<br>
+              Amount: {{player.quadBuyables[a]}}{{a == 1 ? (hasZlabMilestone(3,2) ? "/5" : "/4") : ""}}{{player.compPlane[1][1].gte(9) && new Decimal(a).gt(1) && new Decimal(a).lt(4) ? " + " + compPlaneEffects(1) : ""}}<br>
               Cost: {{QP_BUYABLES[a].cost().eq(Infinity) ? "Maxed!" : format(QP_BUYABLES[a].cost())}}<br>
               Effect: {{QP_BUYABLES[a].effectDisplay()}}
             </button>
           </td>
+          </tr>
+          <tr>
+          <td v-for="a in 4" v-if="hasZlabMilestone(1,3)">
+            <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.imagPower.lt(QP_BUYABLES[a+4].cost()),ipBuyable:player.imagPower.gte(QP_BUYABLES[a+4].cost()),upgradeBought:(a==1&&player.quadBuyables[5].eq(1))||(a==3&&player.quadBuyables[7].eq(10))}" @click="buyQPBuyable(a+4)">
+              <b>{{QP_BUYABLES[a+4].title}}</b><br>
+              {{QP_BUYABLES[a+4].desc}}<br>
+              Amount: {{player.quadBuyables[a+4]}}{{a == 1 ? "/1" : ""}}{{a == 3 ? "/10" : ""}}<br>
+              Cost: {{QP_BUYABLES[a+4].cost().eq(Infinity) ? "Maxed!" : format(QP_BUYABLES[a+4].cost()) + " IP"}}<br>
+              Effect: {{QP_BUYABLES[a+4].effectDisplay()}}
+            </button>
+          </td>
+          </tr>
         </table>
         <br v-if="hasMilestone(9)">
-          <button v-if="hasMilestone(9)" onclick="player.compAutobuyers[5] = !player.compAutobuyers[5]" class="hoverable">
-            Auto: {{player.compAutobuyers[5] ? "ON" : "OFF"}}
+        <button v-if="hasMilestone(9)" onclick="player.compAutobuyers[5] = !player.compAutobuyers[5]" class="hoverable">
+          Auto: {{player.compAutobuyers[5] ? "ON" : "OFF"}}
+        </button>
+        <button v-if="hasMilestone(19)" onclick="player.compAutobuyers[13] = !player.compAutobuyers[13]" class="hoverable">
+          Auto: {{player.compAutobuyers[13] ? "ON" : "OFF"}}
+        </button>
+      </div>
+      </div>
+      <div id="tab8disp" v-if="player.currentTab == 'yquad'"> <!--- Y-QUADRATIC !--->
+        You have <span class="yquadText">{{formatWhole(player.y2)}}</span> y<sup>2</sup>.<br><br>
+        <div v-if="hasYQU(12,'bought')">
+          Y-Quadratic Automator: Go Y-Quadratic for <input id="yquadAuto" v-bind:value="player.inputValue3" size="5"> y<sup>2</sup> <button onclick="player.compAutobuyers[12] = !player.compAutobuyers[12]" class="hoverable">{{player.compAutobuyers[12] ? 'ON' : 'OFF'}}</button><br><br>
+        </div>
+        <button id="subtab11" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'upgrades'">Y-Quadratic Upgrades</button>
+        <button id="subtab12" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'varsynth'">Variable Synthesizer</button>
+        <button id="subtab13" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'challenges'">Y-Challenges</button>
+        <br><br>
+        <div id="tab8-1disp" v-if="player.currentSubtab[3] == 'upgrades'"> <!--- Y-QUADRATIC UPGRADES !--->
+        <span v-if="hasMilestone(18)">
+          <button class="hoverable" onclick="toggleOption(12)">Passive x² Generation: {{player.options[12] ? "ON" : "OFF"}}</button><br><br>
+        </span>
+        <table class="autocenter">
+        <tr v-for="a in 3">
+        <td v-for="b in 4">
+          <button :class="{upgradeLocked:(player.y2.lt(YQUAD_UPGRADES[a*4-4+b].cost) || !hasYQU(a*4-4+b,'unlocked')) && !hasYQU(a*4-4+b,'bought'),yquadUpgradeBuyable:player.y2.gte(YQUAD_UPGRADES[a*4-4+b].cost) && hasYQU(a*4-4+b,'unlocked') && !hasYQU(a*4-4+b,'bought'),yquadUpgradeBought:hasYQU(a*4-4+b,'bought')}" style="height: 170px; width: 190px" @click="buyYQU(a*4-4+b)">
+            <span><b>{{YQUAD_UPGRADES[a*4-4+b].title}}</b></span><br>
+            {{YQUAD_UPGRADES[a*4-4+b].desc}}<br>
+            <span v-html="hasYQU(a*4-4+b,'unlocked') ? 'Cost: ' + formatWhole(YQUAD_UPGRADES[a*4-4+b].cost) + ' y²' : '<i>Requirement: ' + YQUAD_UPGRADES[a*4-4+b].requirement + '</i>'"></span><br>
+            {{YQUAD_UPGRADES[a*4-4+b].effectDisplay() != null ? 'Currently: ' + YQUAD_UPGRADES[a*4-4+b].effectDisplay() : ''}}<br>
           </button>
+        </td>
+        </tr>
+        </table>
+      </div>
+      <div id="tab8-2disp" v-if="player.currentSubtab[3] == 'varsynth'"> <!--- VARIABLE SYNTHESIZER !--->
+        <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e17) || ccTiers() < 35,buildingBuyable:player.y2.gte(1e17) && ccTiers() >= 35}" onclick="if(player.y2.gte(1e17) && ccTiers() >= 35){player.varSynth.unlocked[0] = true}" v-if="!player.varSynth.unlocked[0]">
+          Unlock for 1.00e17 y<sup>2</sup> and 35 CC tiers
+        </button>
+        <div v-if="player.varSynth.unlocked[0]">
+          Welcome to the Variable Synthesizer! Here you will be able to craft illegal variables that probably shouldn't exist.<br>
+          <b>xy</b> has already been unlocked for you, so you can start crafting those first.<br>
+          Note: xy can be used to charge X Upgrades, so the Upgrades tab will be useful now!<br><br>
+          <table class="autocenter">
+            <tr>
+              <td v-for="a in 3">
+                <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(varSynthUnlockCosts(a,'y2')) || ccTiers() < varSynthUnlockCosts(a,'cc'),buildingBuyable:player.y2.gte(varSynthUnlockCosts(a,'y2')) && ccTiers() >= varSynthUnlockCosts(a,'cc')}" @click="if(player.y2.gte(varSynthUnlockCosts(a,'y2')) && ccTiers() >= varSynthUnlockCosts(a,'cc')){player.varSynth.unlocked[a] = true}" v-if="!player.varSynth.unlocked[a]">
+                  Unlock {{a == 1 ? 'x²y²' : (a == 2 ? 'i Exponentiation' : 'zi')}} for {{format(varSynthUnlockCosts(a,'y2'))}} y<sup>2</sup> and {{formatWhole(varSynthUnlockCosts(a,'cc'))}} CC tiers
+                </button>
+              </td>
+            </tr>
+          </table><br v-if="!player.varSynth.unlocked[3]">
+          You have {{formatWhole(player.varSynth.xy)}} xy.<br>
+          <button id="xyButton" class="xyButton" onclick="buyVariable('xy')">
+            Gain xy for {{formatWhole(xyCost(1))}}x and {{formatWhole(xyCost(2))}}y
+          </button>
+        </div>
+        <div v-if="player.varSynth.unlocked[1]">
+          <br>
+          You have <span class="x2y2Text">{{formatWhole(player.varSynth.x2y2)}}</span> x<sup>2</sup>y<sup>2</sup>.<br>
+          x<sup>2</sup>y<sup>2</sup> is gained based on your current x<sup>2</sup> and current y<sup>2</sup>, minus your current x<sup>2</sup>y<sup>2</sup>.<br>
+          <button class="notprestige" onclick="x2y2Reset()">
+            Sacrifice your x<sup>2</sup> and y<sup>2</sup> for {{formatWhole(x2y2Formula())}} x<sup>2</sup>y<sup>2</sup>
+          </button><br><br>
+          You have <span style="font-size:20px;color:gray;">{{format(player.varSynth.circles)}}</span> circles.<br>
+          ({{format(circleGen())}}/sec)<br>
+          {{nextCircleMilestone()}}<br><br>
+          <b>Your circles are currently:</b><br>
+          <span v-for="a in 5" v-if="hasCircleMilestone(a)"><span v-html="tmp.circleText[a]"></span> by {{format(circleEffects(a))}}x<br></span>
+        </div>
+        <div v-if="player.varSynth.unlocked[2]">
+          <br>
+          Your current expression is <span class="compText">i<sup>{{format(player.varSynth.iExp)}}</sup></span>. ({{format(iExpGen())}}/sec)<br>
+          ({{format(player.varSynth.iExp.mul(90))}}° on a unit circle in the complex plane)<br>
+          <b>Your i exponent is multiplying:</b><br>
+          xi power generation by {{format(iExpEffects(1))}}x<br>
+          yi power generation by {{format(iExpEffects(2))}}x<br>
+          x<sup>2</sup>i power generation by {{format(iExpEffects(3))}}x<br><br>
+          You have {{formatWhole(player.varSynth.revolutions)}} revolution{{!player.varSynth.revolutions.eq(1) ? "s" : ""}}, giving a {{format(player.varSynth.revolutions.pow(0.25).add(1))}}x multiplier to circles generation.<br>
+          <table class="autocenter">
+          <tr><td><button class="iTripler" style="width: 150px; height: 150px;" onclick="buyRevBuyable(1)">
+            Double i exponent generation per purchase<br>
+            Amount: {{formatWhole(player.varSynth.iExpBuyables[1])}}<br>
+            Cost: {{formatWhole(revBuyableCosts(1))}} revolutions
+          </button></td>
+          <td><button class="iTripler" style="width: 150px; height: 150px;" onclick="buyRevBuyable(2)">
+            Multiply the maximum multiplier by 1.00e10x per purchase<br>
+            Amount: {{formatWhole(player.varSynth.iExpBuyables[2])}}<br>
+            Cost: {{formatWhole(revBuyableCosts(2))}} revolutions
+          </button></td></tr>
+          </table>
+        </div>
+      </div>
+      <div id="tab8-3disp" v-if="player.currentSubtab[3] == 'challenges'"> <!--- Y-CHALLENGES !--->
+        <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e44) || ccTiers() < 45,buildingBuyable:player.y2.gte(1e44) && ccTiers() >= 45}" onclick="if(player.y2.gte(1e44) && ccTiers() >= 45){player.yChalsUnlocked[1] = true}" v-if="!player.yChalsUnlocked[1]">
+          Unlock for 1.00e44 y<sup>2</sup> and 45 CC tiers
+        </button>
+        <div v-if="player.yChalsUnlocked[1]">
+          Endure harder Y-Quadratics and reach the goal to get rewards!<br>
+          Unlike regular Challenges, Y-Challenges are <b>infinitely completable</b>, with their rewards growing stronger for every completion!<br>
+          Click a Y-Challenge to enter it. Click it again to exit it.<br>
+          <i>Note: Going Y-Quadratic will exit you from your current Y-Challenge.</i><br><br>
+          <table class="autocenter">
+            <tr v-for="a in 2">
+              <td v-for="b in 2">
+                <button style="width: 300px; height: 150px;" @click="interactWithYC(a*2-2+b)" :class="{yChalDefault: player.yChallenge != a*2-2+b && player.yChalsUnlocked[a*2-2+b], yChalIncomplete: player.yChallenge == a*2-2+b && player.yChalsUnlocked[a*2-2+b],buildingLocked: !player.yChalsUnlocked[a*2-2+b] && player.y2.lt(yChalUnlockCosts(a*2-2+b)),buildingBuyable: !player.yChalsUnlocked[a*2-2+b] && player.y2.gte(yChalUnlockCosts(a*2-2+b))}">
+                  <span v-if="player.yChalsUnlocked[a*2-2+b]">
+                    <b>{{Y_CHALLENGES[a*2-2+b].title}}</b><br>
+                    {{Y_CHALLENGES[a*2-2+b].desc}}<br>
+                    Goal: Reach {{format(Y_CHALLENGES[a*2-2+b].goal())}}x.<br>
+                    Reward: {{Y_CHALLENGES[a*2-2+b].rewardDesc}}<br>
+                    Currently: {{Y_CHALLENGES[a*2-2+b].effectDisplay()}}<br>
+                    Completions: {{formatWhole(player.yChalCompletions[a*2-2+b])}}/∞
+                  </span>
+                  <span v-if="!player.yChalsUnlocked[a*2-2+b]">
+                    <b>Locked</b><br>
+                    (Requires {{format(yChalUnlockCosts(a*2-2+b))}} y<sup>2</sup> to unlock)
+                  </span>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
       </div>
       <div id="tab9disp" v-if="player.currentTab == 'comp'"> <!--- COMPLEX !--->
         You have <span class="compText">{{formatWhole(player.i)}}</span> i.<br><br>
         <div v-if="hasMilestone(12)">
-          Auto-Complex: Go Complex when reaching <input id="compAuto" v-bind:value="player.inputValue2" size="5"> i <button onclick="player.compAutobuyers[7] = !player.compAutobuyers[7]" class="hoverable">{{player.compAutobuyers[7] ? 'ON' : 'OFF'}}</button><br><br>
+          Auto-Complex: Go Complex {{player.compAutobuyers[10] ? 'after' : 'when reaching'}} <input id="compAuto" v-bind:value="player.inputValue2" size="5"> {{player.compAutobuyers[10] ? 'seconds' : 'i'}} <button onclick="player.compAutobuyers[7] = !player.compAutobuyers[7]" class="hoverable">{{player.compAutobuyers[7] ? 'ON' : 'OFF'}}</button>
+        <button class="hoverable" v-if="hasZlabMilestone(1,1)" onclick="player.compAutobuyers[10] = !player.compAutobuyers[10]">
+            Mode: {{player.compAutobuyers[10] ? "Time" : "Amount"}}
+        </button><br><br>
         </div>
         <button id="subtab6" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'milestones'">Milestones</button>
         <button id="subtab7" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'upgrades'">Complex Upgrades</button>
         <button id="subtab8" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12)">Complex Plane</button>
         <button id="subtab9" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'challenges'" v-if="hasCU(1,6)">Complex Challenges</button>
+        <button id="subtab10" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'zlab'" v-if="hasYQU(8,'bought')">Z Lab</button>
         <br><br>
         <div id="tab9-1disp" v-if="player.currentSubtab[1] == 'milestones'"> <!--- MILESTONES !--->
         You have gone Complex {{formatWhole(player.complexes)}} times.<br><br>
         <div v-for="a in rowAmt(4)">
-          <button :class="{milestoneLocked:a < 13 ? player.complexes < MILESTONES[a].requirement : ccTiers() < MILESTONES[a].requirement,milestoneUnlocked:a < 13 ? player.complexes >= MILESTONES[a].requirement : ccTiers() >= MILESTONES[a].requirement}">
+          <button :class="{milestoneLocked:a < 13 ? player.complexes < MILESTONES[a].requirement : ccTiers() < MILESTONES[a].requirement,milestoneUnlocked:a < 13 ? player.complexes >= MILESTONES[a].requirement : ccTiers() >= MILESTONES[a].requirement}" @click="if(!hasSecretAchievement(6)) {player.secretAchievements.push('6'); $.notify('Secret Achievement Unlocked: Those Are Buttons?', {style: 'apcurrent',className:'secretAchieves',});};">
             <b style="font-size: 20px;">{{MILESTONES[a].title}}</b><br>{{MILESTONES[a].desc}}
           </button><br>
         </div>
         </div>
         <div id="tab9-2disp" v-if="player.currentSubtab[1] == 'upgrades'"> <!--- COMPLEX UPGRADES !--->
-        You have <span>{{formatWhole(player.upgradePoints[0])}}</span> upgrade points. ({{formatWhole(player.upgradePoints[1])}} total)<br>
+        You have <span>{{formatWhole(player.upgradePoints[0])}}</span> upgrade point{{!player.upgradePoints[0].eq(1) ? "s" : ""}}. ({{formatWhole(player.upgradePoints[1])}} total)<br>
         <button onclick="respec()" class="hoverable">Respec</button>
-        <button onclick="toggleOption(6)" class="hoverable">Respec on Complex: {{player.options[6] ? "ON" : "OFF"}}</button>
+        <button onclick="respecFourthRow()" class="hoverable" v-if="hasZlabMilestone(1,5)">Respec fourth-row upgrades</button>
+        <button onclick="toggleOption(6)" class="hoverable">Respec on Complex: {{player.options[6] ? "ON" : "OFF"}}</button><br v-if="hasZlabMilestone(1,5)">
         <button class="hoverable" onclick="exportUpgs()">Export Upgrades</button>
         <button class="hoverable" onclick="loadUpgs()">Load Upgrades</button>
         <button class="hoverable" onclick="toggleOption(10)">{{player.options[10] ? "Hide Presets" : "Show Presets"}}</button>
@@ -504,12 +719,13 @@
         </span>
         <br><br>
         <table class="autocenter">
-        <tr v-for="a in 3">
+        <tr v-for="a in rowAmt(8)">
         <td v-for="b in 4">
-          <button :class="{compUpgradeLocked:player.upgradePoints[0].lt(COMP_UPGRADES[a*4-4+b].cost) && !hasCU(0,a*4-4+b),firstRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 1 && !hasCU(0,a*4-4+b),secondRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 2 && !hasCU(0,a*4-4+b),thirdRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 3 && !hasCU(0,a*4-4+b),firstRowBought:hasCU(0,a*4-4+b) && a == 1,secondRowBought:hasCU(0,a*4-4+b) && a == 2,thirdRowBought:hasCU(0,a*4-4+b) && a == 3}" style="height: 125px; width: 175px" @click="buyCU(0,a*4-4+b)">
-            {{COMP_UPGRADES[a*4-4+b].desc}}<br>
-            Cost: {{formatWhole(COMP_UPGRADES[a*4-4+b].cost)}} UP<br>
+          <button :class="{compUpgradeLocked:player.upgradePoints[0].lt(a == 4 ? COMP_UPGRADES[a*4-4+b].cost() : COMP_UPGRADES[a*4-4+b].cost) && !hasCU(0,a*4-4+b),firstRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 1 && !hasCU(0,a*4-4+b),secondRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 2 && !hasCU(0,a*4-4+b),thirdRowBuyable:player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost) && a == 3 && !hasCU(0,a*4-4+b),fourthRowBuyable:a == 4 && player.upgradePoints[0].gte(COMP_UPGRADES[a*4-4+b].cost()),firstRowBought:hasCU(0,a*4-4+b) && a == 1,secondRowBought:hasCU(0,a*4-4+b) && a == 2,thirdRowBought:hasCU(0,a*4-4+b) && a == 3,fourthRowBought:a == 4 && player.upgradePoints[0].lt(COMP_UPGRADES[a*4-4+b].cost()) && player.fourthRowCompUpgs[b] > 0}" style="height: 125px; width: 175px" @click="buyCU(0,a*4-4+b)">
+            {{a*4-4+b == 6 ? COMP_UPGRADES[a*4-4+b].desc() : COMP_UPGRADES[a*4-4+b].desc}}<br>
+            Cost: {{a == 4 ? formatWhole(COMP_UPGRADES[a*4-4+b].cost()) : formatWhole(COMP_UPGRADES[a*4-4+b].cost)}} UP<br>
             {{COMP_UPGRADES[a*4-4+b].effectDisplay() != null ? 'Currently: ' + COMP_UPGRADES[a*4-4+b].effectDisplay() : ''}}<br>
+            {{a == 4 ? "Next: " + COMP_UPGRADES[a*4-4+b].nextDisplay() : ""}}
           </button>
         </td>
         </tr>
@@ -531,13 +747,14 @@
         </tr></table><br>
         Use the 3 buttons above to purchase Upgrade Points with some of your previous currencies.<br>
         Upgrade points are spent on the 12 Complex Upgrades that can be respecced.<br>
-        Once all 12 Complex Upgrades are bought once, a second level of each upgrade is unlocked.
-        <br><br>
+        <span v-if="hasZlabMilestone(1,5)" class="realSolution">
+          Fourth-row Complex Upgrades can be repeatedly bought to increase their effects.<br>
+        </span><br>
         <b>Basic Complex Upgrades:</b>
         <table class="autocenter">
         <tr v-for="a in rowAmt(5)">
         <td v-for="b in 3">
-          <button :class="{upgradeLocked:player.i.lt(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBuyable:player.i.gte(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBought:hasCU(1,a*3-3+b)}" style="height: 160px; width: 185px" @click="buyCU(1,a*3-3+b)" v-if="(a*3-3+b) != 9">
+          <button :class="{upgradeLocked:player.i.lt(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBuyable:player.i.gte(BCOMP_UPGRADES[a*3-3+b].cost) && !hasCU(1,a*3-3+b),upgradeBought:hasCU(1,a*3-3+b)}" style="height: 160px; width: 185px" @click="buyCU(1,a*3-3+b)">
             <span><b>{{BCOMP_UPGRADES[a*3-3+b].title}}</b></span><br>
             <span v-html="BCOMP_UPGRADES[a*3-3+b].desc"></span><br>
             Cost: {{formatWhole(BCOMP_UPGRADES[a*3-3+b].cost)}} i<br>
@@ -548,11 +765,12 @@
         </table><br>
         </div>
         <div id="tab9-3disp" v-if="player.currentSubtab[1] == 'cplane'"> <!--- COMPLEX PLANE !--->
-          <div v-for="a in 3">
+          <div v-for="a in rowAmt(7)">
             You have <span class="compText">{{formatWhole(player.compPlane[0][a])}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i, producing <span class="compText">{{format(compPlaneGen(a))}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i power per second.<br>
             You have <span class="compText">{{format(player.compPlane[1][a])}}</span> <span v-html="tmp.compPlaneVars[a]"></span>i power, {{compPlaneEffectDisplay(a)}}<br>
+            <span v-if="a == 4">Note: zi power generation is not affected by multipliers to Complex Plane currencies.<br></span>
             <button v-if="player.compPlane[0][a].eq(0)" :class="{buildingLocked:whyAreThereSoManyFunctionsNeededForThisMechanic(a).lt(tmp.compPlaneCosts[a*2-1]) || player.i.lt(tmp.compPlaneCosts[a*2]),buildingBuyable:whyAreThereSoManyFunctionsNeededForThisMechanic(a).gte(tmp.compPlaneCosts[a*2-1]) && player.i.gte(tmp.compPlaneCosts[a*2])}" @click="buyCplaneVar(a)">Unlock for {{format(tmp.compPlaneCosts[a*2-1])}} sacrificed <span v-html="tmp.compPlaneVars[a]"></span> and {{format(tmp.compPlaneCosts[a*2])}} i</button>
-            <button v-if="player.compPlane[0][a].gt(0)" :class="{buildingLocked:player.i.lt(compPlaneBuyCosts(a)),buildingBuyable:player.i.gte(compPlaneBuyCosts(a))}" @click="buyCplaneVar(a)">Upgrade for {{format(compPlaneBuyCosts(a))}} i</button>
+            <button v-if="player.compPlane[0][a].gt(0)" :class="{buildingLocked:player.i.lt(compPlaneBuyCosts(a)),buildingBuyable:player.i.gte(compPlaneBuyCosts(a))}" @click="buyCplaneVar(a)">Upgrade for {{format(compPlaneBuyCosts(a))}} i</button><button v-if="hasMilestone(17)" class="hoverable" @click="player.compAutobuyers[8][a-1] = !player.compAutobuyers[8][a-1]">Auto: {{player.compAutobuyers[8][a-1] ? "ON" : "OFF"}}</button>
             <br><br>
           </div>
           <br>
@@ -561,23 +779,26 @@
             <b>i Tripler</b><br>
             Triple i gain per purchase!<br>
             Amount: {{formatWhole(player.triplers)}}<br>
-            Cost: {{format(triplerCost())}} of each Complex Plane power<br>
+            Cost: {{format(triplerCost())}} of each Complex Plane power<span v-if="player.varSynth.unlocked[3]"> (excluding zi power)</span><br>
             Effect: {{format(Decimal.pow(3,player.triplers))}}x i gain
+            </button><br>
+            <button v-if="hasMilestone(19)" onclick="player.compAutobuyers[14] = !player.compAutobuyers[14]" class="hoverable">
+              Auto: {{player.compAutobuyers[14] ? "ON" : "OFF"}}
             </button>
           </span>
         </div>
         <div id="tab9-4disp" v-if="player.currentSubtab[1] == 'challenges'"> <!--- COMPLEX CHALLENGES !--->
-          You have completed {{formatWhole(ccTiers())}} Complex Challenge tiers. Check your Milestones tab to see if you've unlocked anything!<br>
+          You have completed {{formatWhole(ccTiers())}} Complex Challenge tier{{ccTiers() != 1 ? "s" : ""}}. Check your Milestones tab to see if you've unlocked anything!<br>
           Endure harder Complexes and reach the goal to get rewards!<br>
           Each Complex Challenge requires UP to unlock, and can be completed up to 5 times.<br>
           If you reach the Complex Challenge goal, click the button that would normally say "Exit Challenge" underneath the Complex Challenge.<br>
           <i>Note: You can only have 1 Complex Challenge unlocked at a time. Going Complex will exit you from your current Complex Challenge.</i><br><br>
           <button class="hoverable" onclick="toggleOption(4)">Respec CC on Complex: {{player.options[4] ? "ON" : "OFF"}}</button><br><br>
           <table class="autocenter">
-          <tr v-for="a in 3">
+          <tr v-for="a in 5">
             <td v-for="b in 2">
               <div>
-              <button style="width: 360px; height: 180px;" :class="{compChalDefault: player.compChalCompletions[a*2-2+b] < 5 && player.compChallenge != a*2-2+b, challengeIncomplete: player.compChallenge == a*2-2+b, compChalComplete: player.compChalCompletions[a*2-2+b] >= 5 && player.compChallenge != a*2-2+b}" v-if="a*2-2+b < 6">
+              <button style="width: 360px; height: 180px;" :class="{compChalDefault: player.compChalCompletions[a*2-2+b] < 5 && player.compChallenge != a*2-2+b, challengeIncomplete: player.compChallenge == a*2-2+b, compChalComplete: player.compChalCompletions[a*2-2+b] >= 5 && player.compChallenge != a*2-2+b}" v-if="hasMilestone(16) ? true : a*2-2+b < 6">
                 <b>{{COMP_CHALLENGES[a*2-2+b].title}}</b><br>
                 {{COMP_CHALLENGES[a*2-2+b].desc()}}<br> 
                 <span v-if="player.compChalCompletions[a*2-2+b] < 5">Goal: Reach {{format(COMP_CHALLENGES[a*2-2+b].goals[player.compChalCompletions[a*2-2+b]])}} x<sup>2</sup>.<br></span>
@@ -585,7 +806,7 @@
                 Currently: {{COMP_CHALLENGES[a*2-2+b].effectDisplay()}}<br>
                 Completions: {{player.compChalCompletions[a*2-2+b]}}/5<br>
               </button><br>
-              <button class="hoverable" v-if="a*2-2+b < 6" @click="interactWithCC(a*2-2+b)">
+              <button class="hoverable" v-if="hasMilestone(16) ? true : a*2-2+b < 6" @click="interactWithCC(a*2-2+b)">
                   {{player.unlocked != a*2-2+b ? (player.unlocked == 0 ? "Unlock Cost: " + COMP_CHALLENGES[a*2-2+b].unlockCost + " UP" : "Another challenge already unlocked") : (player.compChallenge == a*2-2+b ? (player.x2.gte(COMP_CHALLENGES[a*2-2+b].goals[player.compChalCompletions[a*2-2+b]]) ? "Complete Challenge" : "Exit Challenge") : "Start Challenge")}}
                 </button>
               </div>
@@ -593,8 +814,44 @@
           </tr>
         </table>
         </div>
+        <div id="tab9-5disp" v-if="player.currentSubtab[1] == 'zlab'"> <!--- Z LAB !--->
+          Your <span class="zLabText">{{player.z}}</span> z have generated <span class="zLabText">{{format(player.zlab.zpower)}}</span> Z-Power.<br>
+          ({{format(zpowerGen())}}/sec)<br>
+          Your {{totalColliderLevels()}} total Z-Collider level{{totalColliderLevels() != 1 ? "s" : ""}} are multiplying i and y<sup>2</sup> gain by {{format(Decimal.pow(1.25,totalColliderLevels()))}}.<br><br>
+          Charging a Z-Collider will generate Z-Particles of its corresponding type, based on the square root of your Z-Power.<br>
+          Leveling up your Z-Colliders will allow you to reach milestones with powerful bonuses and unlocks.<br><br>
+          <button class="zlabBuyable" onclick="increaseLevel(5)">
+            <b>Z Empowerment</b><br>
+            Increase the multiplier to Z-Power gain per Z by 0.25 per purchase!<br>
+            Amount: {{formatWhole(player.zlab.empowerments)}}<br>
+            Cost: {{format(zlabBuyableCosts(5))}} i
+          </button>
+          <br><br>
+          <table class="autocenter">
+            <tr v-for="a in 2">
+              <td v-for="b in 2" class="zCollider">
+                <b style="font-size:20px;">Z-Collider of {{COLLIDERS[a*2-2+b].title}}</b><br>
+                <b style="font-size:16px;">Level {{player.zlab.levels[a*2-2+b]}}/20</b><br>
+                {{COLLIDERS[a*2-2+b].desc}}<br>
+                <button class="tooltip" :class="{zlabMilestoneLocked:!hasZlabMilestone(a*2-2+b,c),zlabMilestoneUnlocked:hasZlabMilestone(a*2-2+b,c)}" v-for="c in 5">{{c}}
+                  <span class="tooltiptext" v-html="COLLIDERS[a*2-2+b].milestones[c]"></span>
+                </button><br><br>
+                <span v-if="player.zlab.levels[a*2-2+b] < 20">You have {{format(player.zlab.particles[a*2-2+b])}} {{COLLIDERS[a*2-2+b].title}} Z-Particles<br></span>
+                <span v-if="player.zlab.levels[a*2-2+b] < 20">
+                  <button :class="{buildingLocked:player.zlab.charged == a*2-2+b,buildingBuyable:player.zlab.charged != a*2-2+b}" @click="player.zlab.charged = a*2-2+b">
+                    {{player.zlab.charged == a*2-2+b ? "Being Charged" : "Charge"}}
+                  </button><br>
+                </span>
+                <button :class="{buildingLocked:player.zlab.particles[a*2-2+b].lt(zlabBuyableCosts(a*2-2+b)),buildingBuyable:player.zlab.particles[a*2-2+b].gte(zlabBuyableCosts(a*2-2+b))}" @click="increaseLevel(a*2-2+b)">
+                  {{new Decimal(player.zlab.levels[a*2-2+b]).gte(20) ? "Maxed!" : "Increase level for " + format(zlabBuyableCosts(a*2-2+b)) + " " + COLLIDERS[a*2-2+b].title + " Z-Particles"}}
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
       </div>
     </div>
+    <span id="info1"></span>
   </body>
 </html>

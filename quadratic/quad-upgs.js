@@ -3,7 +3,7 @@ const QUAD_UPGRADES = {
     title: "Quadratic Bonus",
     desc: "Multiply production based on unspent x².",
     cost: new Decimal(1),
-    eff() {return new Decimal(4).mul(new Decimal(1).add(player.x2.pow(new Decimal(0.5).add(COMP_CHALLENGES[1].eff()))))},
+    eff() {return player.compChallenge == 9 ? new Decimal(1) : new Decimal(4).mul(new Decimal(1).add(player.x2.pow(new Decimal(0.5).add(COMP_CHALLENGES[1].eff()))))},
     effectDisplay() {return format(QUAD_UPGRADES[1].eff()) + "x production"},
   },
   2: {
@@ -71,7 +71,7 @@ const QUAD_UPGRADES = {
   },
   12: {
     title: "New Mechanic?",
-    desc: "Unlock the Coordinate Plane.",
+    desc() {return `Unlock the Coordinate ${player.zUnlocked ? "Realm" : "Plane"}.`},
     cost: new Decimal(1500),
     effectDisplay() {return null},
   },
@@ -79,7 +79,7 @@ const QUAD_UPGRADES = {
     title: "Self-Synergy",
     desc: "Gain more points based on points.",
     cost: new Decimal(10000),
-    eff() {return player.points.max(0).pow(0.2).add(1)},
+    eff() {return player.points.max(0).pow(hasZlabMilestone(2,1) ? (player.inSqrt ? 0.24 : 0.23) : 0.2).add(1)},
     effectDisplay() {return format(QUAD_UPGRADES[13].eff()) + "x production"},
   },
   14: {
@@ -162,19 +162,35 @@ function rowAmt(x){
     case 4: // MILESTONES
       let row4=12
       if(hasCU(1,6))row4 += 4
+      if(player.zUnlocked)row4 += 4
       return row4
     break;
-    case 5: // COMP UPGRADES
+    case 5: // BASIC COMP UPGRADES
       let row5=1
       if(player.compUpgs[1].length >= 3)row5++
       if(player.compUpgs[1].length >= 6)row5++
       return row5
     break;
+    case 6: // TRANSFORMATIONS
+      let row6=3
+      if(hasZlabMilestone(1,2)) row6++
+      return row6
+    break;
+    case 7: // COMPLEX PLANE POWERS
+      let row7=3
+      if(player.varSynth.unlocked[3]) row7++
+      return row7
+    break;
+    case 8: // COMP UPGRADES
+      let row8=3
+      if(hasZlabMilestone(1,5)) row8++
+      return row8
+    break;
   }
 }
 
 function doublerCost() {
-  return new Decimal(1e9).mul(Decimal.pow(10,player.doublers)).mul(Decimal.pow(1.1,player.doublers.sub(290).max(0).pow(2)))
+  return new Decimal(1e9).mul(Decimal.pow(10,player.doublers)).mul(Decimal.pow(1.1,player.doublers.sub(hasZlabMilestone(4,1) ? 490 : 290).max(0).pow(2)))
 }
 
 function buyDoubler() {

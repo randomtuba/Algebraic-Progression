@@ -1,5 +1,5 @@
 var player = {};
-let hasLoaded = false;
+let hasLoaded = 0;
 function start() {
   let a = {
     points: new Decimal(0),
@@ -18,7 +18,7 @@ function start() {
     currentTab: 'gen',
     totalPoints: new Decimal(0),
     timePlayed: 0,
-    prestigeTimes: [0,10000000,0,10000000],
+    prestigeTimes: [0,10000000,0,10000000,0,10000000],
     x: new Decimal(0),
     y: new Decimal(0),
     x2: new Decimal(0),
@@ -30,8 +30,8 @@ function start() {
     quadUpgs: [],
     startingTime: Date.now(),
     lastTick: 0,
-    autobuyers: [null,false,false,false,false,false,false,false,false,false,false],
-    currentSubtab: ['upgrades','milestones','stats'],
+    autobuyers: [null,false,false,false,false,false,false,false,false,false,false,false],
+    currentSubtab: {0:'upgrades',1:'milestones',2:'stats',3:'upgrades',4:'regular'},
     sacX: new Decimal(0),
     sacY: new Decimal(0),
     sacX2: new Decimal(0),
@@ -48,8 +48,9 @@ function start() {
     buildingPercent: [null,0,0,0],
     challenge: 0,
     chalCompletions: [],
-    chalExponents: [new Decimal(1),new Decimal(1)],
+    chalExponents: {0:new Decimal(1),1:new Decimal(1),2:new Decimal(1)},
     achievements: [],
+    secretAchievements: [],
     options: [
       true, // autosave (0)
       true, // offline progress (1)
@@ -62,10 +63,14 @@ function start() {
       true, // complex confirmation (8)
       true, // inactive progress (9)
       false, // show presets (10)
+      true, // y-quadratic confirmation (11)
+      true, // passive generation (12)
+      false, // respec charged x upgrades on y-quadratic (13)
+      true, // title flickering (14)
     ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
-    quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+    quadBuyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
     challengeEssence: new Decimal(0),
     epicenterLevel: "1",
     purchases: 75,
@@ -77,7 +82,7 @@ function start() {
     complexes: new Decimal(0),
     compUpgs: [[],[],[0,0,0]],
     upgradePoints: [new Decimal(0),new Decimal(0)],
-    compAutobuyers: [null,false,1,false,false,false,false,false],
+    compAutobuyers: [null,false,1,false,false,false,false,false,[false,false,false,false],false,false,false,false,false,false],
     inputValue2: 0,
     compPlane: [[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]],
     triplers: new Decimal(0),
@@ -91,11 +96,13 @@ function start() {
       bought: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
       names: [null,"Translations","Reflections","Rotations","Dilations"],
       activated: 0,
+      extrusions: [],
     },
     newsMessagesSeen: 0,
     last10runs:{
       quadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
       complex: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+      yQuadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
     },
     challengeRecords: [null,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8],
     presets: {
@@ -112,10 +119,41 @@ function start() {
       true, // Textbook
       true, // Upgrades
       true, // Quadratic
-      true, // ??????
+      true, // Y-Quadratic
       true, // Complex
       true, // ??????
     ],
+    zUnlocked: false,
+    y2: new Decimal(0),
+    totaly2: new Decimal(0),
+    yQuadratics: new Decimal(0),
+    yQuadUpgs: [[],[]],
+    zlab: {
+      zpower: new Decimal(0),
+      levels: [null,0,0,0,0],
+      particles: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+      empowerments: new Decimal(0),
+      charged: 0,
+    },
+    imagPower: new Decimal(0),
+    varSynth: {
+      unlocked: [false,false,false,false],
+      xy: new Decimal(0),
+      totalxy: new Decimal(0),
+      chargedXUpgs: [],
+      x2y2: new Decimal(0),
+      circles: new Decimal(0),
+      iExp: new Decimal(0),
+      revolutions: new Decimal(0),
+      iExpBuyables: [null,new Decimal(0),new Decimal(0)],
+    },
+    inputValue3: 0,
+    obtainedMilestones: [],
+    yChalsUnlocked: [null,false,false,false,false],
+    yChalCompletions: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+    yChallenge: 0,
+    extraUP: new Decimal(0),
+    fourthRowCompUpgs: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
     
     gameWon: false,
     winTime: 0,
@@ -163,10 +201,12 @@ function load() {
   } else {
     player = Object.assign(
       start(),
-      JSON.parse(decodeURIComponent(escape(atob(get))))
+      JSON.parse(/*decodeURIComponent(escape(*/atob(get)/*))*/)
     );
     fixSave();
   }
+  
+  maskChangelog()
   
   document.getElementById("style").href = player.theme ? "style.css" : "style-dark.css";
   $.notify.addStyle('apcurrent', {
@@ -196,6 +236,14 @@ function load() {
         "border-radius": "5px",
         "border-color":"black",
       },
+      secretAchieves: {
+        "white-space": "nowrap",
+        "background-color": "#deadff",
+        "color": "black",
+        "padding": "5px",
+        "border-radius": "5px",
+        "border-color":"black",
+      },
     }
   });
   app = new Vue({
@@ -217,7 +265,7 @@ s = document.getElementById("news");
 
 window.onload = function () {
   load();
-  hasLoaded = true
+  hasLoaded = 1
   if(!player.options[1])player.lastTick = Date.now()
 window.saveInterval = player.options[0] ? setInterval(save,30000) : 0
 }
@@ -260,7 +308,13 @@ function fileStat2() {
     return ", " + formatWhole(player.complexes) + " Complexes"
   } else if (player.complexes.gte(20) && player.compChalCompletions[1] == 0) {
     return ", " + formatWhole(player.upgradePoints[1]) + " UP"
-  } else if (player.compChalCompletions[1] > 0) {
+  } else if (player.compChalCompletions[1] > 0 && !player.zUnlocked) {
+    return ", " + formatWhole(ccTiers()) + " CC tiers"
+  } else if (player.zUnlocked && !hasYQU(8,'bought')) {
+    return ", " + formatWhole(player.y2) + " y²"
+  } else if (hasYQU(8,'bought') && !player.varSynth.unlocked[0]) {
+    return ", " + formatWhole(totalColliderLevels()) + " total Z-Collider levels"
+  } else if (player.varSynth.unlocked[0]) {
     return ", " + formatWhole(ccTiers()) + " CC tiers"
   } else {
     return ""
@@ -268,7 +322,14 @@ function fileStat2() {
 }
 
 function exportAsFile() {
-  download("Algebraic Progression Save (" + fileStat() + fileStat2() + ").txt",btoa(JSON.stringify(player)))
+  download("AP Save (" + fileStat() + fileStat2() + ").txt",btoa(JSON.stringify(player)))
+  if(player.points.lte(25) && !hasSecretAchievement(8)) {
+    player.secretAchievements.push('8')
+      $.notify("Secret Achievement Unlocked: Remarkable Progress", {
+        style: 'apcurrent',
+        className:'secretAchieves',
+      });
+  }
   $.notify('Save successfully exported as file!', {
     style: 'apcurrent',
     className:'saving',
@@ -277,6 +338,13 @@ function exportAsFile() {
 
 function importSave(imported = undefined) {
   if (imported === undefined) imported = prompt("Paste your save string in the input box below!");
+  if(imported === "your save string" && !hasSecretAchievement(3)){
+    player.secretAchievements.push('3')
+      $.notify("Secret Achievement Unlocked: Following Directions", {
+        style: 'apcurrent',
+        className:'secretAchieves',
+      });
+  }
   player = JSON.parse(atob(imported));
   save();
   window.location.reload();
@@ -306,4 +374,12 @@ function fixOldSave() {
     style: 'apcurrent',
     className:'saving',
   });
+}
+
+function maskChangelog() {
+  if(player.zUnlocked) {
+    document.getElementById("info1").style.display = ''
+  } else {
+    document.getElementById("info1").style.display = 'none'
+  }
 }

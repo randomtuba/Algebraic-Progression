@@ -11,6 +11,9 @@ function compPlaneEffects(x) {
     case 3:
       return player.compPlane[1][3].add(1).log10().add(1).log(3)
       break;
+    case 4:
+      return player.compPlane[1][4].add(1).log10().pow(0.8).floor()
+      break;
   }
 }
 
@@ -25,6 +28,8 @@ function compPlaneEffectDisplay(x) {
     case 3:
       return "adding " + format(compPlaneEffects(x)) + " to the multiplier per purchase of the x² doubler and the RE doubler."
       break;
+    case 4:
+      return "giving " + formatWhole(compPlaneEffects(x)) + " extra Upgrade Points. (next at " + format(Decimal.pow(10,compPlaneEffects(4).add(1).pow(Decimal.div(1,0.8))).sub(1)) + ")"
   }
 }
 
@@ -39,6 +44,9 @@ function whyAreThereSoManyFunctionsNeededForThisMechanic(x) {
     case 3:
       return player.sacX2
       break;
+    case 4:
+      return player.sacZ
+      break;
   }
 }
 
@@ -52,6 +60,9 @@ function compPlaneBuyCosts(x) {
       break;
     case 3:
       return new Decimal(1e18).mul(Decimal.pow(2,player.compPlane[0][x]))
+      break;
+    case 4:
+      return new Decimal("1e2500").mul(Decimal.pow(1e10,player.compPlane[0][x])).mul(Decimal.pow(10,player.compPlane[0][x].pow(2)))
       break;
   }
 }
@@ -72,13 +83,14 @@ function buyCplaneVar(x) {
 
 function compPlaneGen(x) {
   let cp = Decimal.pow(1.2,player.compPlane[0][x]).mul(player.compPlane[0][x])
-  if(hasCU(0,11)) cp = cp.mul(COMP_UPGRADES[11].eff())
-  if(hasCU(1,5)) cp = cp.mul(BCOMP_UPGRADES[5].eff())
+  if(hasCU(0,11) && x < 4) cp = cp.mul(COMP_UPGRADES[11].eff())
+  if(hasCU(1,5) && x < 4) cp = cp.mul(BCOMP_UPGRADES[5].eff())
+  if(player.varSynth.unlocked[2] && x < 4) cp = cp.mul(iExpEffects(x))
   return cp
 }
 
 function triplerCost() {
-  return new Decimal(10000).mul(Decimal.pow(50,player.triplers))
+  return new Decimal(10000).mul(Decimal.pow(hasYQU(9,'bought') ? 25 : 50,player.triplers))
 }
 
 function buyTripler() {

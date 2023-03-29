@@ -5,9 +5,11 @@ function reFormula() {
     if(hasSU(11)) re = re.mul(10)
     if(hasSU(15)) re = re.mul(SQRT_UPGRADES[15].eff())
     re = re.mul(ceEffect(1))
-    if(hasCU(1,1)) re = re.mul(10)
-    if(hasCU(0,6)) re = re.mul(COMP_UPGRADES[6].eff())
-    if(hasCU(0,8)) re = re.mul(COMP_UPGRADES[8].eff())
+    if(hasCU(1,1) && player.compChallenge != 10) re = re.mul(10)
+    if(hasCU(0,6) && player.compChallenge != 10) re = re.mul(COMP_UPGRADES[6].eff())
+    if(hasCU(0,8) && player.compChallenge != 10) re = re.mul(COMP_UPGRADES[8].eff())
+    if(hasYQU(7,'bought')) re = re.mul(YQUAD_UPGRADES[7].eff())
+    if(hasYQU(5,'bought')) re = re.pow(YQUAD_UPGRADES[5].eff())
     re = re.sub(player.rootEssence).max(0).floor()
     return re
   }else{
@@ -15,8 +17,9 @@ function reFormula() {
     if(inSqrtLevel(3)) addend += 0.008
     if(inSqrtLevel(4)) addend += 0.05
     let re = player.points.div(1e12).pow(0.002+addend)
-    if(hasCU(1,1)) re = re.mul(10)
-    if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(0.6).mul(hasChallenge(10)?1e10:1e8)
+    if(hasCU(1,1) && player.compChallenge != 10) re = re.mul(10)
+    if(re.gt(hasChallenge(10)?(hasZlabMilestone(3,4)?1e100:1e10):1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(hasZlabMilestone(3,4)?0.62:0.6).mul(hasChallenge(10)?1e10:1e8)
+    if(hasYQU(5,'bought')) re = re.pow(YQUAD_UPGRADES[5].eff())
     if(re.gt(ceSoftcapStart())) {
       let y = new Decimal(re).log(ceSoftcapStart())
       re = new Decimal(ceSoftcapStart()).pow(y.pow(0.9))
@@ -28,7 +31,8 @@ function reFormula() {
 
 function ceSoftcapStart() {
   let softcap = new Decimal("1e2000")
-  if(hasCU(1,8)) softcap = softcap.mul(BCOMP_UPGRADES[8].eff())
+  if(hasCU(1,8) && player.compChallenge != 10) softcap = softcap.mul(BCOMP_UPGRADES[8].eff())
+  softcap = softcap.mul(circleEffects(3))
   return softcap;
 }
 
@@ -62,7 +66,7 @@ const SQRT_UPGRADES = {
     title: "Uprooted Points",
     desc: "Gain more points based on Root Essence.",
     cost: new Decimal(90),
-    eff() {return inSqrtLevel(5) ? player.rootEssence.max(0).pow(1.25).add(1).pow(0.12) : player.rootEssence.max(0).pow(1.25).add(1)},
+    eff() {return inSqrtLevel(5) ? player.rootEssence.max(0).pow(hasZlabMilestone(2,2) ? 1.45 : 1.25).add(1).pow(0.12) : player.rootEssence.max(0).pow(hasZlabMilestone(2,2) ? 1.45 : 1.25).add(1)},
     effectDisplay() {return format(SQRT_UPGRADES[2].eff()) + "x production"},
   },
   3: {
@@ -81,12 +85,12 @@ const SQRT_UPGRADES = {
     title: "All-Encompassing",
     desc: "Multiply x² gain based on points.",
     cost: new Decimal(333333),
-    eff() {return player.points.max(0).pow(0.04).add(1)},
+    eff() {return player.points.max(0).pow(hasZlabMilestone(2,3) ? 0.05 : 0.04).add(1)},
     effectDisplay() {return format(SQRT_UPGRADES[5].eff()) + "x x² gain"},
   },
   6: {
     title: "Extra Opportunities",
-    desc: "Unlock Auto-Sacrifice, and the ability to sacrifice x² to the Coordinate Plane. X and Y don't reset on sacrifice.",
+    desc() {return `Unlock Auto-Sacrifice, and the ability to sacrifice x² to the Coordinate ${player.zUnlocked ? "Realm" : "Plane"}. X and Y don't reset on sacrifice.`},
     cost: new Decimal(600000),
     effectDisplay() {return null},
   },
@@ -170,7 +174,7 @@ function hasSU(x) {
 }
 
 function sqrtDoublerCost() {
-  return new Decimal(200).mul(Decimal.pow(5,player.sqrtDoublers)).mul(Decimal.pow(1.05,player.sqrtDoublers.sub(100).max(0).pow(2)))
+  return new Decimal(200).mul(Decimal.pow(5,player.sqrtDoublers)).mul(Decimal.pow(1.05,player.sqrtDoublers.sub(hasZlabMilestone(4,2)?250:100).max(0).pow(2)))
 }
 
 function buySqrtDoubler() {
@@ -197,13 +201,13 @@ function ceEffect(x) {
     case 1:
       let eff1 = player.challengeEssence.max(1).pow(2)
       if(eff1.gt(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))) eff1 = eff1.div(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))
-      if(eff1.gt("1e1500") && !hasCU(1,8)) eff1 = eff1.div("1e1500").pow(0.3).mul("1e1500")
+      if(eff1.gt("1e1500") && (!hasCU(1,8) || player.compChallenge == 10)) eff1 = eff1.div("1e1500").pow(0.3).mul("1e1500")
       return eff1
     break;
     case 2:
       let eff2 = player.challengeEssence.max(1).pow(1.2)
       if(eff2.gt(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))) eff2 = eff2.div(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))
-      if(eff2.gt("1e900") && !hasCU(1,8)) eff2 = eff2.div("1e900").pow(0.3).mul("1e900")
+      if(eff2.gt("1e900") && (!hasCU(1,8) || player.compChallenge == 10)) eff2 = eff2.div("1e900").pow(0.3).mul("1e900")
       return eff2
     break;
   }

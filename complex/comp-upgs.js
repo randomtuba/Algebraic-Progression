@@ -1,4 +1,4 @@
-// row 1 in compUpgs
+// index 1 in compUpgs
 const BCOMP_UPGRADES = {
   1: {
     title: "Starter Pack",
@@ -24,16 +24,16 @@ const BCOMP_UPGRADES = {
   },
   4: {
     title: "S-UP-er Boost",
-    desc: "Power x² gain based on total Upgrade Points.",
+    desc: "Power x² gain based on total Upgrade Points. (harcaps at ^1.25)",
     cost: new Decimal(5e10),
-    eff() {return player.upgradePoints[1].div(200).add(1).div(1.05).pow(0.5).mul(1.05)},
+    eff() {return player.upgradePoints[1].div(200).add(1).div(1.05).pow(0.5).mul(1.05).min(1.25)},
     effectDisplay() {return "^" + format(BCOMP_UPGRADES[4].eff()) + " x² gain"},
   },
   5: {
     title: "Time Is Money",
     desc: "Multiply Complex Plane powers gain based on time in this Complex.",
     cost: new Decimal(2.4e24),
-    eff() {return new Decimal(player.prestigeTimes[2]).pow(0.75).add(1).div(100).pow(0.5).mul(10)},
+    eff() {return new Decimal(player.prestigeTimes[2]).pow(0.75).add(1).div(100).pow(0.5).mul(10).pow(hasZlabMilestone(2,5)?4:1)},
     effectDisplay() {return format(BCOMP_UPGRADES[5].eff()) + "x Complex Plane powers gain"},
   },
   6: {
@@ -57,15 +57,15 @@ const BCOMP_UPGRADES = {
     effectDisplay() {return format(BCOMP_UPGRADES[8].eff()) + "x CE softcap start"},
   },
   9: {
-    title: "TBD",
-    desc: "???",
-    cost: new Decimal("1.79e3008"),
-    eff() {return new Decimal(1)},
-    effectDisplay() {return null},
+    title: "Prestigious II",
+    desc: "Gain more i based on times gone Complex.",
+    cost: new Decimal(1e120),
+    eff() {return player.complexes.sqrt()},
+    effectDisplay() {return format(BCOMP_UPGRADES[9].eff()) + "x i gain"},
   },
 };
 
-// row 0 in compUpgs
+// index 0 in compUpgs
 const COMP_UPGRADES = {
   1: {
     desc: "The h(x) base powers point gain at a heavily reduced rate. (^0.01)",
@@ -98,9 +98,9 @@ const COMP_UPGRADES = {
     effectDisplay() {return format(COMP_UPGRADES[5].eff()) + "x x²"},
   },
   6: {
-    desc: "Gain more root essence based on times gone Quadratic. (hardcaps at 20,000,000 Quadratics)",
+    desc(){return "Gain more root essence based on times gone Quadratic. (hardcaps at " + (hasZlabMilestone(3,3) ? format(1e9) : format(2e7)) + " Quadratics)"},
     cost: new Decimal(5),
-    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).min(2e7).pow(player.quadratics.add(player.bankedQuadratics).min(2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).pow(player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(COMP_UPGRADES[6].eff()) + "x root essence"},
   },
   7: {
@@ -119,7 +119,7 @@ const COMP_UPGRADES = {
     desc: "Gain more i based on Functions bought, and delay the g(x) and h(x) softcaps by UP purchases.",
     cost: new Decimal(7),
     eff() {return player.buyables[4].add(player.buyables[5]).add(player.buyables[6]).div(100000).add(1).pow(2.5)},
-    effectDisplay() {return format(COMP_UPGRADES[9].eff()) + "x i, +" + format(player.compUpgs[2][0]+player.compUpgs[2][1]+player.compUpgs[2][2]) + " g(x) and h(x) softcap starts"},
+    effectDisplay() {return format(COMP_UPGRADES[9].eff()) + "x i, +" + formatWhole(player.compUpgs[2][0]+player.compUpgs[2][1]+player.compUpgs[2][2]) + " softcap starts"},
   },
   10: {
     desc: "i and Quadratic Power boost each other.",
@@ -140,14 +140,53 @@ const COMP_UPGRADES = {
     eff() {return player.i.pow(0.1).div(300).add(1)},
     effectDisplay() {return format(COMP_UPGRADES[12].eff()) + "x i"},
   },
+  13: {
+    desc: "Gain more points based on Z.",
+    cost() {return Decimal.mul(5,Decimal.pow(2,player.fourthRowCompUpgs[1]))},
+    eff() {return Decimal.pow(1e100,player.z).pow(player.fourthRowCompUpgs[1])},
+    effectDisplay() {return format(COMP_UPGRADES[13].eff()) + "x production"},
+    next() {return Decimal.pow(1e100,player.z).pow(player.fourthRowCompUpgs[1].add(1))},
+    nextDisplay() {return format(COMP_UPGRADES[13].next()) + "x production"},
+  },
+  14: {
+    desc: "Slope gain is powered by a fixed exponent.",
+    cost() {return Decimal.mul(5,Decimal.pow(2,player.fourthRowCompUpgs[2]))},
+    eff() {return Decimal.add(1,player.fourthRowCompUpgs[2].div(50))},
+    effectDisplay() {return "^" + format(COMP_UPGRADES[14].eff()) + " slope"},
+    next() {return Decimal.add(1,(player.fourthRowCompUpgs[2].add(1)).div(50))},
+    nextDisplay() {return "^" + format(COMP_UPGRADES[14].next()) + " slope"},
+  },
+  15: {
+    desc: "Gain more i based on unspent revolutions.",
+    cost() {return Decimal.mul(5,Decimal.pow(2,player.fourthRowCompUpgs[3]))},
+    eff() {return player.varSynth.revolutions.pow(4).add(1).pow(player.fourthRowCompUpgs[3])},
+    effectDisplay() {return format(COMP_UPGRADES[15].eff()) + "x i"},
+    next() {return player.varSynth.revolutions.pow(4).add(1).pow(player.fourthRowCompUpgs[3].add(1))},
+    nextDisplay() {return format(COMP_UPGRADES[15].next()) + "x i"},
+  },
+  16: {
+    desc: "Gain more y² based on circles.",
+    cost() {return Decimal.mul(5,Decimal.pow(2,player.fourthRowCompUpgs[4]))},
+    eff() {return player.varSynth.circles.pow(0.075).add(1).pow(player.fourthRowCompUpgs[4])},
+    effectDisplay() {return format(COMP_UPGRADES[16].eff()) + "x y²"},
+    next() {return player.varSynth.circles.pow(0.075).add(1).pow(player.fourthRowCompUpgs[4].add(1))},
+    nextDisplay() {return format(COMP_UPGRADES[16].next()) + "x y²"},
+  },
 }
 
 function buyCU(x,y) {
   switch (x) {
     case 0:
-      if(player.upgradePoints[0].gte(COMP_UPGRADES[y].cost) && !hasCU(0,y)){
-        player.upgradePoints[0] = player.upgradePoints[0].sub(COMP_UPGRADES[y].cost)
-        player.compUpgs[0].push(y)
+      if(y > 12) {
+        if(player.upgradePoints[0].gte(COMP_UPGRADES[y].cost())){
+          player.upgradePoints[0] = player.upgradePoints[0].sub(COMP_UPGRADES[y].cost())
+          player.fourthRowCompUpgs[y-12] = player.fourthRowCompUpgs[y-12].add(1)
+        }
+      } else {
+        if(player.upgradePoints[0].gte(COMP_UPGRADES[y].cost) && !hasCU(0,y)){
+          player.upgradePoints[0] = player.upgradePoints[0].sub(COMP_UPGRADES[y].cost)
+          player.compUpgs[0].push(y)
+        }
       }
       break;
     case 1:
@@ -167,13 +206,13 @@ function hasCU(x,y) {
 function upgradePointCost(x) {
   switch (x) {
     case 1: // Point cost
-      return new Decimal("1e17000").pow(Decimal.pow(1.25,player.compUpgs[2][0]))
+      return new Decimal("1e17000").pow(Decimal.pow(1.25,player.compUpgs[2][0])).pow(hasZlabMilestone(4,3)?0.8:1)
       break;
     case 2: // X^2 cost
-      return new Decimal("1e2950").pow(Decimal.pow(1.15,player.compUpgs[2][1]))
+      return new Decimal("1e2950").pow(Decimal.pow(1.15,player.compUpgs[2][1])).pow(hasZlabMilestone(4,3)?0.8:1)
       break;
     case 3: // I cost
-      return new Decimal("1").mul(player.compUpgs[2][2] >= 1 ? 2 : 1).pow(Decimal.pow(1.4,new Decimal(player.compUpgs[2][2]-1).max(0))).ceil()
+      return new Decimal("1").mul(player.compUpgs[2][2] >= 1 ? 2 : 1).pow(Decimal.pow(1.4,new Decimal(player.compUpgs[2][2]-1).max(0))).pow(hasZlabMilestone(4,3)?0.8:1).ceil()
       break;
   }
 }
@@ -210,13 +249,31 @@ function buyUP(x) {
 function respec() {
   if (confirm("Are you sure you want to respec your Complex Upgrades? You will go Complex with no reward!")) {
     player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked != 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : new Decimal(0))
+    if(player.compUpgs[0].length == 0 && !hasSecretAchievement(4) && player.fourthRowCompUpgs[1]+player.fourthRowCompUpgs[2]+player.fourthRowCompUpgs[3]+player.fourthRowCompUpgs[4] == 0) {
+      player.secretAchievements.push('4')
+      $.notify("Secret Achievement Unlocked: Not Quite Right", {
+        style: 'apcurrent',
+        className:'secretAchieves',
+      });
+    }
     player.compUpgs[0] = []
+    player.fourthRowCompUpgs = [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]
+    goComplex(true)
+  }
+}
+
+function respecFourthRow() {
+  if (confirm("Are you sure you want to respec your fourth-row Complex Upgrades? You will go Complex with no reward!")) {
+    let cuCost = (hasCU(0,1)?new Decimal(3):new Decimal(0)).add(hasCU(0,2)?new Decimal(3):new Decimal(0)).add(hasCU(0,3)?new Decimal(3):new Decimal(0)).add(hasCU(0,4)?new Decimal(3):new Decimal(0)).add(hasCU(0,5)?new Decimal(5):new Decimal(0)).add(hasCU(0,6)?new Decimal(5):new Decimal(0)).add(hasCU(0,7)?new Decimal(5):new Decimal(0)).add(hasCU(0,8)?new Decimal(5):new Decimal(0)).add(hasCU(0,9)?new Decimal(7):new Decimal(0)).add(hasCU(0,10)?new Decimal(7):new Decimal(0)).add(hasCU(0,11)?new Decimal(7):new Decimal(0)).add(hasCU(0,12)?new Decimal(7):new Decimal(0))
+    player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked != 0 ? COMP_CHALLENGES[player.unlocked].unlockCost : new Decimal(0)).sub(cuCost)
+    player.fourthRowCompUpgs = [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]
     goComplex(true)
   }
 }
 
 function exportUpgs() {
   let str = player.compUpgs[0].toString();
+  if(hasZlabMilestone(1,5)) str += ";" + player.fourthRowCompUpgs[1] + "," + player.fourthRowCompUpgs[2] + "," + player.fourthRowCompUpgs[3] + "," + player.fourthRowCompUpgs[4];
   const el = document.createElement("textarea");
   el.value = str;
   document.body.appendChild(el);
@@ -231,30 +288,51 @@ function exportUpgs() {
 }
 
 function loadUpgs(imported = undefined) {
-  if (imported === undefined) imported = prompt("Paste your Complex Upgrades preset in the input box below! (This will reset your run with no reward!)")
-    let arr = imported.split(",");
+    if (imported === undefined) imported = prompt("Paste your Complex Upgrades preset in the input box below! (This will reset your run with no reward!)")
+if(imported.includes(";")==false)  imported+=";0,0,0,0"
+    
+  let arr = imported.split(";")[0].split(",");
     player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked == 0 ? 0 : COMP_CHALLENGES[player.unlocked].unlockCost)
     player.compUpgs[0] = []
     goComplex(true)
     for (let i = 0; i < arr.length; i++) {
       if (arr[i] > 0 && arr[i] < 13) {
-        buyCU(0,new Decimal(arr[i]).toNumber())
+        buyCU(0,+arr[i])
       }
     }
+let fourth = imported.split(";")[1].split(",")
+fourth.forEach((item,index,array)=>{array[index]=Number(item)})
+for(let i = 0; i < fourth.length; i++){
+for(let x=0;x<fourth[i];x++){
+buyCU(0,i+13)
+}
+}
 }
 
 function loadPreset(x) {
-  let arr = player.presets.info[x].split(",");
+    let info =  player.presets.info[x]
+if(info.includes(";")==false)  info+=";0,0,0,0"
+    
+  let arr = info.split(";")[0].split(",");
     player.upgradePoints[0] = player.upgradePoints[1].sub(player.unlocked == 0 ? 0 : COMP_CHALLENGES[player.unlocked].unlockCost)
     player.compUpgs[0] = []
     goComplex(true)
     for (let i = 0; i < arr.length; i++) {
       if (arr[i] > 0 && arr[i] < 13) {
-        buyCU(0,new Decimal(arr[i]).toNumber())
+        buyCU(0,+arr[i])
       }
     }
+let fourth = info.split(";")[1].split(",")
+fourth.forEach((item,index,array)=>{array[index]=Number(item)})
+for(let i = 0; i < fourth.length; i++){
+for(let x=0;x<fourth[i];x++){
+buyCU(0,i+13)
+}
+}
 }
 
 function renamePreset(x) {
-  player.presets.names[x] = prompt("Type in the new name for this preset below!")
+  const answer = prompt("Type in the new name for this preset below!")
+ if(prompt===null) return false
+  player.presets.names[x] = answer
 }

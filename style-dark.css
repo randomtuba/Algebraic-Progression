@@ -24,6 +24,12 @@ span{
   color: inherit
 }
 
+select,option{
+  color:white;
+  background-color:black;
+  border-color:white;
+}
+
 #points {
   font-size: 25px;
   text-shadow: 0px 0px 7px;
@@ -123,6 +129,17 @@ span{
   border-color: #ffbdbd;
 }
 
+.xyButton {
+  background-color: #006f73;
+  font-size: 18px;
+}
+
+.xyButton:hover {
+  color: #99fbff;
+  background-color: #008888;
+  border-color: #99fbff;
+}
+
 .upgradeLocked {
   background-color: red;
   color: white;
@@ -135,10 +152,34 @@ span{
   border-color: #AAAA00;
 }
 
-.upgradeBought {
+.upgradeBought, .upgradeChargeable {
   background-color: green;
   color: white;
   border-color: green;
+}
+
+.upgradeChargeable:hover {
+  background-color: black;
+  color: #006ede;
+  border-color: #006ede;
+}
+
+.upgradeCharged {
+  background-color: #006ede;
+  color: white;
+  border-color: #006ede;
+}
+
+.yquadUpgradeBuyable {
+  background-color: #deadff;
+  color: black;
+  border-color: #deadff;
+}
+
+.yquadUpgradeBought {
+  background-color: #9900ff;
+  color: white;
+  border-color: #9900ff;
 }
 
 #pps {
@@ -180,6 +221,23 @@ span{
   transition-duration: 0.2s;
 }
 
+.prestige3 {
+  height: 75px;
+  width: 115px;
+  border-color: #9900ff;
+  color: #9900ff;
+  background-color: #deadff;
+  transition-duration: 0.2s;
+}
+
+.tabYqua {
+  font-size: 20px;
+  border-color: #9900ff;
+  color: #9900ff;
+  background-color: #deadff;
+  transition-duration: 0.2s;
+}
+
 #prestige:hover, .tabQua:hover {
   background-color: blue;
   color: #A1C7CC;
@@ -188,6 +246,36 @@ span{
 .prestige2:hover, .tabComp:hover {
   background-color: #5dde5d;
   color: #006600;
+}
+
+.prestige3:hover, .tabYqua:hover {
+  background-color: #9900ff;
+  color: #deadff;
+}
+
+.notprestige {
+  height: 75px;
+  width: 140px;
+  animation: notprestige 2s linear 0s infinite;
+  transition-duration: 0.2s;
+}
+
+@keyframes notprestige {
+  0% {
+    color: blue;
+    border-color: blue;
+    background-color: #A1C7CC;
+  }
+  50% {
+    border-color: #9900ff;
+    color: #9900ff;
+    background-color: #deadff;
+  }
+  100% {
+    color: blue;
+    border-color: blue;
+    background-color: #A1C7CC;
+  }
 }
 
 #enterSqrt {
@@ -231,6 +319,18 @@ span{
   border-color: #5dde5d;
   color: #5dde5d;
   background-color: #006600;
+}
+
+.yChalDefault {
+  color: #9900ff;
+  background-color: #deadff;
+  border-color: #9900ff;
+}
+
+.yChalIncomplete {
+  color: #deadff;
+  background-color: #9900ff;
+  border-color: #9900ff;
 }
 
 .autocenter {
@@ -326,14 +426,34 @@ span{
   color: #ff7878;
 }
 
+.realishSolution {
+  color: #ffef69;
+}
+
 .qpBuyable {
   background-color: #5fe1ed;
   color: black;
   border-color: #5fe1ed;
 }
 
+.ipBuyable {
+  background-color: #5dde5d;
+  color: black;
+  border-color: #5dde5d;
+}
+
 .compText {
   color: #5dde5d;
+  font-size: 20px;
+}
+
+.yquadText {
+  color: #deadff;
+  font-size: 20px;
+}
+
+.zLabText {
+  color: #ffbdbd;
   font-size: 20px;
 }
 
@@ -403,6 +523,18 @@ span{
   border-color: #279629;
 }
 
+.fourthRowBuyable {
+  background-color: #ffbdbd;
+  color: black;
+  border-color: #ffbdbd;
+}
+
+.fourthRowBought {
+  background-color: #bb0000;
+  color: white;
+  border-color: #bb0000;
+}
+
 .compLocked {
   height: 75px;
   width: 115px;
@@ -440,5 +572,100 @@ span{
   100% {
     color: black;
     text-shadow: 0.1rem 0.1rem 0.2rem white;
+  }
+}
+
+.zCollider {
+  border: 4px solid white;
+  width: 312px;
+  height: 187px;
+  border-radius: 10px;
+  background-color: black;
+  border-color: white;
+}
+
+.zlabMilestoneLocked {
+  color: black;
+  background-color: #ff7878;
+  border: 2px solid #ff7878;
+  border-radius: 20px;
+}
+
+.zlabMilestoneUnlocked {
+  color: black;
+  background-color: #8aff78;
+  border: 2px solid #8aff78;
+  border-radius: 20px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted white;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.zlabBuyable {
+  color: white;
+  background-color: black;
+  width: 175px;
+  height: 150px;
+  font-size: 12px;
+  text-align: center; 
+  border-color: red;
+  border-width: 5px;
+}
+
+.zlabBuyable:hover {
+  background-color: red;
+  color: white;
+}
+
+.extrusionBuyable {
+  background-color: black;
+  color: #ff00ff;
+  border-color: #ff00ff;
+  transition-duration: 0.2s;
+}
+
+.extrusionBuyable:hover {
+  background-color: #ff00ff;
+  color: white;
+}
+
+.x2y2Text {
+  font-size: 20px;
+  animation: x2y2 2s linear 0s infinite;
+}
+
+@keyframes x2y2 {
+  0% {
+    color: #006DB6;
+  }
+  
+  50% {
+    color: #deadff;
+  }
+  
+  100% {
+    color: #006DB6;
   }
 }

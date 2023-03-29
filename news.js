@@ -3,8 +3,8 @@ var newsArray;
 function updateNewsArray() {
   newsArray = [
   ["Welcome to Algebraic Progression, the game where math becomes fun",true,"a1"], //v1.0
-  ["X marks the spot!",player.x.gte(1),"a2"], //v1.0
-  ["Therapist: \"Z isn't real, it can't hurt you\" Z:",player.totalx2.gte(1),"a3"], //v1.0
+  ["X marks the spot!",player.x.gte(1) || player.totali.gte(1),"a2"], //v1.0
+  [`Therapist: \"${player.zUnlocked ? `W` : `Z`} isn't real, it can't hurt you\" ${player.zUnlocked ? `W` : `Z`}:`,player.totalx2.gte(1) || player.totali.gte(1),"a3"], //v1.0
   ["i am a news ticker, fear me",true,"a4"], //v1.0
   ["when the variable is sus! 😳",true,"a5"], //v1.0
   ["when tuba doesn't update his game :flushed:",true,"a6"], //v1.0
@@ -19,12 +19,12 @@ function updateNewsArray() {
   ["When your game inflates so hard your numbers reach the Small Dropping Ordinal 🤔",true,"a15"], //v1.0
   ["AP Desmos% Speedrun",true,"a16"], //v1.0
   ["But Y?",player.y.gte(1),"a17"], //v1.0
-  ["Z might be real, but W isn't",player.y.gte(10),"a18"], //v1.0
+  [`${player.zUnlocked ? `W` : `Z`} might be real, but ${player.zUnlocked ? `V` : `W`} isn't`,player.y.gte(10) || player.totali.gte(1),"a18"], //v1.0
   ["Calculus do what AP don't",true,"a19"], //v1.0
   ["Unreal Engine should be renamed to Imaginary Engine",true,"a20"], //v1.0
   ["imagine not having spaghetti code",true,"a21"], //v1.0
   ["BREAKING NEWS: Point Portal malfunction caused 15 deaths and 3 injuries. Point Portal manager says \"we will be more careful next time\".",player.buyables[3].gte(1),"a22"], //v1.0
-  ["BREAKING NEWS: Tuba has decided to remove Buy Max, saying that it \"causes inflation\"! Public in fury as riots break out in the CST timezone!",player.totalx2.gte(1),"a23"], //v1.0
+  ["BREAKING NEWS: Tuba has decided to remove Buy Max, saying that it \"causes inflation\"! Public in fury as riots break out in the CST timezone!",player.totalx2.gte(1) || player.totali.gte(1),"a23"], //v1.0
   ["BREAKING NEWS: Obamium discovered in local mine!",true,"a24"], //v1.0
   ["BREAKING NEWS: Famous celebrity Joe Schmirzstein says \"I can't stop dreaming about complex mathematical functions. I need help.\"",true,"a25"], //v1.0
   ["BREAKING NEWS: We ran out of ideas",true,"a26"], //v1.0
@@ -35,28 +35,28 @@ function updateNewsArray() {
   ["Part 2: Tuba screws up",true,"a31"], //v1.1
   ["The action of adding news tickers is like drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
   ["You know what this game needs more of? It needs more protein",true,"a33"], //v1.1
-  ["Say it with me: X, Y, Z, W, A, B, C...",player.totalx2.gte(1),"a34"], //v1.1
+  [`Sing the Variable Alphabet with me: a, b, c, n, x, y${player.zUnlocked ? `, z` : ``}...no it doesn't continue after that.`,player.totalx2.gte(1) || player.totali.gte(1),"a34"], //v1.1
   ["Hey all, Scott here! My thoughts are being broadcasted on a news ticker now! No reason, just felt like it.",true,"a35"], //v1.1
-  ["0/10 quadratic layer needs more parabolas",player.totalx2.gte(1),"a36"], //v1.1
+  ["0/10 quadratic layer needs more parabolas",player.totalx2.gte(1) || player.totali.gte(1),"a36"], //v1.1
   ["You can't kill News Ticker Man, look at me go!",true,"a37"], //v1.1
-  ["Square Root is just Time Dilation but harder, deal with it",player.rootEssence.gt(0),"a38"], //v1.2
+  ["Square Root is just Time Dilation but harder, deal with it",player.rootEssence.gt(0) || player.totali.gte(1),"a38"], //v1.2
   ["Is this a Synergism reference???????",true,"a39"], //v1.2
   ["Fun Fact: Offline progress exists! Most currencies will keep growing at the same rate as if you were online, even when the game is closed. However, take note that automation does not work while offline.",true,"a40"], //v1.2
   ["\"hmmm today I will dev AP\" -randomtuba, 5 seconds before disaster struck",true,"a41"], //v1.2
-  ["Want another game to play while you're idling? Check out randomtuba's main website! Link: <a href='https://randomtuba.github.io/'>https://randomtuba.github.io/</a>",true,"a42"], //v1.2
-  ["If you're wondering about new content, there is now a 2nd prestige layer in this game! Go play it and stuff!",player.totalx2.gte(1),"a43"], //v1.2
+  ["Want another game to play while you're idling? Check out randomtuba's main website! Link: <a href='https://randomtuba.github.io/' target='_blank'>https://randomtuba.github.io/</a>",true,"a42"], //v1.2
+  ["If you're wondering about new content, there is now a 2nd prestige layer in this game! Go play it and stuff!",player.totalx2.gte(1) || player.totali.gte(1),"a43"], //v1.2
   ["\"shit game remove timewalls\" -reda",true,"a44"], //v1.2
   ["if i see one more 5 hours joke i will die in real life",true,"a45"], //v1.2
-  ["BREAKING NEWS: Tuba finally fixed Buy Max",player.totalx2.gte(1),"a46"], //v1.2
+  ["BREAKING NEWS: Tuba finally fixed Buy Max",player.totalx2.gte(1) || player.totali.gte(1),"a46"], //v1.2
   ["Reject linear, embrace nonlinear",true,"a47"], //v1.3
-  ["Dragon Ball X when?",player.x.gte(1),"a48"], //v1.3
-  ["Everyone talks about Z and W, but what about V?",player.y.gte(100),"a49"], //v1.3
-  ["Fun Fact: Quadratic in AP Classic was literally called \"Reset\", and x<sup>2</sup> was called \"Reset Points\". How unoriginal.",player.totalx2.gte(1),"a50"], //v1.3
-  ["Tip: Hold down M to do Quadratics faster",player.totalx2.gte(1),"a51"], //v1.3
+  ["Dragon Ball X when?",player.x.gte(1) || player.totali.gte(1),"a48"], //v1.3
+  [`Everyone talks about ${player.zUnlocked ? `W` : `Z`} not being real, but what about ${player.zUnlocked ? `V` : `W`}?`,player.totalx2.gte(1) || player.totali.gte(1),"a49"], //v1.3
+  ["Fun Fact: Quadratic in AP Classic was literally called \"Reset\", and x<sup>2</sup> was called \"Reset Points\". How unoriginal.",player.totalx2.gte(1) || player.totali.gte(1),"a50"], //v1.3
+  ["Tip: Hold down M to do Quadratics faster",player.totalx2.gte(1) || player.totali.gte(1),"a51"], //v1.3
   ["haha number go up", true, "a52"], //Incrementy Planet
   ["AP Rewritten REWRITTEN? What's next, AP Rewritten^3?",true,"a53"], //AP Rewritten^2
   ["99% can't go Quadratic!", player.totalx2.gte(1), "a54"], //Incrementy Planet
-  ["top 10 reasons why Z isnt real. 1) i forgor 💀",player.totalx2.gte(1),"a55"], //Incrementy Planet
+  [`top 10 reasons why ${player.zUnlocked ? `W` : `Z`} isnt real. 1) i forgor 💀`,player.totalx2.gte(1) || player.totali.gte(1),"a55"], //Incrementy Planet
   ["Kowalski, go Quadratic.",player.totalx2.gte(1), "a56"], //Incrementy Planet
   ["FIXING NEWS: Please don't break the news again.",true,"a57"], //AP Rewritten^2
   ["uhhhh what am I supposed to put here? some kind of meta-joke or something?",true,"a58"], //Incrementy Planet
@@ -72,7 +72,7 @@ function updateNewsArray() {
   ["Why are you playing this game? It's just a meaningless number going up with no implications on reality.",true,"a68"], //Incrementy Planet
   ["\"why are you @unpogged 77 centimeters tal?? 1047 pixels ( add this to incement plant news )\"  -DEMEMZEA",true,"a69"], //Incrementy Planet
   ["go solve today's wordle if you haven't already",true,"a70"], //Incrementy Planet
-  ["In the land of X and Y, we are not judged. Here we have peace. Here we are free.",player.y.gte(2),"a71"], //Incrementy Planet
+  ["In the land of X and Y, we are not judged. Here we have peace. Here we are free.",player.y.gte(2) || player.totali.gte(1),"a71"], //Incrementy Planet
   ["AP stands for Algebraic Progression, not Advanced Placement.",true,"a72"], //Incrementy Planet
   ["Point value plummets due to newfound abundance. \"Back in my day, 1 million was a lot!\" says crazy elderly person.",player.totalPoints.gte(1e11),"a73"], //Incrementy Planet
   ["Variables are an essential part of a nutritious and well-balanced breakfast",player.x.gte(1),"a74"], //Incrementy Planet
@@ -97,14 +97,14 @@ function updateNewsArray() {
   ["<div onclick=\"this.style.fontWeight=900\">Click here to make the news ticker thicc</div>",true,"a93"], //AP Rewritten^2
   ["Some of these messages have nothing to do with the actual game.",true,"a94"], //AP Rewritten^2
   ["\"I will gwammit unspeakable gwimes\" -Ink. dude",true,"a95"], //AP Rewritten^2
-  ["BREAKING NEWS: Don't check the console!",'(function() {console.error("I told you to not check it");return true})()',"a96"], //AP Rewritten^2
-  ["If you build autoclickers, point factories and/or portals in space, do they become space buildings?",player.buyables[3].gte(1),"a97"], //v1.4
+  ["BREAKING NEWS: Don't check the console!", '(function() {if(location.href.length>40){console.error("I told you to not check it")};return true})()', "a96"]
+  ["If you build autoclickers, point factories and/or portals in space, do they become space buildings?",player.buyables[3].gte(1) || player.totali.gte(1),"a97"], //v1.4
   ["<i>You found a rare news ticker!</i>",Math.random() <= 0.01,"a98"], //v1.4
   ["\"the currency called tubas are useless\" -gapples2 (edited)",true,"a99"], //v1.4
   ["Thank you for contacting customer support. This is Janet, how can I help you?",true,"a100"], //v1.4
   ["\"ew compact\" -randomtuba",true,"a101"], //v1.4
   ["ReferenceError: dadComesBack() is not a function [ratio.js, line 420:69]",true,"a102"], //v1.4
-  ["BREAKING NEWS: Mathematician proves that square root of 2 is irrational, philosophers from thousands of years ago outraged!",player.rootEssence.gt(0),"a103"], //v1.4
+  ["BREAKING NEWS: Mathematician proves that square root of 2 is irrational, philosophers from thousands of years ago outraged!",player.rootEssence.gt(0) || player.totali.gte(1),"a103"], //v1.4
   ["3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",true,"a104"], //v1.4
   ["Hi, I'm just another news ticker...I appear to have lost the <span style='color:red'>will to live</span>.",true,"a105"], //v1.4
   ["You've just been news tickered, send a screenshot of this news ticker to someone else to get un-news tickered",true,"a106"], //Prestige Game
@@ -112,10 +112,10 @@ function updateNewsArray() {
   ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news messages are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
   ["What's the second prestige layer, you ask? Well...it's complicated.",player.totali.gte(1),"a109"], //v2.0
   ["\"Where did my progress go?\" -Players after going Complex for the first time",player.totali.gte(1),"a110"], //v2.0
-  ["Congratulations, you're in the midgame!",player.totali.gte(1),"a111"], //v2.0
+  [`${hasQU(20) || player.totali.gte(1) ? `Congratulations, you're in the ${player.zUnlocked ? `lategame` : `midgame`}!` : `You're currently in the earlygame, enjoy it while it lasts`}`,true,"a111"], //v2.0
   ["Why is the obtuse angle always sad? Because it is never right.",true,"a112"], //v2.0
   ["6 confronts 7 about eating 9",true,"a113"], //v2.0
-  ["y<sup>2</sup> when?",player.totalx2.gte(1),"a114"], //v2.0
+  [`${player.totaly2.gte(1) ? 'x<sup>3</sup> when?' : 'y<sup>2</sup> when?'}`,player.totalx2.gte(1),"a114"], //v2.0
   ["Integers can sometimes be negative. Let's try to be more positive!",true,"a115"], //v2.0
   ["Who was the inventor of fractions? Henry the Eighth.",true,"a116"], //v2.0
   ["39 buried 0 found",true,"a117"], //v2.0
@@ -133,14 +133,14 @@ function updateNewsArray() {
   ["<i style='color: #969696;'>[removed]</i>",true,"a129"], //v2.0
   ["While incremental games can be fun and even healthy in certain contexts, they can start or perpetuate video game addiction even more than other genres. If you feel like playing incremental games is taking priority over other things in your life, or manipulating your sleep schedule, it may be well advised to seek help.",true,"a130"], //The Modding Tree Forums
   ["this can't be real...",player.complexes.gte(1),"a131"], //v2.1
-  ["Maybe the real Z was in our hearts all along.",player.y.gte(100),"a132"], //v2.1
+  [`Maybe the real ${player.zUnlocked ? `W` : `Z`} was in our hearts all along.`,player.y.gte(100) || player.totali.gte(1),"a132"], //v2.1
   ["BREAKING NEWS: After years of testing, we've finally found the value of x: 5. \"This is a monumental milestone for our goal,\" dedicated scientists say. \"Before you know it, we'll have all these pesky letters figured out and finally know the value of Number.\" More at 7 where we reveal the real value of i.",player.x.gte(1),"a133"], //v2.1
   ["Join our Discord server for a stable economy!",true,"a134"], //v2.1
   ["\"why do we exists\" -Saber",true,"a135"], //v2.1
   ["<span style='font-size:8px;'>Hopefully no one sees this...</span>",true,"a136"], //v2.1
   [`${format(player.points)} points? ${tmp.disses[Math.floor(Math.random() * tmp.disses.length)]}`,player.points.gte("1e1000"),"a137"], //v2.1
   ["BREAKING NEWS: Population complains about mathematical formula in an incremental game. 'I forgot how to solve a quadratic equation, it's not even useful, why is this in the game?' local complainer admits.",hasQU(20) || player.totali.gte(1),"a138"], //v2.1
-  ["Congratulations! You have all of the achievements!",player.achievements.length >= 45,"a139"], //v2.1
+  ["Congratulations! You have all of the achievements!",player.achievements.length >= 55,"a139"], //v2.1
   ["Have you realized that the Milestones are button elements yet?",player.complexes.gte(5),"a140"], //v2.1
   ["What happens when anti-slope comes in contact with antimatter? No one has survived to find out.",player.compChalCompletions[2] >= 1,"a141"], //v2.1
   ["Did you inflate the game or something?",player.i.gte("1e100000"),"a142"], //v2.1
@@ -152,6 +152,31 @@ function updateNewsArray() {
   ["INSIDE LOOK: What are Upgrade Points made out of? Research and analysis has discovered that they contain, on average, 62% dreams, 33% water vapor, and 5% sulfuric acid.",player.upgradePoints[1].gte(1),"a148"], //v2.1
   ["Your Ad Here",true,"a149"], //v2.1
   ["BREAKING NEWS: Complex Challenges deemed too easy, 10 tiers have already been finished!",ccTiers() >= 10,"a150"], //v2.1
+  [`BREAKING NEWS: Amateur mathematician suggests possible existence of a ${player.zUnlocked ? `fourth` : `third`} variable, gets trapped in Square Root as punishment.`,hasQU(16) || player.totali.gte(1),"a151"], //v2.2
+  [`${player.zUnlocked ? `W` : `Z`} isn't real because there are only 25 letters in the alphabet. Perfect squares FTW!`,player.totalx2.gte(1) || player.totali.gte(1),"a152"], //v2.2
+  [`${player.zUnlocked ? `W` : `Z`} isn't real because I said so.`,player.totalx2.gte(1) || player.totali.gte(1),"a153"], //v2.2
+  [`${player.zUnlocked ? `W` : `Z`} isn't real because the scaling would be too fast.`,player.totalx2.gte(1) || player.totali.gte(1),"a154"], //v2.2
+  [`${player.zUnlocked ? `W` : `Z`} isn't real because ${player.zUnlocked ? `we can't comprehend the 4th dimension` : `this is a 2D game, not a 3D game`}.`,player.totalx2.gte(1) || player.totali.gte(1),"a155"], //v2.2
+  [`${player.zUnlocked ? `W` : `Z`} isn't real because ${player.zUnlocked ? `W = 2V, and V doesn't exist either` : `it's currently sleeping`}.`,player.totalx2.gte(1) || player.totali.gte(1),"a156"], //v2.2
+  ["It's <b>X</b>-mas",new Date().getDate()===25&&new Date().getMonth()===12,"a157"], //v2.2
+  ["BREAKING NEWS: Local woman breaks up with her X boyfriend, says his 'values were unknown' to her.",player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),"a158"], //v2.2
+  ["A famous scientist has recently been fired in disgrace after suggesting a study into the algebra of dividing by zero.",true,"a159"], //v2.2
+  ["Breaking News fans when Fixing Olds fans show up",player.newsMessagesSeen >= 1000,"a160"], //v2.2
+  ["Reminder: If you ever write an answer with no label, it will always be interpreted as being measured in mangoes.",true,"a161"], //v2.2
+  ["If magnets aren't powerful enough for you, use an asymptote.",true,"a162"], //v2.2
+  ["Whenever randomtuba asks his testers or developers to help him add something, they secretly sit and wait, knowing that he will eventually add the feature himself.",true,"a163"], //v2.2
+  ["<div onclick=\"this.style.display='none'\">Click on me to make me disappear!</div>",true,"a164"], //v2.2
+  ["Fun Fact: e<sup>πi</sup> = -1",true,"a165"], //v2.2
+  ["If there's a bug with Root Epicenter Level √-1, then you're just imagining it.",player.hasCompletedLevel4,"a166"], //v2.2
+  ["POV: You are currently inside of a challenge",player.challenge != 0 || player.compChallenge != 0,"a167"], //v2.2
+  ["BREAKING NEWS: Incremental game <a href='https://mrbacon470.github.io/Coop-Co/' target='_blank'>Coop Co</a> contains a news message referencing Algebraic Progression!",true,"a168"], //v2.2
+  ["Since when were <i>letters</i> a part of math? I thought they were supposed to be used for English!",player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),"a169"], //v2.2
+  ["BREAKING NEWS: Small, family-owned Point Factories are being replaced with high-tech Variable Synthesizers! 'What happened to the good ol' days of X, Y, and Z? Now we got xy, y<sup>2</sup> and all these other crazy variables,' Farmer Dave remarks.",player.varSynth.unlocked[0],"a170"], //v2.2
+  ["What happens if the Z-Colliders collide with each other?",hasYQU(8,'bought'),"a171"], //v2.2
+  ["Solve for my sanity as I approach my limit",true,"a172"], //v2.2
+  ["Wake up.",true,"a173"], //v2.2
+  ["9 out of 10 dentists recommend that you should NOT eat the Variables! This is serious, they could make you delirious!",true,"a174"], //v2.2
+  ["BREAKING NEWS: Goofy scientist presses wrong button at the Z Lab, Resonance Cascade ensues.",hasYQU(8,'bought'),"a175"], //v2.2
   ]
 }
 var s;

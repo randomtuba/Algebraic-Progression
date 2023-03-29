@@ -1,10 +1,45 @@
-function updateAchs(){
+function updateNotifs(){
+  // Achievement Notifications
   for(let i in ACHIEVEMENTS){
     if(!player.achievements.includes(i)&&ACHIEVEMENTS[i].done()){
       player.achievements.push(i)
-      $.notify("Achievement Unlocked: " + ACHIEVEMENTS[i].name, {
+      if(i!=19)      $.notify("Achievement Unlocked: " + ACHIEVEMENTS[i].name, {
         style: 'apcurrent',
         className:'achieves',
+      });
+      else      $.notify("Achievement Unlocked: " + ACHIEVEMENTS[i].name(),{
+        style: 'apcurrent',
+        className:'achieves',
+      });
+    }
+  }
+  // Secret Achievement Notifications
+  for(let i in SECRET_ACHIEVEMENTS){
+    if(!player.secretAchievements.includes(i)&&SECRET_ACHIEVEMENTS[i].done()){
+      player.secretAchievements.push(i)
+      $.notify("Secret Achievement Unlocked: " + SECRET_ACHIEVEMENTS[i].name, {
+        style: 'apcurrent',
+        className:'secretAchieves',
+      });
+    }
+  }
+  // Milestone Notifications
+  for(let i in MILESTONES){
+    if(!player.obtainedMilestones.includes(i) && hasMilestone(i)){
+      player.obtainedMilestones.push(i)
+      $.notify("Milestone Reached: " + MILESTONES[i].title, {
+        style: 'apcurrent',
+        className:'unlock',
+      });
+    }
+  }
+  // Y-Quadratic Upgrade Unlock Notifications
+  for(let i in YQUAD_UPGRADES){
+    if(!player.yQuadUpgs[1].includes(i)&&YQUAD_UPGRADES[i].done() && player.zUnlocked){
+      player.yQuadUpgs[1].push(i)
+      $.notify("Y-Quadratic Upgrade Unlocked: " + YQUAD_UPGRADES[i].title, {
+        style: 'apcurrent',
+        className:'unlock',
       });
     }
   }
@@ -57,7 +92,7 @@ const ACHIEVEMENTS = {
   },
   10: {
     name: "Graphing Time",
-    desc: "Unlock Coordinate Plane.",
+    desc(){return "Unlock Coordinate " + (player.zUnlocked ? "Realm" : "Plane") + "."},
     done(){return hasQU(12)},
   },
   11: {
@@ -101,7 +136,7 @@ const ACHIEVEMENTS = {
     done(){return player.b.gte(3)},
   },
   19: {
-    name: "Z isn't real",
+    name(){return player.zUnlocked ? "Not enough for Z" : "Z isn't real"},
     desc: "Reach 100y.",
     done(){return player.y.gte(100)},
   },
@@ -231,62 +266,144 @@ const ACHIEVEMENTS = {
     done(){return player.transformations.bought[1].gte(2) && player.transformations.bought[2].gte(2) && player.transformations.bought[3].gte(2)},
   },
   45: {
-    name: "The End",
-    desc: "...for now.",
+    name: "[DATA EXPUNGED]",
+    desc: "Reach 2,222y.",
     done(){return player.y.gte(2222)},
   },
   46: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Meeting Standards",
+    desc: "Buy 4 Y-Quadratic Upgrades.",
+    done(){return player.yQuadUpgs[0].length >= 4},
   },
   47: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Nuclear Fission",
+    desc: "Have 1 level of each Z-Collider.",
+    done(){return player.zlab.levels[1] >= 1 && player.zlab.levels[2] >= 1 && player.zlab.levels[3] >= 1 && player.zlab.levels[4] >= 1},
   },
   48: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "One With Everything",
+    desc: "Reach 60 total Upgrade Points.",
+    done(){return player.upgradePoints[1].gte(60)},
   },
   49: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "181 best waifu",
+    desc: "Start passively generating x².",
+    done(){return hasMilestone(18)},
   },
   50: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Cursed Products",
+    desc: "Unlock the Variable Synthesizer.",
+    done(){return player.varSynth.unlocked[0]},
   },
   51: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Complex Conqueror",
+    desc: "Have 1 completion of each Complex Challenge.",
+    done(){return player.compChalCompletions[10] >= 1},
   },
   52: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Nine Circles",
+    desc: "Have 9 circles.",
+    done(){return player.varSynth.circles.gte(9)},
   },
   53: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Polar Rotation",
+    desc: "Unlock i Exponentiation.",
+    done(){return player.varSynth.unlocked[2]},
   },
   54: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Round Three",
+    desc: "Complete a Y-Challenge.",
+    done(){return player.yChalCompletions[1] > 0},
   },
   55: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "The End",
+    desc: "...for now.",
+    done(){return ccTiers() == 50},
   },
 }
 
 function hasAchievement(x) {
   return player.achievements.includes(x.toString())
+}
+
+const SECRET_ACHIEVEMENTS = {
+  1: {
+    name: "Clicker Enthusiast",
+    desc: "Click the \"+1 Point\" button at least 500 times in one session.",
+    done(){return tmp.clicks >= 500},
+  },
+  2: {
+    name: "Indecisive",
+    desc: "Switch between Light and Dark theme at least 20 times in one session.",
+    done(){return tmp.themeSwitches >= 40},
+  },
+  3: {
+    name: "Following Directions",
+    desc: "Follow directions.",
+    done(){return false},
+  },
+  4: {
+    name: "Not Quite Right",
+    desc: "Respec an empty set of Complex Upgrades.",
+    done(){return false},
+  },
+  5: {
+    name: "A Complete Catalogue",
+    desc: "Name all six presets.",
+    done(){return player.presets.names[1] != "Preset 1" && player.presets.names[2] != "Preset 2" && player.presets.names[3] != "Preset 3" && player.presets.names[4] != "Preset 4" && player.presets.names[5] != "Preset 5" && player.presets.names[6] != "Preset 6"},
+  },
+  6: {
+    name: "Those Are Buttons?",
+    desc: "Click a Milestone.",
+    done(){return false},
+  },
+  7: {
+    name: "Blanked Out",
+    desc: "Show the news ticker after hiding it.",
+    done(){return false},
+  },
+  8: {
+    name: "Remarkable Progress",
+    desc: "Export your save as a file with 25 points or less.",
+    done(){return false},
+  },
+  9: {
+    name: "Illegal Hotkey",
+    desc(){return "Attempt to purchase the " + (player.zUnlocked ? "4th" : "3rd") + " Variable."},
+    done(){return false},
+  },
+  10: {
+    name: "Professor",
+    desc: "Expand all Textbook sections.",
+    done(){return !tmp.textbook.expands.includes(false)},
+  },
+  11: {
+    name: "Minimalist",
+    desc: "Disable Offline Progress, Inactive Progress, Autosave, and Hotkeys.",
+    done(){return !player.options[0] && !player.options[1] && !player.options[2] && !player.options[9]},
+  },
+  12: {
+    name: "You Don't Need That",
+    desc: "Buy Max while all Pre-Quadratic autobuyers are active.",
+    done(){return false},
+  },
+  13: {
+    name: "Sweaty Speedrunner",
+    desc: "Have the sum of your Challenge records be under 2 seconds.",
+    done(){return chalRecordsSum() < 2},
+  },
+  14: {
+    name: "News Addict",
+    desc: "See 3,000 news ticker messages.",
+    done(){return player.newsMessagesSeen >= 3000},
+  },
+  15: {
+    name: "Faster Than Light",
+    desc: "Get a fastest Quadratic and Complex time of less than 0.02 seconds.",
+    done(){return player.prestigeTimes[1] < 0.02 && player.prestigeTimes[3] < 0.02},
+  },
+}
+
+function hasSecretAchievement(x) {
+  return player.secretAchievements.includes(x.toString())
 }
