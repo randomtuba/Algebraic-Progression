@@ -172,7 +172,7 @@ function buildingExponents() {
   if(player.challenge == 4 || player.compChallenge == 8) exp = exp.max(0).mul(0.75)
   if(hasUpgrade(7) && player.challenge != 5 && player.compChallenge != 8 && (!hasChargedUpgrade(7) || player.inSqrt)) exp = exp.mul(1.01)
   if(hasChargedUpgrade(7) && player.challenge != 5 && player.compChallenge != 8 && !player.inSqrt) exp = exp.mul(1.03)
-  if(hasChallenge(4)) exp = exp.mul(hasChargedUpgrade(7) && !player.inSqrt ? 1.02 : 1.03)
+  if(hasChallenge(4)) exp = exp.mul(player.zUnlocked && !player.inSqrt ? 1.02 : 1.03)
   if(player.challenge == 2 || player.compChallenge == 8) exp = exp.mul(player.chalExponents[0])
   if(player.challenge == 9) exp = exp.mul(player.chalExponents[1])
   if(hasCU(0,1) && player.compChallenge != 10) exp = exp.mul(COMP_UPGRADES[1].eff())
