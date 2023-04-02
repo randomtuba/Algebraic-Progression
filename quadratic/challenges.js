@@ -40,7 +40,7 @@ const CHALLENGES = {
     title: "Atheism",
     desc: "Sacrificed X, sacrificed Y, and slope do nothing.",
     goal: new Decimal("1e390"),
-    rewardDesc: "Addition to the slope effect exponent from Y-Intercept is multiplied by 1.1.",
+    rewardDesc: "Addition to the slope effect exponent from Y-Intercept is multiplied by 1.05.",
   },
   8: {
     title: "Primed Production",
