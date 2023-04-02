@@ -27,7 +27,7 @@ const CHALLENGES = {
   5: {
     title: "Weighted Xs",
     desc: "X Upgrades are useless (that also means Functions, Produced Buildings, and Y-Intercept do nothing), and every time you buy an X, production is divided by about 1.016 (5^0.01). Your X autobuyer will single-buy.",
-    goal: new Decimal("1e600"),
+    goal: new Decimal("1e630"),
     rewardDesc: "Divide the X cost by 1e9, and unlock 4 new Square Root upgrades.",
   },
   6: {
