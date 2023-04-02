@@ -569,10 +569,10 @@ function trappedInSqrt() {
 }
 
 function checkForEndgame() {
-  if (player.achievements.length >= 60 && !player.gameWon) {
+  if (player.achievements.length >= 55 && !player.gameWon) {
     player.gameWon = true
     player.winTime = player.timePlayed
-  } else if (player.achievements.length < 60) {
+  } else if (player.achievements.length < 55) {
     player.gameWon = false;
   }
 }
