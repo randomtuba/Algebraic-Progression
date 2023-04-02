@@ -66,7 +66,7 @@ const COMP_CHALLENGES = {
   8: {
     title: "Sadistic",
     desc() {return "Quadratic Challenges 1-8 and 10 are all applied at the same time. However, buying X and Y no longer spend purchases, and you start with 2 Point Portals."},
-    goals: [new Decimal("1e4900"),new Decimal("1e11700"),new Decimal("1e82300"),new Decimal("1e101000"),new Decimal("1e145000"),new Decimal(Infinity)],
+    goals: [new Decimal("1e6900"),new Decimal("1e13700"),new Decimal("1e82300"),new Decimal("1e101000"),new Decimal("1e145000"),new Decimal(Infinity)],
     rewardDesc: "Power the Challenge 1 hardcap start.",
     eff() {return player.compChalCompletions[8] >= 4 ? Decimal.pow(1.6,player.compChalCompletions[8]).floor() : Decimal.add(1,player.compChalCompletions[8])},
     effectDisplay() {return "^" + format(COMP_CHALLENGES[8].eff()) + " C1 hardcap"},

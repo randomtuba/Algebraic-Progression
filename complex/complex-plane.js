@@ -12,7 +12,7 @@ function compPlaneEffects(x) {
       return player.compPlane[1][3].add(1).log10().add(1).log(3)
       break;
     case 4:
-      return player.compPlane[1][4].add(1).log10().pow(0.8).floor()
+      return player.compPlane[1][4].add(1).log10().pow(Decimal.add(0.8,POLY_BUYABLES[1].eff())).floor()
       break;
   }
 }
@@ -29,7 +29,7 @@ function compPlaneEffectDisplay(x) {
       return "adding " + format(compPlaneEffects(x)) + " to the multiplier per purchase of the x² doubler and the RE doubler."
       break;
     case 4:
-      return "giving " + formatWhole(compPlaneEffects(x)) + " extra Upgrade Points. (next at " + format(Decimal.pow(10,compPlaneEffects(4).add(1).pow(Decimal.div(1,0.8))).sub(1)) + ")"
+      return "giving " + formatWhole(compPlaneEffects(x)) + " extra Upgrade Points. (next at " + format(Decimal.pow(10,compPlaneEffects(4).add(1).pow(Decimal.div(1,Decimal.add(0.8,POLY_BUYABLES[1].eff())))).sub(1)) + ")"
   }
 }
 

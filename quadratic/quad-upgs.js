@@ -186,6 +186,16 @@ function rowAmt(x){
       if(hasZlabMilestone(1,5)) row8++
       return row8
     break;
+    case 9: // POLYNOMIAL BUYABLES
+      let row9=0
+      if(player.polynomials[4].bought.gte(1)) row9++
+      if(player.polynomials[5].bought.gte(1)) row9++
+      if(player.polynomials[6].bought.gte(1)) row9++
+      if(player.polynomials[7].bought.gte(1)) row9++
+      if(player.polynomials[8].bought.gte(1)) row9++
+      if(player.polynomials[9].bought.gte(1)) row9++
+      return row9
+    break;
   }
 }
 

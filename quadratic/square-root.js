@@ -48,6 +48,13 @@ function enterSqrt() {
     goQuadratic(true);
     if(!player.inSqrt){
       player.sqrtEnters += 1
+      if(!hasSecretAchievement(17) && player.epicenterLevel == '5' && player.x2.gte("1e2950") && player.rootEssence.gte("1e660") && player.hasCompletedLevel5) {
+      player.secretAchievements.push('17')
+      $.notify("Secret Achievement Unlocked: Show-Off", {
+        style: 'apcurrent',
+        className:'secretAchieves',
+      });
+    }
     }
     player.inSqrt = !player.inSqrt;
   }
@@ -202,12 +209,14 @@ function ceEffect(x) {
       let eff1 = player.challengeEssence.max(1).pow(2)
       if(eff1.gt(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))) eff1 = eff1.div(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e35,player.hasCompletedLevel4?1000:1))
       if(eff1.gt("1e1500") && (!hasCU(1,8) || player.compChallenge == 10)) eff1 = eff1.div("1e1500").pow(0.3).mul("1e1500")
+      if(eff1.gt("1e200000")) eff1 = eff1.div("1e200000").pow(0.5).mul("1e200000")
       return eff1
     break;
     case 2:
       let eff2 = player.challengeEssence.max(1).pow(1.2)
       if(eff2.gt(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))) eff2 = eff2.div(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1)).pow(0.4).mul(Decimal.mul(1e20,player.hasCompletedLevel4?1000:1))
       if(eff2.gt("1e900") && (!hasCU(1,8) || player.compChallenge == 10)) eff2 = eff2.div("1e900").pow(0.3).mul("1e900")
+      if(eff2.gt("1e120000")) eff2 = eff2.div("1e120000").pow(0.5).mul("1e120000")
       return eff2
     break;
   }

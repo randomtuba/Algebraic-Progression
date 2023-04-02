@@ -10,6 +10,7 @@ function qpGen() {
     if(hasYQU(3,'bought')) qp = qp.mul(YQUAD_UPGRADES[3].eff())
     if(player.compChallenge == 9) qp = qp.pow(0.5)
     qp = qp.pow(COMP_CHALLENGES[9].eff())
+    if(player.yChallenge == 3) qp = new Decimal(0)
     return qp
   }else{
     return new Decimal(0)
@@ -41,7 +42,7 @@ const QP_BUYABLES = {
       return player.quadBuyables[1].gt(hasZlabMilestone(3,2) ? 4 : 3) ? new Decimal(Infinity) : new Decimal(1000).mul(Decimal.pow(300,player.quadBuyables[1])).mul(Decimal.pow(2,player.quadBuyables[1].pow(2)))
     },
     eff() {
-      return new Decimal(1).add(player.quadBuyables[1].div(10))
+      return player.yChallenge == 3 ? new Decimal(1) : new Decimal(1).add(player.quadBuyables[1].div(10))
     },
     effectDisplay() {
       return "/" + format(QP_BUYABLES[1].eff()) + " X cost scaling";
@@ -54,7 +55,7 @@ const QP_BUYABLES = {
       return new Decimal(10000).mul(Decimal.pow(100,player.quadBuyables[2])).mul(Decimal.pow(1.7,player.quadBuyables[2].pow(2)))
     },
     eff() {
-      return new Decimal(hasZlabMilestone(2,4)?6:5).mul(player.quadBuyables[2].add(compPlaneEffects(1)))
+      return player.yChallenge == 3 ? new Decimal(0) : new Decimal(hasZlabMilestone(2,4)?6:5).mul(player.quadBuyables[2].add(compPlaneEffects(1)))
     },
     effectDisplay() {
       return "Softcap starts " + format(QP_BUYABLES[2].eff()) + " purchases later";
@@ -67,7 +68,7 @@ const QP_BUYABLES = {
       return new Decimal(100000).mul(Decimal.pow(40,player.quadBuyables[3])).mul(Decimal.pow(1.5,player.quadBuyables[3].pow(2)))
     },
     eff() {
-      return new Decimal(1).add(player.quadBuyables[3].add(compPlaneEffects(1)).div(10))
+      return player.yChallenge == 3 ? new Decimal(1) : new Decimal(1).add(player.quadBuyables[3].add(compPlaneEffects(1)).div(10))
     },
     effectDisplay() {
       return "^" + format(QP_BUYABLES[3].eff()) + " C1 reward effect";
@@ -80,7 +81,7 @@ const QP_BUYABLES = {
       return new Decimal(1000).mul(Decimal.pow(10,player.quadBuyables[4])).mul(Decimal.pow(1.2,player.quadBuyables[4].pow(2)))
     },
     eff() {
-      return player.quadBuyables[4]
+      return player.yChallenge == 3 ? new Decimal(0) : player.quadBuyables[4]
     },
     effectDisplay() {
       return "+" + format(QP_BUYABLES[4].eff()) + " a, b, and c limit";
@@ -93,7 +94,7 @@ const QP_BUYABLES = {
       return player.quadBuyables[5].eq(1) ? new Decimal(Infinity) : new Decimal("1e820")
     },
     eff() {
-      return ceEffect(2).pow(0.015)
+      return player.yChallenge == 3 ? new Decimal(1) : ceEffect(2).pow(0.015)
     },
     effectDisplay() {
       return format(QP_BUYABLES[5].eff()) + "x IP gain";
@@ -106,7 +107,7 @@ const QP_BUYABLES = {
       return new Decimal("1e730").mul(Decimal.pow(1e40,player.quadBuyables[6])).mul(Decimal.pow(10,player.quadBuyables[6].pow(2)))
     },
     eff() {
-      return Decimal.pow(new Decimal("1e400"),player.quadBuyables[6])
+      return player.yChallenge == 3 ? new Decimal(1) : Decimal.pow(new Decimal("1e400"),player.quadBuyables[6])
     },
     effectDisplay() {
       return format(QP_BUYABLES[6].eff()) + "x production of Buildings";
@@ -119,7 +120,7 @@ const QP_BUYABLES = {
       return player.quadBuyables[7].gte(10) ? new Decimal(Infinity) : new Decimal("1e800").mul(Decimal.pow(1e80,player.quadBuyables[7])).mul(Decimal.pow(100,player.quadBuyables[7].pow(2)))
     },
     eff() {
-      return Decimal.pow(3,player.quadBuyables[7].min(10))
+      return player.yChallenge == 3 ? new Decimal(1) : Decimal.pow(3,player.quadBuyables[7].min(10))
     },
     effectDisplay() {
       return format(QP_BUYABLES[7].eff()) + "x Z-Power gain";
@@ -132,7 +133,7 @@ const QP_BUYABLES = {
       return new Decimal("1e760").mul(Decimal.pow(1e60,player.quadBuyables[8])).mul(Decimal.pow(50,player.quadBuyables[8].pow(2)))
     },
     eff() {
-      return Decimal.add(1,player.quadBuyables[8].div(100))
+      return player.yChallenge == 3 ? new Decimal(1) : Decimal.add(1,player.quadBuyables[8].div(100))
     },
     effectDisplay() {
       return "^" + format(QP_BUYABLES[8].eff()) + " IP gain";

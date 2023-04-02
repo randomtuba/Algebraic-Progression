@@ -17,7 +17,10 @@ function hasChargedUpgrade(x) {
 }
 
 function x2y2Formula() {
-  return player.x2.pow(0.000001).mul(player.y2.pow(0.02)).pow(1.2).sub(player.varSynth.x2y2).max(0).floor();
+  let x2y2 = player.x2.pow(0.000001).mul(player.y2.pow(0.02)).pow(1.2)
+  if(x2y2.gte(1e15)) x2y2 = x2y2.div(1e15).pow(0.5).mul(1e15)
+  x2y2 = x2y2.sub(player.varSynth.x2y2).max(0).floor()
+  return x2y2
 }
 
 function x2y2Reset() {

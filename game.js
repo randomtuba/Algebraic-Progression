@@ -181,6 +181,7 @@ function mainLoop(){
   }
   if(player.yChallenge == 1 && player.x.gte(Y_CHALLENGES[1].goal())) player.yChalCompletions[1] = player.x.sub(4.5e8).div(1e7).add(1).floor()
   if(player.yChallenge == 2 && player.x.gte(Y_CHALLENGES[2].goal())) player.yChalCompletions[2] = player.x.sub(5.1e8).div(1e7).add(1).floor()
+  if(player.yChallenge == 3 && player.x.gte(Y_CHALLENGES[3].goal())) player.yChalCompletions[3] = player.x.sub(1.1e9).div(5e7).add(1).floor()
   
   // (mostly) UPDATE FUNCTIONS
   updateAuto() //runs the autobuyers
@@ -190,6 +191,7 @@ function mainLoop(){
   updateNotifs() //detects various accomplishments you've made and sends notifications for them
   updateValues() //makes sure that the values for input elements throughout the game don't reset
   updateRootEpicenter() //disables slider when in Square Root and detects Level 4 and -1 completion
+  if(ccTiers() >= 50) updatePolynomials(diff) //makes polynomials produce other polynomials
   fixUnixEpoch() //fixes the bug where Quadratic and Complex times jump a Unix Epoch
   trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5
   if(hasMilestone(15)) simulateEssence(1) //passively generates RE
@@ -413,12 +415,12 @@ function buyMax() {
 const priceMult = new Decimal(0.11).div(xDivision()).add(1)
 const basePrice = new Decimal(100000).div(hasUpgrade(3) && player.challenge != 5 && player.compChallenge != 8 ? 2 : 1).div(hasUpgrade(5) && player.challenge != 5 && player.compChallenge != 8 ?1000000:1).div(hasChallenge(5)?1e9:1).pow(player.compChallenge == 3 ? 10 : 1)
 let trueNum = player.points.div(basePrice)
-let sum = priceMult.pow(player.x).sub(1).div(priceMult.sub(1))
-player.x = trueNum.add(sum).times(priceMult.sub(1)).add(1).log10().div(priceMult.log10()).floor()
+let Xsum = priceMult.pow(player.x).sub(1).div(priceMult.sub(1))
+let trueSum = Xsum.add(trueNum)
+player.x = trueSum.times(priceMult.sub(1)).add(1).log10().div(priceMult.log10()).floor()
+player.points = trueSum.sub(priceMult.pow(player.x).sub(1).div(priceMult.sub(1))).mul(basePrice)
 }
     }
-    if(!hasQU(8)) player.points = player.points.sub(xCost())
-    player.x = player.x.add(1)
   }
   
   // FUNCTIONS
@@ -567,23 +569,23 @@ function trappedInSqrt() {
 }
 
 function checkForEndgame() {
-  if (player.achievements.length >= 55 && !player.gameWon) {
+  if (player.achievements.length >= 60 && !player.gameWon) {
     player.gameWon = true
     player.winTime = player.timePlayed
-  } else if (player.achievements.length < 55) {
+  } else if (player.achievements.length < 60) {
     player.gameWon = false;
   }
 }
 
 function modifiedReality() {
   if (player.zUnlocked) {
-    document.title = "Algebraic Progression v2.2"
+    document.title = "Algebraic Progression v2.2.1"
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20cZrrZnt.png?v=1676847726255");
     tmp.textbook.names[8] = "Coordinate Realm"
     setTimeout(() => {
       if(!player.varSynth.unlocked[0] && player.options[14]) document.title = "Hasn't it always been there?";
       if(player.varSynth.unlocked[0] && !player.yChalsUnlocked[1] && player.options[14]) document.title = "The variables grow more distant";
-      if(player.yChalsUnlocked[1] && player.options[14]) document.title = "Why are you still trying?";
+      if(player.yChalsUnlocked[1] && ccTiers() < 50 && player.options[14]) document.title = "Why are you still trying?";
     }, Math.random()*100);
   } else {
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337");
@@ -691,3 +693,41 @@ document.addEventListener("keydown", function onEvent(event) {
       break;
   }
 });
+
+// for ending cutscene
+function predictableRandom(x) {
+  let start = Math.pow(x % 97, 4.3) * 232344573;
+  const a = 15485863;
+  const b = 521791;
+  start = (start * a) % b;
+  for (let i = 0; i < (x * x) % 90 + 90; i++) {
+    start = (start * a) % b;
+  }
+  return start / b;
+}
+
+function randomSymbol() {
+  return String.fromCharCode(Math.floor(Math.random() * 50) + 192);
+}
+
+  // increasing the frac makes the word more glitched
+  function randomCrossWords(str, frac = 0.7) {
+    if (frac <= 0) return str;
+    const x = str.split("");
+    for (let i = 0; i < x.length * frac; i++) {
+      const randomIndex = Math.floor(predictableRandom(Math.floor(Date.now() / 500) % 964372 + 1.618 * i) * x.length);
+      x[randomIndex] = randomSymbol();
+    }
+    return x.join("");
+  }
+  // combining 2 strings based on param
+  function blendWords(first, second, param) {
+    if (param <= 0) return first;
+    if (param >= 1) return second;
+    return first.substring(0, first.length * (1 - param)) +
+      second.substring(second.length * (1 - param), second.length);
+  }
+  // transition from original tab name to ending tab name
+  function glitchedTabName(first, second, param) {
+    return randomCrossWords(blendWords(first, second, param),param >= 0.5 ? 1 - ((param - 0.5) * 2) : param * 2)
+  }

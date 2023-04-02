@@ -39,7 +39,7 @@ const COLLIDERS = {
       "<b>Level 3</b><br>Increase the \"Variable Coupler\" amount cap by 1", 
       "<b>Level 6</b><br>Multiply the Complex Upgrade 6 hardcap by 50",
       "<b>Level 12</b><br>Increase the 1st Challenge Essence softcap exponent from 0.6 to 0.62",
-      "<b>Level 20</b><br>Weaken the 3rd slope effect softcap (TBA)",
+      "<b>Level 20</b><br>Weaken the 3rd slope effect softcap",
     ],
   },
   4: {
@@ -51,7 +51,7 @@ const COLLIDERS = {
       "<b>Level 3</b><br>Delay the RE Doubler cost superscaling start by 150 purchases",
       "<b>Level 6</b><br>Power the first UP purchase button costs by 0.8",
       "<b>Level 12</b><br>Power the Translation cost by 0.9",
-      "<b>Level 20</b><br>The Z cost scaling is divided by 1.5 (TBA)",
+      "<b>Level 20</b><br>The Z cost scaling is divided by 1.5",
     ],
   },
 }

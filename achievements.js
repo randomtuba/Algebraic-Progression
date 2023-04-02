@@ -316,9 +316,34 @@ const ACHIEVEMENTS = {
     done(){return player.yChalCompletions[1] > 0},
   },
   55: {
+    name: "Powers of X",
+    desc: "Unlock Polynomials.",
+    done(){return ccTiers() >= 50},
+  },
+  56: {
+    name: "All-Seeing Eye",
+    desc: "Reach 1e5000 i.",
+    done(){return player.i.gte("1e5000")},
+  },
+  57: {
+    name: "Artificial Operation",
+    desc: "Unlock Synthetic Division.",
+    done(){return false},
+  },
+  58: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  59: {
+    name: "???",
+    desc: "???",
+    done(){return false},
+  },
+  60: {
     name: "The End",
-    desc: "...for now.",
-    done(){return ccTiers() == 50},
+    desc: "Beat the game.",
+    done(){return false},
   },
 }
 
@@ -402,8 +427,37 @@ const SECRET_ACHIEVEMENTS = {
     desc: "Get a fastest Quadratic and Complex time of less than 0.02 seconds.",
     done(){return player.prestigeTimes[1] < 0.02 && player.prestigeTimes[3] < 0.02},
   },
+  16: {
+    name: "Only One",
+    desc: "Hide every possible tab.",
+    done(){return everyTabHidden()},
+  },
+  17: {
+    name: "Show-Off",
+    desc: "Enter Root Epicenter Level √-1 with Complex unlocked.",
+    done(){return false},
+  },
+  18: {
+    name: "Olden Days",
+    desc: "Click the link to AP Classic.",
+    done(){return false},
+  },
+  19: {
+    name: "Integer Overflow",
+    desc: "Try to increase a, b, or c beyond the cap.",
+    done(){return false},
+  },
+  20: {
+    name: "Super Secret",
+    desc: "Have every other Secret Achievement.",
+    done(){return player.secretAchievements.length >= 19},
+  },
 }
 
 function hasSecretAchievement(x) {
   return player.secretAchievements.includes(x.toString())
+}
+
+function everyTabHidden() {
+  return false
 }

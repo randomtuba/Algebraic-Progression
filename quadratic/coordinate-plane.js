@@ -103,7 +103,7 @@ function slopeEffect() {
   let mult = player.slope.pow(Decimal.add(1.5,bEffect(3))).add(1)
   if(mult.gt(1e15)) mult = mult.div(1e15).pow(0.5).mul(1e15)
   if(mult.gt("1e1111")) mult = mult.div("1e1111").pow(0.5).mul("1e1111")
-  if(mult.gt("1e20000")) mult = mult.log10().div(2).pow(5000)
+  if(mult.gt("1e20000")) mult = hasZlabMilestone(3,5) ? mult.div("1e20000").pow(0.004).mul("1e20000") : mult.log10().div(2).pow(5000)
   if(player.challenge == 7) mult = new Decimal(1)
   return mult
 }

@@ -42,6 +42,7 @@ function getFinalPoints(level){
   if(hasUpgrade(7) && player.challenge != 5 && player.compChallenge != 8) exp = exp.mul(1.01)
   if(hasChallenge(4)) exp = exp.mul(1.03)
   if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
+  exp = exp.mul(polyPowerEffect())
   for(let i=0; i<10; i++){
     currentPointsValue=nonStaticMultipliers(currentPointsValue).mul(staticMultipliers()).pow(0.55).div(level == 4 ? "1e5665" : 1).pow(exp)
   }

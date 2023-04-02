@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.2</title>
+    <title>Algebraic Progression v2.2.1</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -34,6 +34,7 @@
     <script src="y-quadratic/y-quad-upgs.js" defer></script>
     <script src="y-quadratic/var-synthesizer.js" defer></script>
     <script src="y-quadratic/y-challenges.js" defer></script>
+    <script src="polynomials/polynomials.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12" defer></script>
     <script
     src="https://code.jquery.com/jquery-3.6.1.js"
@@ -70,8 +71,8 @@
     <button id="tab6" class="tab" v-if="(player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[6]" onclick="tab('upgs')">Upgrades</button>
     <button id="tab7" class="tabQua" v-if="(player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]" onclick="tab('quad')">Quadratic</button>
     <button id="tab8" class="tabYqua" v-if="player.totaly2.gte(1) && player.tabDisplays[8]" onclick="tab('yquad')">Y-Quadratic</button>
-    <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">Complex</button><br><br>
-    <button id="tab10" class="???" v-if="false" onclick="tab('???')">???</button>
+    <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">Complex</button>
+    <button id="tab10" class="tabPoly" v-if="false && player.tabDisplays[10]" onclick="tab('polynomials')">Polynomials</button><br><br>
     <table class="autocenter"><tr>
     <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && (!player.inSqrt || player.compChallenge == 5)" onclick="goQuadratic(false)">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
@@ -215,14 +216,15 @@
       <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">Upgrades: <button class="hoverable" onclick="player.tabDisplays[6] = !player.tabDisplays[6]">{{player.tabDisplays[6] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="player.totalx2.gte(1) || player.totali.gte(1)">Quadratic: <button class="hoverable" onclick="player.tabDisplays[7] = !player.tabDisplays[7]">{{player.tabDisplays[7] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="player.zUnlocked">Y-Quadratic: <button class="hoverable" onclick="player.tabDisplays[8] = !player.tabDisplays[8]">{{player.tabDisplays[8] ? "SHOWN" : "HIDDEN"}}</button><br></span>
-      <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button></span>
+      <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button><br></span>
+      <span v-if="false">Polynomials: <button class="hoverable" onclick="player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.2<br>
+      Algebraic Progression v2.2.1<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
       If you want to make a mod of this game, that's fine, just credit me in some way.<br><br>
-      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
+      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank" onclick="if(!hasSecretAchievement(18)) {player.secretAchievements.push('18'); $.notify('Secret Achievement Unlocked: Olden Days', {style: 'apcurrent',className:'secretAchieves',});};">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
       Note: Earlier versions of the game have bugs that will not be fixed.
       </div>
     <div id="tab3disp" v-if="player.currentTab == 'stats'"> <!--- STATISTICS !--->
@@ -327,8 +329,8 @@
       <div id="tab4-1disp" v-if="player.currentSubtab[4] == 'regular'"> <!--- REGULAR ACHIEVEMENTS !--->
       {{player.achievements.length}}/55 Achievements completed ({{format(player.achievements.length / 0.55)}}%)<br><br>
       <table class="autocenter">
-        <tr v-for="a in player.achievements.length == 55 ? 11 : Math.floor(player.achievements.length/5)+1">
-          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 55}">
+        <tr v-for="a in player.achievements.length >= 55 ? 11 : Math.floor(player.achievements.length/5)+1">
+          <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 60}">
             <b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{a*5-5+b == 10 ? ACHIEVEMENTS[a*5-5+b].desc() : ACHIEVEMENTS[a*5-5+b].desc}}
           </td>
         </tr>
@@ -522,7 +524,7 @@
         <span :class="{realSolution: qpGen().gt(0), nonrealSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && !hasMilestone(19), realishSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
-          <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.ab[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.abc[a] = maxABC()">max</button><br>
+          <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}else if(!hasSecretAchievement(19)) {player.secretAchievements.push('19'); $.notify('Secret Achievement Unlocked: Integer Overflow', {style: 'apcurrent',className:'secretAchieves',});};">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.abc[a] = maxABC()">max</button><br>
         </div>
         <button v-if="hasMilestone(10)" onclick="player.compAutobuyers[6] = !player.compAutobuyers[6]" class="hoverable">
           Auto-Adjust: {{player.compAutobuyers[6] ? "ON" : "OFF"}}
@@ -848,6 +850,30 @@
               </td>
             </tr>
           </table>
+        </div>
+      </div>
+      <div id="tab10disp" v-if="player.currentTab == 'polynomials'"> <!--- POLYNOMIALS !--->
+        You have <span class="polyText">{{format(player.polyPower)}}</span> polynomial power, powering point gain by ^{{regularFormat(polyPowerEffect(),4)}}.<br><br>
+        <button id="subtab14" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'main'">Polynomials</button>
+        <button id="subtab15" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'division'">Synthetic Division</button><br><br>
+        <div id="tab10-1disp" v-if="player.currentSubtab[5] == 'main'"> <!--- POLYNOMIALS (SUBTAB) !--->
+          <table class="autocenter">
+          <tr>
+          <td v-for="a in rowAmt(9)">
+            <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.polynomials[a+2].amount.lt(POLY_BUYABLES[a].cost()),upgradeBuyable:player.polynomials[a+2].amount.gte(POLY_BUYABLES[a].cost())}" @click="buyPolyBuyable(a)">
+              {{POLY_BUYABLES[a].desc}}<br>
+              Amount: {{player.polynomials.buyables[a]}}<br>
+              Cost: {{format(POLY_BUYABLES[a].cost())}} x<sup>{{a+2}}</sup><br>
+              Effect: {{POLY_BUYABLES[a].effectDisplay()}}
+            </button>
+          </td>
+          </tr>
+          </table><br>
+          <span v-for="a in 8" v-if="a == 1 || player.polynomials[a+1].bought.gte(1)">
+            You have <span :class="{cubicText:a==1,quarticText:a==2,quinticText:a==3,sexticText:a==4,septicText:a==5,octicText:a==6,nonticText:a==7,decticText:a==8}">{{format(player.polynomials[a+2].amount)}}</span> x<sup>{{a+2}}</sup>, producing <span :class="{cubicText:a==1,quarticText:a==2,quinticText:a==3,sexticText:a==4,septicText:a==5,octicText:a==6,nonticText:a==7,decticText:a==8}">{{format(polynomialGen(a+2))}}</span> {{a == 1 ? "polynomial power" : ""}}<span v-if="a != 1">x<sup>{{a+1}}</sup></span> per second.<br>
+            (Efficiency: {{format(Decimal.pow(2,player.polynomials[a+2].bought))}}x)<br>
+            <button :class="{buildingLocked:a == 1 ? player.x2.lt(polynomialCosts(a+2)) : player.polynomials[a+1].amount.lt(polynomialCosts(a+2)),buildingBuyable:a == 1 ? player.x2.gte(polynomialCosts(a+2)) : player.polynomials[a+1].amount.gte(polynomialCosts(a+2))}" @click="buyPolynomial(a+2)">Buy for {{format(polynomialCosts(a+2))}} x<sup>{{a+1}}</sup></button><br><br>
+          </span>
         </div>
       </div>
       </div>

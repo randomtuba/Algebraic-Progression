@@ -33,7 +33,7 @@ function updateNewsArray() {
   ["^",true,"a29"], //v1.1
   ["It's important that the news ticker can't be disabled. The news ticker will never disappear and you will get tired of it faster...wait, you can disable it now??",true,"a30"], //v1.1
   ["Part 2: Tuba screws up",true,"a31"], //v1.1
-  ["The action of adding news tickers is like drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
+  ["The action of adding news messages is like drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
   ["You know what this game needs more of? It needs more protein",true,"a33"], //v1.1
   [`Sing the Variable Alphabet with me: a, b, c, n, x, y${player.zUnlocked ? `, z` : ``}...no it doesn't continue after that.`,player.totalx2.gte(1) || player.totali.gte(1),"a34"], //v1.1
   ["Hey all, Scott here! My thoughts are being broadcasted on a news ticker now! No reason, just felt like it.",true,"a35"], //v1.1
@@ -44,7 +44,7 @@ function updateNewsArray() {
   ["Fun Fact: Offline progress exists! Most currencies will keep growing at the same rate as if you were online, even when the game is closed. However, take note that automation does not work while offline.",true,"a40"], //v1.2
   ["\"hmmm today I will dev AP\" -randomtuba, 5 seconds before disaster struck",true,"a41"], //v1.2
   ["Want another game to play while you're idling? Check out randomtuba's main website! Link: <a href='https://randomtuba.github.io/' target='_blank'>https://randomtuba.github.io/</a>",true,"a42"], //v1.2
-  ["If you're wondering about new content, there is now a 2nd prestige layer in this game! Go play it and stuff!",player.totalx2.gte(1) || player.totali.gte(1),"a43"], //v1.2
+  ["If you're wondering about new content, v2.3 was the last content update. Sorry.",player.totalx2.gte(1) || player.totali.gte(1),"a43"], //v1.2
   ["\"shit game remove timewalls\" -reda",true,"a44"], //v1.2
   ["if i see one more 5 hours joke i will die in real life",true,"a45"], //v1.2
   ["BREAKING NEWS: Tuba finally fixed Buy Max",player.totalx2.gte(1) || player.totali.gte(1),"a46"], //v1.2
@@ -62,7 +62,7 @@ function updateNewsArray() {
   ["uhhhh what am I supposed to put here? some kind of meta-joke or something?",true,"a58"], //Incrementy Planet
   ["The 100th news ticker does not exist. Just kidding, it does now!", true, "a59"], //Incrementy Planet
   ["Everyone thinks the developer is randomtuba, but the real developer is the friends we made along the way.",true,"a60"], //Incrementy Planet
-  ["how do you get news ticker messages? answer for 0x!!  1) quote people || 2) quote memes || 3) actually think of original news tickers || 4) copy existing news tickers, but to avoid plagiarism you change 4% of the words ||| if you answered 3) you are completely wrong, that was the only wrong answer",player.x.gte(1),"a61"], //Incrementy Planet
+  ["how do you get news ticker messages? answer for 0x!!  1) quote people || 2) quote memes || 3) actually think of original news messages || 4) copy existing news messages, but to avoid plagiarism you change 4% of the words ||| if you answered 3) you are completely wrong, that was the only wrong answer",player.x.gte(1),"a61"], //Incrementy Planet
   ["The J is our lord and savior", true, "a62"], //Incrementy Planet
   ["Algebraic Progression? More like Console ERROR incremental", true, "a63"], //Incrementy Planet
   ["AAREX ADD BATTLE REPLICANTIS OR I WILL FLATTEN YOU'RE CAR TIRES", true, "a64"], //Incrementy Planet
@@ -115,7 +115,7 @@ function updateNewsArray() {
   [`${hasQU(20) || player.totali.gte(1) ? `Congratulations, you're in the ${player.zUnlocked ? `lategame` : `midgame`}!` : `You're currently in the earlygame, enjoy it while it lasts`}`,true,"a111"], //v2.0
   ["Why is the obtuse angle always sad? Because it is never right.",true,"a112"], //v2.0
   ["6 confronts 7 about eating 9",true,"a113"], //v2.0
-  [`${player.totaly2.gte(1) ? 'x<sup>3</sup> when?' : 'y<sup>2</sup> when?'}`,player.totalx2.gte(1),"a114"], //v2.0
+  [`${player.totaly2.gte(1) ? (ccTiers() >= 50 ? 'y<sup>3</sup> when?' : 'x<sup>3</sup> when?') : 'y<sup>2</sup> when?'}`,player.totalx2.gte(1),"a114"], //v2.0
   ["Integers can sometimes be negative. Let's try to be more positive!",true,"a115"], //v2.0
   ["Who was the inventor of fractions? Henry the Eighth.",true,"a116"], //v2.0
   ["39 buried 0 found",true,"a117"], //v2.0
@@ -140,7 +140,7 @@ function updateNewsArray() {
   ["<span style='font-size:8px;'>Hopefully no one sees this...</span>",true,"a136"], //v2.1
   [`${format(player.points)} points? ${tmp.disses[Math.floor(Math.random() * tmp.disses.length)]}`,player.points.gte("1e1000"),"a137"], //v2.1
   ["BREAKING NEWS: Population complains about mathematical formula in an incremental game. 'I forgot how to solve a quadratic equation, it's not even useful, why is this in the game?' local complainer admits.",hasQU(20) || player.totali.gte(1),"a138"], //v2.1
-  ["Congratulations! You have all of the achievements!",player.achievements.length >= 55,"a139"], //v2.1
+  ["Congratulations! You have all of the achievements!",player.achievements.length >= 60,"a139"], //v2.1
   ["Have you realized that the Milestones are button elements yet?",player.complexes.gte(5),"a140"], //v2.1
   ["What happens when anti-slope comes in contact with antimatter? No one has survived to find out.",player.compChalCompletions[2] >= 1,"a141"], //v2.1
   ["Did you inflate the game or something?",player.i.gte("1e100000"),"a142"], //v2.1
@@ -171,12 +171,31 @@ function updateNewsArray() {
   ["POV: You are currently inside of a challenge",player.challenge != 0 || player.compChallenge != 0,"a167"], //v2.2
   ["BREAKING NEWS: Incremental game <a href='https://mrbacon470.github.io/Coop-Co/' target='_blank'>Coop Co</a> contains a news message referencing Algebraic Progression!",true,"a168"], //v2.2
   ["Since when were <i>letters</i> a part of math? I thought they were supposed to be used for English!",player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),"a169"], //v2.2
-  ["BREAKING NEWS: Small, family-owned Point Factories are being replaced with high-tech Variable Synthesizers! 'What happened to the good ol' days of X, Y, and Z? Now we got xy, y<sup>2</sup> and all these other crazy variables,' Farmer Dave remarks.",player.varSynth.unlocked[0],"a170"], //v2.2
+  [`BREAKING NEWS: Small, family-owned Point Factories are being replaced with high-tech Variable Synthesizers! "What happened to the good ol' days of X, Y, and Z? Now we got xy, y<sup>2</sup> and all these other crazy variables," Farmer Dave remarks.`,player.varSynth.unlocked[0],"a170"], //v2.2
   ["What happens if the Z-Colliders collide with each other?",hasYQU(8,'bought'),"a171"], //v2.2
   ["Solve for my sanity as I approach my limit",true,"a172"], //v2.2
   ["Wake up.",true,"a173"], //v2.2
   ["9 out of 10 dentists recommend that you should NOT eat the Variables! This is serious, they could make you delirious!",true,"a174"], //v2.2
   ["BREAKING NEWS: Goofy scientist presses wrong button at the Z Lab, Resonance Cascade ensues.",hasYQU(8,'bought'),"a175"], //v2.2
+  ["TODO: Remove this news message before v2.3 releases.",true,"a176"], //v2.3
+    
+  
+    
+  ["<span style='color:red'>So this is how it ends, huh? And it was all your fault.</span>",true,"b1"],
+  ["<span style='color:red'>BREAKING NEWS: Pillars of reality crumbling as humanity embraces eternal despair!</span>",true,"b2"],
+  [`<span style='color:red'>"Eternal darkness doesn't seem too bad compared to some parts of Twitter," interviewee replies.</span>`,true,"b3"],
+  ["<span style='color:red'>What if these news messages are being written by your future self, warning you of your eventual actions, and attempting to cure their loneliness in the unchanging void?</span>",true,"b4"],
+  ["<span style='color:red'>BREAKING NEWS: Last star burns out, universe entering its darker stages!</span>",true,"b5"],
+  ["<span style='color:red'>Why didn't you quit sooner?</span>",true,"b6"],
+  ["<span style='color:red'>haha big numbr go up, universe ending</span>",true,"b7"],
+  ["<span style='color:red'>There was a player made of dust, Whose variables gained it math's trust, If is follows ought, It'll do what they thought, In the end we all do what we must</span>",true,"b8"],
+  ["<span style='color:red'>The universe does not go out with a bang. Instead, it slowly fades with a silent whimper.</span>",true,"b9"],
+  ["<span style='color:red'>The fog has arrived.</span>",true,"b10"],
+  [`<span style='color:red'>"We don't even need these Point Portals anymore," Point Portal manager sighs. "Autoclickers have been doin' all of the work for years now. Doesn't matter at this point. My existence is gonna dissipate sooner or later."</span>`,true,"b11"],
+  ["<span style='color:red'></span>",true,"b12"],
+  ["<span style='color:red'></span>",true,"b13"],
+  ["<span style='color:red'></span>",true,"b14"],
+  ["<span style='color:red'>May God Help Us All</span>",true,"b15"],
   ]
 }
 var s;
@@ -193,7 +212,7 @@ function scrollNextMessage() {
 if(!s)return
   try {
     do {
-      nextMsgIndex = Math.floor(Math.random() * newsArray.length);
+      nextMsgIndex = Math.floor(Math.random() * 175);
       player.newsMessagesSeen++;
     } while (!eval(newsArray[nextMsgIndex][1]));
   } catch (e) {

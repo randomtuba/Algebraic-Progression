@@ -669,3 +669,101 @@ select,option{
     color: #006DB6;
   }
 }
+
+.tabPoly {
+  font-size: 20px;
+  transition-duration: 0.2s;
+  animation: tabPoly 6s linear 0s infinite;
+}
+
+@keyframes tabPoly {
+  0% { /* red */
+    background-color: #aa0000;
+    color: #ff9999;
+    border-color: #ff9999;
+  }
+  20% { /* orange */
+    background-color: #aa6600;
+    color: #ff9900;
+    border-color: #ff9900;
+  }
+  40% { /* green */
+    background-color: #009900;
+    color: #00ff00;
+    border-color: #00ff00;
+  }
+  60% { /* blue */
+    background-color: #000099;
+    color: #0066ff;
+    border-color: #0066ff;
+  }
+  80% { /* purple */
+    background-color: #990099;
+    color: #ff00ff;
+    border-color: #ff00ff;
+  }
+  100% { /* red */
+    background-color: #aa0000;
+    color: #ff9999;
+    border-color: #ff9999;
+  }
+}
+
+.polyText {
+  font-size: 20px;
+  animation: polyText 6s linear 0s infinite;
+}
+
+@keyframes polyText {
+  0% { /* red */
+    color: #ff9999;
+  }
+  20% { /* orange */
+    color: #ff9900;
+  }
+  40% { /* green */
+    color: #00ff00;
+  }
+  60% { /* blue */
+    color: #0000ff;
+  }
+  80% { /* purple */
+    color: #ff00ff;
+  }
+  100% { /* red */
+    color: #ff9999;
+  }
+}
+
+.cubicText {
+  font-size: 20px;
+  color: #ff00ff;
+}
+.quarticText {
+  font-size: 20px;
+  color: #ffff00;
+}
+.quinticText {
+  font-size: 20px;
+  color: #00ff00;
+}
+.sexticText {
+  font-size: 20px;
+  color: #7777ff;
+}
+.septicText {
+  font-size: 20px;
+  color: #4000ff;
+}
+.octicText {
+  font-size: 20px;
+  color: #9900ff;
+}
+.nonticText {
+  font-size: 20px;
+  color: #ff0080;
+}
+.decticText {
+  font-size: 20px;
+  color: #aa0000;
+}

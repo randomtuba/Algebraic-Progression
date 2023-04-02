@@ -79,7 +79,7 @@ const YQUAD_UPGRADES = {
   10: {
     title: "Temporal Ascension",
     desc: "Power slope based on time in this Y-Quadratic, ignoring softcaps. (hardcaps at ^1.25)",
-    requirement: "Reach 1e61,700 slope without b, sacrificed X, and sacrificed Y.",
+    requirement: "Reach 1e62,300 slope without b, sacrificed X, and sacrificed Y.",
     done() {return player.slope.gte("1e62300") && player.sacX.eq(0) && player.sacY.eq(0)},
     cost: new Decimal(1e6),
     eff() {return new Decimal(1).add(new Decimal(player.prestigeTimes[4]).add(1).log10().div(20)).min(1.25)},
