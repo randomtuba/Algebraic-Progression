@@ -72,7 +72,7 @@
     <button id="tab7" class="tabQua" v-if="(player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]" onclick="tab('quad')">Quadratic</button>
     <button id="tab8" class="tabYqua" v-if="player.totaly2.gte(1) && player.tabDisplays[8]" onclick="tab('yquad')">Y-Quadratic</button>
     <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">Complex</button>
-    <button id="tab10" class="tabPoly" v-if="true && player.tabDisplays[10]" onclick="tab('polynomials')">Polynomials</button><br><br>
+    <button id="tab10" class="tabPoly" v-if="false && player.tabDisplays[10]" onclick="tab('polynomials')">Polynomials</button><br><br>
     <table class="autocenter"><tr>
     <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && (!player.inSqrt || player.compChallenge == 5)" onclick="goQuadratic(false)">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
