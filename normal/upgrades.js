@@ -38,7 +38,7 @@ const UPGRADES = {
   7: {
     title: "Point Exponential",
     desc: "Points are now raised ^1.01.",
-    chargedDesc: "Points are now raised ^1.03 (^1.01 in Square Root).",
+    chargedDesc: "Points are now raised ^1.02 (^1.01 in Square Root).",
     cost: new Decimal(7000),
   },
   8: {

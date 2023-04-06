@@ -177,7 +177,7 @@ function updateNewsArray() {
   ["Wake up.",true,"a173"], //v2.2
   ["9 out of 10 dentists recommend that you should NOT eat the Variables! This is serious, they could make you delirious!",true,"a174"], //v2.2
   ["BREAKING NEWS: Goofy scientist presses wrong button at the Z Lab, Resonance Cascade ensues.",hasYQU(8,'bought'),"a175"], //v2.2
-  ["TODO: Remove this news message before v2.3 releases.",true,"a176"], //v2.3
+  // ["TODO: Remove this news message before v2.3 releases.",true,"a176"], //v2.3
     
   
     

@@ -156,7 +156,7 @@ const SQRT_UPGRADES = {
   15: {
     title: "Mechanical Interlock",
     desc: "RE and QP boost each other.",
-    cost: new Decimal("1e312"),
+    cost: new Decimal("1e295"),
     eff() {return player.quadPower.pow(0.3).add(1)}, // boost to RE
     eff2() {return player.rootEssence.max(10).log10()}, // boost to QP
     effectDisplay() {return format(SQRT_UPGRADES[15].eff()) + "x RE gain, " + format(SQRT_UPGRADES[15].eff2()) + "x QP gain"},

@@ -45,7 +45,7 @@ const CHALLENGES = {
   8: {
     title: "Primed Production",
     desc: "Buildings only produce points if the number of total Buildings and Functions is prime. (Hint: Use the +1 Point button)",
-    goal: new Decimal("1e1970"),
+    goal: new Decimal("1e1750"),
     rewardDesc: "Divide the Y cost by 5.",
   },
   9: {
