@@ -441,7 +441,7 @@ const SECRET_ACHIEVEMENTS = {
   16: {
     name: "Way Too Much",
     desc: "Reach e1.000e9 Anti-Slope.",
-    done(){return player.antiSlope.gte("1e1e9")},
+    done(){return player.antiSlope.gte("1e1e9") && player.compChallenge == 2},
   },
   17: {
     name: "Show-Off",
