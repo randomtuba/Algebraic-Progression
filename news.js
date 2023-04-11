@@ -5,7 +5,7 @@ function updateNewsArray() {
   ["Welcome to Algebraic Progression, the game where math becomes fun",true,"a1"], //v1.0
   ["X marks the spot!",player.x.gte(1) || player.totali.gte(1),"a2"], //v1.0
   [`Therapist: \"${player.zUnlocked ? `W` : `Z`} isn't real, it can't hurt you\" ${player.zUnlocked ? `W` : `Z`}:`,player.totalx2.gte(1) || player.totali.gte(1),"a3"], //v1.0
-  ["i am a news ticker, fear me",true,"a4"], //v1.0
+  ["i am a news message, fear me",true,"a4"], //v1.0
   ["when the variable is sus! 😳",true,"a5"], //v1.0
   ["when tuba doesn't update his game :flushed:",true,"a6"], //v1.0
   ["Pi: \"Be real for once!\" i: \"No, let's be rational here.\"",true,"a7"], //v1.0
@@ -33,7 +33,7 @@ function updateNewsArray() {
   ["^",true,"a29"], //v1.1
   ["It's important that the news ticker can't be disabled. The news ticker will never disappear and you will get tired of it faster...wait, you can disable it now??",true,"a30"], //v1.1
   ["Part 2: Tuba screws up",true,"a31"], //v1.1
-  ["The action of adding news messages is like drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
+  ["The action of adding news messages is like using drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
   ["You know what this game needs more of? It needs more protein",true,"a33"], //v1.1
   [`Sing the Variable Alphabet with me: a, b, c, n, x, y${player.zUnlocked ? `, z` : ``}...no it doesn't continue after that.`,player.totalx2.gte(1) || player.totali.gte(1),"a34"], //v1.1
   ["Hey all, Scott here! My thoughts are being broadcasted on a news ticker now! No reason, just felt like it.",true,"a35"], //v1.1
@@ -60,7 +60,7 @@ function updateNewsArray() {
   ["Kowalski, go Quadratic.",player.totalx2.gte(1), "a56"], //Incrementy Planet
   ["FIXING NEWS: Please don't break the news again.",true,"a57"], //AP Rewritten^2
   ["uhhhh what am I supposed to put here? some kind of meta-joke or something?",true,"a58"], //Incrementy Planet
-  ["The 100th news ticker does not exist. Just kidding, it does now!", true, "a59"], //Incrementy Planet
+  ["The 100th news message does not exist. Just kidding, it does now!", true, "a59"], //Incrementy Planet
   ["Everyone thinks the developer is randomtuba, but the real developer is the friends we made along the way.",true,"a60"], //Incrementy Planet
   ["how do you get news ticker messages? answer for 0x!!  1) quote people || 2) quote memes || 3) actually think of original news messages || 4) copy existing news messages, but to avoid plagiarism you change 4% of the words ||| if you answered 3) you are completely wrong, that was the only wrong answer",player.x.gte(1),"a61"], //Incrementy Planet
   ["The J is our lord and savior", true, "a62"], //Incrementy Planet
@@ -97,16 +97,16 @@ function updateNewsArray() {
   ["<div onclick=\"this.style.fontWeight=900\">Click here to make the news ticker thicc</div>",true,"a93"], //AP Rewritten^2
   ["Some of these messages have nothing to do with the actual game.",true,"a94"], //AP Rewritten^2
   ["\"I will gwammit unspeakable gwimes\" -Ink. dude",true,"a95"], //AP Rewritten^2
-  ["BREAKING NEWS: Don't check the console!", '(function() {if(location.href.length>40){console.error("I told you to not check it")};return true})()', "a96"]
+  ["BREAKING NEWS: Don't check the console!", '(function() {if(location.href.length>40){console.error("I told you to not check it")};return true})()', "a96"],
   ["If you build autoclickers, point factories and/or portals in space, do they become space buildings?",player.buyables[3].gte(1) || player.totali.gte(1),"a97"], //v1.4
-  ["<i>You found a rare news ticker!</i>",Math.random() <= 0.01,"a98"], //v1.4
+  ["<i>You found a rare news message!</i>",Math.random() <= 0.01,"a98"], //v1.4
   ["\"the currency called tubas are useless\" -gapples2 (edited)",true,"a99"], //v1.4
   ["Thank you for contacting customer support. This is Janet, how can I help you?",true,"a100"], //v1.4
   ["\"ew compact\" -randomtuba",true,"a101"], //v1.4
   ["ReferenceError: dadComesBack() is not a function [ratio.js, line 420:69]",true,"a102"], //v1.4
   ["BREAKING NEWS: Mathematician proves that square root of 2 is irrational, philosophers from thousands of years ago outraged!",player.rootEssence.gt(0) || player.totali.gte(1),"a103"], //v1.4
   ["3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",true,"a104"], //v1.4
-  ["Hi, I'm just another news ticker...I appear to have lost the <span style='color:red'>will to live</span>.",true,"a105"], //v1.4
+  ["Hi, I'm just another news message...I appear to have lost the <span style='color:red'>will to live</span>.",true,"a105"], //v1.4
   ["You've just been news tickered, send a screenshot of this news ticker to someone else to get un-news tickered",true,"a106"], //Prestige Game
   ["RIP to those under 13 that haven't taken algebra 1 yet",true,"a107"], //v1.4
   ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news messages are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
@@ -177,12 +177,17 @@ function updateNewsArray() {
   ["Wake up.",true,"a173"], //v2.2
   ["9 out of 10 dentists recommend that you should NOT eat the Variables! This is serious, they could make you delirious!",true,"a174"], //v2.2
   ["BREAKING NEWS: Goofy scientist presses wrong button at the Z Lab, Resonance Cascade ensues.",hasYQU(8,'bought'),"a175"], //v2.2
-  // ["TODO: Remove this news message before v2.3 releases.",true,"a176"], //v2.3
-    
+  ["TODO: Remove this news message before v2.3 releases.",true,"a176"], //v2.2.1
+  ['"for the last time: do NOT eat the synthetic division upgrades" -randomtuba',player.polynomials[6].bought.gte(1),"a177"], //v2.3
+  ["Guys, I don't have much time but I just made a revelation Big Number doesn't want you to know. T̶̥͛h̵͕̄e̷̫̓ f̷̽͂i̶͒̎n̷̊̌å̵͐l̵̢̐ d̷́̂ĭ̴́ğ̷̈ī̶̚t̵͊̔ o̴̿̉f̸̀̿ π̵̊͘ ï̶̌s̵̓̀ ██████",true,"a178"], //v2.3
+  ["Tuba doesn't know that I've been slightly altering the news messages, changing one letter here and there, to make everything less readable...",true,"a179"], //v2.3
+  ['"Alright so we are checking out the only game where your ass gets bumped into timewalls, it\'s Algebraic Progression" -GrayStillPlays',true,"a180"], //v2.3
+  ["Fun Fact: Tuba once accidentally nerfed the Challenge 4 reward, which manifested a 24+ hour timewall before unlocking Root Epicenter. You should be thankful that this was patched.",hasChallenge(5) || player.totali.gte(1),"a181"], //v2.3
+  ["Fun Fact: @42UR3ified_Ecolo#4052 was inspired by my Quadratic Formula mechanic and made an adaptation of it in their TMT game! <a href='https://raw.githack.com/new42ur3jeans/Challenge-Tree-Adventure/master/index.html' target='_blank'>Check it out!</a>",hasQU(20) || player.totali.gte(1),"a182"], //v2.3
   
     
   ["<span style='color:red'>So this is how it ends, huh? And it was all your fault.</span>",true,"b1"],
-  ["<span style='color:red'>BREAKING NEWS: Pillars of reality crumbling as humanity embraces eternal despair!</span>",true,"b2"],
+  ["<span style='color:red'>BREAKING NEWS: Pillars of reality crumbling as humanity embraces everlasting despair!</span>",true,"b2"],
   [`<span style='color:red'>"Eternal darkness doesn't seem too bad compared to some parts of Twitter," interviewee replies.</span>`,true,"b3"],
   ["<span style='color:red'>What if these news messages are being written by your future self, warning you of your eventual actions, and attempting to cure their loneliness in the unchanging void?</span>",true,"b4"],
   ["<span style='color:red'>BREAKING NEWS: Last star burns out, universe entering its darker stages!</span>",true,"b5"],
@@ -192,9 +197,9 @@ function updateNewsArray() {
   ["<span style='color:red'>The universe does not go out with a bang. Instead, it slowly fades with a silent whimper.</span>",true,"b9"],
   ["<span style='color:red'>The fog has arrived.</span>",true,"b10"],
   [`<span style='color:red'>"We don't even need these Point Portals anymore," Point Portal manager sighs. "Autoclickers have been doin' all of the work for years now. Doesn't matter at this point. My existence is gonna dissipate sooner or later."</span>`,true,"b11"],
-  ["<span style='color:red'></span>",true,"b12"],
-  ["<span style='color:red'></span>",true,"b13"],
-  ["<span style='color:red'></span>",true,"b14"],
+  ["<span style='color:red'>BREAKING NEWS: Underpaid workers running out of space to build Buildings!</span>",true,"b12"],
+  ["<span style='color:red'>You've manipulated everything to bend to your advantage to pursuit a simple goal. Get as many points as possible. You've manipulated functions, variables, exponents, upgrades, challenges, milestones, and dreams...you've bended reality and the Coordinate Realm itself. And now, after all of this, all that will remain is dust and silence.</span>",true,"b13"],
+  ["<span style='color:red'>I hope you're happy.</span>",true,"b14"],
   ["<span style='color:red'>May God Help Us All</span>",true,"b15"],
   ]
 }
@@ -212,8 +217,8 @@ function scrollNextMessage() {
 if(!s)return
   try {
     do {
-      nextMsgIndex = Math.floor(Math.random() * 175);
-      player.newsMessagesSeen++;
+      nextMsgIndex = Math.floor(newsSelection());
+      if(newsArray[nextMsgIndex][1] && (player.buyables[1].gte(1))) player.newsMessagesSeen++;
     } while (!eval(newsArray[nextMsgIndex][1]));
   } catch (e) {
     console.error("Newsarray doesn't work at idx " + nextMsgIndex);
@@ -239,7 +244,7 @@ if(!s)return
       //distance to travel is s.parentElement.clientWidth + s.clientWidth + parent padding
       //we want to travel at rate pixels per second so we need to travel for (distance / rate) seconds
       let dist = s.parentElement.clientWidth + s.clientWidth + 20; //20 is div_container padding
-      let rate = 140; //change this value to change the scroll speed
+      let rate = 140 * player.totalPoints.log10().div(5e7).max(1).min(3).toNumber(); //change this value to change the scroll speed
       let transformDuration = dist / rate;
 
       //set the transition duration
@@ -255,4 +260,15 @@ if(!s)return
       );
     }, 100)
   );
+}
+
+function newsSelection() {
+  if(player.polynomials[6].bought.gte(1)) {
+    let x = Math.random();
+    if(new Decimal(x).lt(player.totalPoints.max(1).log10().div(5e8)) && player.totalPoints.max(1).log10().div(5e8).lt(0.8)) return 182 + (Math.random() * 13);
+    if(new Decimal(x).gt(player.totalPoints.max(1).log10().div(5e8)) && player.totalPoints.max(1).log10().div(5e8).lt(0.8)) return Math.random() * 181;
+    if(player.totalPoints.max(1).log10().div(5e8).gte(0.8)) return 196;
+  } else {
+    return Math.random() * 180;
+  }
 }

@@ -25,6 +25,7 @@ function sacEffect(x) {
       if(x2.gt(1e150)) player.x2.div(1e150).pow(0.7).mul(1e150)
       if(hasCU(0,2) && player.compChallenge != 10) x2 = x2.mul(COMP_UPGRADES[2].eff())
       if(x2.gt("1e1000")) player.x2.div("1e1000").pow(0.5).mul("1e1000")
+      if(hasPermUpgrade(4)) x2 = x2.mul(PERM_UPGRADES[4].eff())
       if(player.transformations.activated == 3 || player.transformations.extrusions.includes(3)) x2 = x2.pow(transformEffect(3))
       if(hasYQU(10,'bought')) x2 = x2.pow(YQUAD_UPGRADES[10].eff())
       if(hasChargedUpgrade(6) && player.challenge != 5 && player.compChallenge != 8) x2 = x2.pow(1.1)

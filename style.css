@@ -167,7 +167,7 @@ select,option{
   border-color: #9900ff;
 }
 
-#pps {
+.pps {
   font-size: 12px;
   color: gray;
 }
@@ -756,4 +756,26 @@ select,option{
 .decticText {
   font-size: 20px;
   color: #aa0000;
+}
+
+#enterSynthDiv {
+  width: 150px;
+  height: 125px;
+  color: #0000aa;
+  background-color: #8888ff;
+  border-color: #0000aa;
+}
+
+#enterSynthDiv:hover {
+  color: #8888ff;
+  background-color: #0000aa;
+}
+
+.disappearingbody{
+    transition: 4s;
+    opacity: 0;
+}
+
+a:visited {
+  color: #7000ba;
 }

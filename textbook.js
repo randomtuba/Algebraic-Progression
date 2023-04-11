@@ -1,5 +1,5 @@
 function tbookConditions(x) {
-  let conditions = [null,true,true,true,player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1),player.totalx2.gte(1) || player.totali.gte(1),hasQU(12) || player.totali.gte(1),hasQU(16) || player.totali.gte(1),hasSU(12) || player.totali.gte(1),hasQU(20) || player.totali.gte(1),hasSU(16) || player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.complexes.gte(20),hasCU(1,6),player.zUnlocked,hasYQU(8,'bought'),player.varSynth.unlocked[0],player.yChalsUnlocked[1]]
+  let conditions = [null,true,true,true,player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1),player.totalx2.gte(1) || player.totali.gte(1),hasQU(12) || player.totali.gte(1),hasQU(16) || player.totali.gte(1),hasSU(12) || player.totali.gte(1),hasQU(20) || player.totali.gte(1),hasSU(16) || player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.complexes.gte(20),hasCU(1,6),player.zUnlocked,hasYQU(8,'bought'),player.varSynth.unlocked[0],player.yChalsUnlocked[1],ccTiers() >= 50,player.polynomials[6].bought.gte(1)]
   return conditions[x];
 }
 
@@ -17,7 +17,7 @@ function tbookDescriptions(x) {
       <b>3)</b> If you ever feel stuck, keep waiting and grinding, or ask for help on the Discord server. (linked in the Options tab)<br>
       <b>4)</b> Before you complain about something not having very many uses or ask for a QoL mechanic, it might already be in the game,<br>
       but is unlocked later.<br>
-      <b>5)</b> This game is not finished yet. There may still be things that need to be polished.<br><br>
+      <b>5)</b> While this game is completely finished content-wise, there may still be things that need to be polished.<br><br>
       Anyway, good luck and enjoy the ride!`, // preface
       `<b>Autobuyer:</b> A togglable device that automates a specific feature<br>
       <b>Buyable:</b> A repeatable upgrade<br>
@@ -27,12 +27,16 @@ function tbookDescriptions(x) {
       <b>News Message:</b> The scrolling text in the News Ticker<br>
       <b>News Ticker:</b> The rectangle at the top of the screen with scrolling text<br>
       <b>Power:</b> Another word for "exponent" and/or "exponentiate"<br>
+      <b>Prestige:</b> A mechanic or action that resets previous progress for a bonus<br>
+      <b>Prestige Layer:</b> A more specific term for "Prestige", higher prestige layers reset lower prestige layers<br>
       <b>Resource:</b> Another word for "currency"<br>
       <b>Softcap:</b> A debuff applied to a resource at a certain point, usually takes the form of an exponent less than 1<br>
       <b>Subtab:</b> The small buttons within a tab that allow you to travel to other pages<br>
       <b>Tab:</b> The large buttons at the top of the screen`, //terminology
       `Buildings are the primary production units for Point generation. There are three buildings, each one costing and producing more<br>
-      than the previous. By default, Building costs scale by 1.15x per purchase.
+      than the previous. By default, Building costs scale by 1.15x per purchase.<br><br>
+      The only thing stopping you from producing more points is the universe's maximum capacity. Once the percentage at the top<br>
+      reaches 100%, it is impossible to gain any more points.
       ${hasUpgrade(6) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><br>After buying X Upgrade 6, Buildings now produce the previous Building based on their bought amount.<br>For example, if you have 100 Point Portals, you would produce 100 Point Factories per second. This production can be<br>sped up with a resource unlocked later.` : ``}`, // buildings
       `Variables are another currency alongside Points that also increase your Number. There are two Variables in the game.<br><br>
       <b>X:</b> x is bought with Points. Its starting cost is 100,000 Points, and its cost is multiplied by 1.11 per purchase.<br>
@@ -45,12 +49,15 @@ function tbookDescriptions(x) {
       <b>Z Cost Formula:</b> 2,222+((111+((z-1)*10))*z)` : ``}
       ${player.y.gte(100) || player.totali.gte(1) ? `<br><br>The ${player.zUnlocked ? `fourth` : `third`} variable does not exist.` : ``}` : ``}`, // variables
       `Upgrades are very important in Algebraic Progression, and are present throughout the entire game in many different forms.<br>
-      This section is updated as you unlock new Upgrade types. ${player.totali.gte(1) ? `The exception is Complex Upgrades, which have their own section.` : ``}<br><br>
+      This section is updated as you unlock new Upgrade types. ${player.totali.gte(1) ? `The exception is Complex Upgrades, which have their own section.` : ``}<br>
+      Upgrade types are in subtabs with an identical or similar name, with the exception${player.totali.gte(1) ? "s" : ""} being X Upgrades (found in the Upgrades tab)
+      ${player.totali.gte(1) ? "<br>and Basic Complex Upgrades (found in the Complex Upgrades tab)." : ""}<br><br>
       <b>X Upgrades:</b> X Upgrades are upgrades that can be bought with x. There are eight in total. ${player.totalx2.gte(1) || player.totali.gte(1) ? `They also reset on Quadratic.` : ``}
       ${player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>Quadratic Upgrades:</b> Quadratic Upgrades are upgrades that can be bought with x<sup>2</sup>.<br>They are kept on Quadratic, and there are 20 in total. ${player.totali.gte(1) ? `However, they reset on Complex.` : ``}` : ``}
       ${hasQU(16) || player.totali.gte(1) ? `<br><b>Square Root Upgrades:</b> Square Root Upgrades are upgrades that can be bought with Root Essence.<br>They are kept on Quadratic, and there are 16 in total. ${player.totali.gte(1) ? `However, they reset on Complex, just like Quadratic Upgrades.` : ``}` : ``}
       ${player.totali.gte(1) ? `<br><b>Basic Complex Upgrades:</b> Basic Complex Upgrades are upgrades that can be bought with i.<br>They are kept on Quadratic and Complex, and there are 9 in total.` : ``}
-    ${player.totaly2.gte(1) ? `<br><b>Y-Quadratic Upgrades:</b> Y-Quadratic Upgrades are upgrades that can be bought with y<sup>2</sup>.<br>They are kept on Quadratic, Complex, and Y-Quadratic, and there are 12 in total.<br>Each Y-Quadratic Upgrade has a unique requirement for you to fulfill before you can buy them.` : ``}
+      ${player.totaly2.gte(1) ? `<br><b>Y-Quadratic Upgrades:</b> Y-Quadratic Upgrades are upgrades that can be bought with y<sup>2</sup>.<br>They are kept on Quadratic, Complex, and Y-Quadratic, and there are 12 in total.<br>Each Y-Quadratic Upgrade has a unique requirement for you to fulfill before you can buy them.` : ``}
+      ${player.polynomials[6].bought.gte(1) ? `<br><b>Synthetic Division Upgrades:</b> Synthetic Division Upgrades are upgrades that can be bought with SE.<br>They are kept on Quadratic, Complex, and Y-Quadratic, and there are 10 in total.<br>The top three are infinitely repeatable, and the rest are bought once.` : ``}
       ${player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>Resource Multipliers:</b> Resource multipliers are usually put along with certain upgrade types, but are endlessly repeatable.<br>They multiply a currency by a static amount per purchase. There are two resource doublers and one resource tripler.` : ``}`, // upgrades
       `Functions are the secondary production units for Point generation. There are three functions: f(x), g(x), and h(x). Together,<br>
       they multiply the production of Buildings. f(x) gives a linear and later polynomial bonus, while g(x) and h(x) both give an<br>
@@ -129,7 +136,8 @@ function tbookDescriptions(x) {
       "A" is a dynamic exponent that changes based on the Root Epicenter level. In Level √2, A = 0.002. In Level √3, A = 0.01.<br>
       Finally, in Level √4, A = 0.06. Level √-1 does not increase A.<br><br>
       While CE cannot be used to buy upgrades, it does multiply the gains of RE (CE<sup>2</sup>) and QP (CE<sup>1.2</sup>).<br>
-      The RE boost softcaps when the effect ≥ 1e35 and 1e1500, and the QP boost softcaps when the effect ≥ 1e20 and 1e900.`, // root epicenter
+      The RE boost softcaps when the effect ≥ 1e35 and 1e1500, and the QP boost softcaps when the effect ≥ 1e20 and 1e900.<br>
+      Unfortunately, the RE boost hardcaps at 1e200,000, and the QP boost hardcaps at 1e120,000.`, // root epicenter
       `Once you obtain 1e2950 x<sup>2</sup>, 1e660 RE, and a Root Epicenter Level √-1 completion, you can go Complex for i.<br>
       Complex, similarly to Quadratic, resets almost everything before it. You keep your Achievements, your Challenge records,<br>
       and some things underneath the General header in the Statistics tab. i will be your most important currency from this point forward.<br><br>
@@ -191,10 +199,11 @@ function tbookDescriptions(x) {
       Y-Quadratic resets everything that Complex resets, but also resets your sacrificed x, y, and x<sup>2</sup>. However, Y-Quadratic<br>
       is <i>not</i> the third prestige layer! It is on the same layer as Complex, as they both mostly reset the same content.<br><br>
       <b>Base y<sup>2</sup> Gain Formula:</b> 1.25<sup>(y-2,222)/100</sup> * 1.5<sup>z</sup><br><br>
-      y<sup>2</sup> can be spent on Y-Quadratic Upgrades, but later you will mostly use it for unlocking new mechanics in the Y-Quadratic tab.`, // y-quadratic
+      y<sup>2</sup> can be spent on Y-Quadratic Upgrades, but later you will mostly use it<br>
+      for unlocking new mechanics in the Y-Quadratic tab.`, // y-quadratic
       `After buying the 8th Y-Quadratic Upgrade "Chemical Expansion", the Z Lab will be unlocked.<br>
-      Your current z amount will generate Z-Power. By default, 0 z produces 1 Z-Power per second, with each z obtained allowing you to<br>
-      produce 2x more Z-Power per second. So, 7 z would produce 128 (2<sup>7</sup>) Z-Power per second. This multiplier can be<br>
+      Your current z amount will generate Z-Power. By default, 0 z produces 1 Z-Power per second, with each z obtained allowing you<br>
+      to produce 2x more Z-Power per second. So, 7 z would produce 128 (2<sup>7</sup>) Z-Power per second. This multiplier can be<br>
       increased with Z Empowerments, which are bought with i. Each one adds 0.25 to this multiplier. So, having 2 Z Empowerments<br>
       would increase the multiplier to 2.5x, making 7 z produce 2.5<sup>7</sup> Z-Power per second.<br><br>
       <b>Z Empowerment Cost Formula:</b> 1e110 * 100,000<sup>purchases<sup>2</sup></sup><br><br>
@@ -224,16 +233,40 @@ function tbookDescriptions(x) {
       Every time it does this, you gain 1 revolution. Additionally, based on the i exponent, you gain a bonus to Complex Plane powers.<br>
       These multipliers rise and fall as the exponent increases from 0 to 4, but there is a maximum possible multiplier for each<br>
       Complex Plane power, which is 1.00e10x by default.<br><br>
-      Revolutions can be spent on two Revolution Buyables. These buyables boost the main i Exponentiation mechanic, and help you get more revolutions.<br><br>
+      Revolutions can be spent on two Revolution Buyables.<br>
+      These buyables boost the main i Exponentiation mechanic, and help you get more revolutions.<br><br>
       <b>Revolution Buyable 1 Cost Formula:</b> 10 * 4<sup>purchases</sup><br>
       <b>Revolution Buyable 2 Cost Formula:</b> 100 * 3<sup>purchases</sup>` : ``}
       ${player.varSynth.unlocked[3] ? `<br><br><b>zi:</b> zi is the fourth Complex Plane currency, and is not affected by multipliers to Complex Plane currencies.<br>
       zi power gives free Upgrade Points, and is the only source of extra UP in the game.` : ``}`, // variable synthesizer
-      `Y-Challenges (YCs) are the third and final type of Challenges. Y-Challenges take place in Y-Quadratics, and require x to complete.<br>
-      The first Y-Challenge is unlocked by default. Each Y-Challenge after must be unlocked with y<sup>2</sup>, and will be unlocked permanently.<br>
-      Unlike the other two Challenge variants, Y-Challenges have no completion cap, and their goals scale linearly. As usual, the more completions you have,<br>
-      the greater the reward gets.<br><br>
-      <b>Note:</b> There will be 4 Y-Challenges, but only 2 are added in-game. v2.3 will add the remaining two.`, // y-challenges
+      `Y-Challenges (YCs) are the third and final type of Challenges. Y-Challenges take place in Y-Quadratics,<br>
+      and require x to complete. The first Y-Challenge is unlocked by default. Each Y-Challenge after must be<br>
+      unlocked with y<sup>2</sup>, and will be unlocked permanently.<br>
+      Unlike the other two Challenge variants, Y-Challenges have no completion cap, and their goals scale linearly.<br>
+      As usual, the more completions you have, the greater the reward gets.`, // y-challenges
+      `When you complete all 10 Complex Challenges fully (equating to 50 CC tiers), you unlock Polynomials.<br>
+      The first polynomial is x<sup>3</sup>, which produces Polynomial Power (PP), which gives an exponent to point gain.<br>
+      x<sup>4</sup> produces x<sup>3</sup>, and x<sup>5</sup> produces x<sup>4</sup>, and so on. The last polynomial is x<sup>10</sup>.<br><br>
+      Additionally, each polynomial costs an amount of the polynomial tier before it. For example, x<sup>5</sup> requires<br>
+      x<sup>4</sup> to be purchased. Polynomials also have an "efficiency" stat that multiplies the production of that tier.<br>
+      The efficiency of a polynomial doubles per purchase. Over time, you'll also unlock buyables that can be purchased with polynomials.<br><br>
+      <b>Polynomial Power Effect Formula:</b> 1 + (log<sub>10</sub>(PP+1)<sup>0.75</sup> / 500)<br>
+      <b>x<sup>3</sup> Buyable Cost Formula:</b> 100,000 * 100<sup>purchases</sup> * 10<sup>(purchases * (purchases + 1)) / 2</sup><br>
+      <b>x<sup>4</sup> Buyable Cost Formula:</b> 10,000 * 1,000<sup>purchases</sup> * 10<sup>(purchases * (purchases + 1)) / 2</sup><br>
+      <b>x<sup>5</sup> Buyable Cost Formula:</b> 100,000 * 10,000<sup>purchases</sup> * 10<sup>(purchases * (purchases + 1)) / 2</sup><br>
+      <b>x<sup>6</sup> Buyable Cost Formula:</b> 1,000,000 * 1,000<sup>purchases</sup> * 10<sup>(purchases * (purchases + 1)) / 2</sup><br>
+      <b>x<sup>7</sup> Buyable Cost Formula:</b> 1,000,000 * 10,000<sup>purchases</sup> * 10<sup>(purchases * (purchases + 1)) / 2</sup><br>
+      <b>x<sup>8</sup> Buyable Cost Formula:</b> 1.00e15 * 1,000,000<sup>purchases</sup> * 100<sup>(purchases * (purchases + 1)) / 2</sup>`, // polynomials
+      `Synthetic Division is the final mechanic of Algebraic Progression, and is when you start to see the cracks of reality become visible.<br>
+      Synthetic Division is, in simple terms, Complex's version of Square Root. Upon entering Synthetic Division, your point gain and x<sup>2</sup><br>
+      gain are both powered ^0.02, and you gain Synthetic Essence (SE) based on how many points you have in Synthetic Division.<br><br>
+      Synthetic Essence boosts the efficiency of all polynomials, and can also be spent on Synthetic Division Upgrades.<br>
+      Read the "Upgrades" section for more information about Synthetic Division Upgrades.<br><br>
+      <b>Base Synthetic Essence Gain Formula:</b> (log<sub>10</sub>(max(points / 1e95000,1)) / 5) - unspent SE<br>
+      <b>Base Synthetic Essence Effect Formula:</b> SE<sup>0.5</sup> + 1<br>
+      <b>S.D. Upgrade 1 Base Cost Formula:</b> 1,000 * 10<sup>purchases</sup><br>
+      <b>S.D. Upgrade 2 Base Cost Formula:</b> 3,000 * 20<sup>purchases</sup><br>
+      <b>S.D. Upgrade 3 Base Cost Formula:</b> 7,500 * 30<sup>purchases</sup><br>`, // synthetic division
     ]
     return descs[x];
 }

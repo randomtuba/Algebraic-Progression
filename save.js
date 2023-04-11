@@ -67,6 +67,7 @@ function start() {
       true, // passive generation (12)
       false, // respec charged x upgrades on y-quadratic (13)
       true, // title flickering (14)
+      false, // show credits (15)
     ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
@@ -82,7 +83,7 @@ function start() {
     complexes: new Decimal(0),
     compUpgs: [[],[],[0,0,0]],
     upgradePoints: [new Decimal(0),new Decimal(0)],
-    compAutobuyers: [null,false,1,false,false,false,false,false,[false,false,false,false],false,false,false,false,false,false],
+    compAutobuyers: [null,false,1,false,false,false,false,false,[false,false,false,false],false,false,false,false,false,false,false],
     inputValue2: 0,
     compPlane: [[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]],
     triplers: new Decimal(0),
@@ -166,9 +167,21 @@ function start() {
       buyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
     },
     polyPower: new Decimal(0),
+    synthEssence: new Decimal(0),
+    inSynthDiv: false,
+    synthDivUpgs: [[null,new Decimal(0),new Decimal(0),new Decimal(0)],[]],
+    bestPointsInSynthDiv: new Decimal(0),
+    synthDivEnters: 0,
     
+    viewedEndingCutscene: false,
     gameWon: false,
     winTime: 0,
+    gamePoints: new Decimal(0),
+    totalGP: new Decimal(0),
+    speedrunMode: false,
+    speedrunData: {0:[1e8,false],1:[1e8,false],2:[1e8,false],3:[1e8,false],4:[1e8,false],5:[1e8,false],6:[1e8,false],7:[1e8,false],8:[1e8,false],9:[1e8,false],10:[1e8,false],11:[1e8,false],12:[1e8,false],13:[1e8,false],14:[1e8,false],15:[1e8,false],16:[1e8,false],17:[1e8,false]},
+    speedrunTimer: 0,
+    permUpgs: [],
   };
   return a;
 }
@@ -326,8 +339,14 @@ function fileStat2() {
     return ", " + formatWhole(player.y2) + " y²"
   } else if (hasYQU(8,'bought') && !player.varSynth.unlocked[0]) {
     return ", " + formatWhole(totalColliderLevels()) + " total Z-Collider levels"
-  } else if (player.varSynth.unlocked[0]) {
+  } else if (player.varSynth.unlocked[0] && ccTiers() < 50) {
     return ", " + formatWhole(ccTiers()) + " CC tiers"
+  } else if (ccTiers() >= 50 && player.polynomials[6].bought.eq(0)) {
+    return ", " + format(player.polyPower) + " PP"
+  } else if (player.polynomials[6].bought.gte(1) && player.totalPoints.lt("1e5e8")) {
+    return ", " + formatWhole(player.synthEssence) + " SE"
+  } else if (player.totalPoints.gte("1e5e8")) {
+    return ", Game Completed"
   } else {
     return ""
   }
@@ -368,7 +387,7 @@ function importSave(imported = undefined) {
 function hardReset() {
   if (
     confirm(
-      "Are you sure? It will reset EVERYTHING and you will not get any reward!"
+      "Are you sure? It will reset EVERYTHING (even postgame content) and you will not get any reward!"
     )
   ) {
     player = start();
@@ -393,5 +412,179 @@ function maskChangelog() {
     document.getElementById("info1").style.display = ''
   } else {
     document.getElementById("info1").style.display = 'none'
+  }
+}
+
+function playAgain(force) {
+  if(force || confirm("Are you sure? You will lose everything except for Secret Achievements and Options! (You will also gain 1 game point on reset)")) {
+    player.gamePoints = player.gamePoints.add(1)
+    player.totalGP = player.totalGP.add(1)
+    player.points = new Decimal(0)
+    player.buyables =
+    [null,
+      new Decimal(0), // autoclickers
+      new Decimal(0), // point factories
+      new Decimal(0), // point portals
+      new Decimal(0), // f(x)
+      new Decimal(0), // g(x)
+      new Decimal(0), // h(x)
+      new Decimal(0), // produced autoclickers
+      new Decimal(0), // produced factories
+      new Decimal(0), // produced portals
+    ]
+    player.currentTab = 'gen'
+    player.totalPoints = new Decimal(0)
+    player.timePlayed = 0
+    player.prestigeTimes = [0,10000000,0,10000000,0,10000000]
+    player.x = new Decimal(0)
+    player.y = new Decimal(0)
+    player.x2 = new Decimal(0)
+    player.z = new Decimal(0)
+    player.xUpgs = []
+    player.totalx2 = new Decimal(0)
+    player.quadratics = new Decimal(0)
+    player.quadUpgs = []
+    player.startingTime = Date.now()
+    player.lastTick = 0
+    player.autobuyers = [null,false,false,false,false,false,false,false,false,false,false,false]
+    player.currentSubtab = {0:'upgrades',1:'milestones',2:'stats',3:'upgrades',4:'regular',5:'main'}
+    player.sacX = new Decimal(0)
+    player.sacY = new Decimal(0)
+    player.sacX2 = new Decimal(0)
+    player.sacZ = new Decimal(0)
+    player.sacrifice = 'x'
+    player.inputValue = 0
+    player.rootEssence = new Decimal(0)
+    player.inSqrt = false
+    player.sqrtUpgs = []
+    player.doublers = new Decimal(0)
+    player.sqrtDoublers = new Decimal(0)
+    player.slope = new Decimal(0)
+    player.b = new Decimal(0)
+    player.buildingPercent = [null,0,0,0]
+    player.challenge = 0
+    player.chalCompletions = []
+    player.chalExponents = {0:new Decimal(1),1:new Decimal(1),2:new Decimal(1)}
+    player.achievements = []
+    player.abc = [null,new Decimal(0),new Decimal(0),new Decimal(0)]
+    player.quadPower = new Decimal(0)
+    player.quadBuyables = [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]
+    player.challengeEssence = new Decimal(0)
+    player.epicenterLevel = "1"
+    player.purchases = 75
+    player.hasCompletedLevel4 = false
+    player.hasCompletedLevel5 = false
+    player.sqrtEnters = 0
+    player.i = new Decimal(0)
+    player.totali = new Decimal(0)
+    player.complexes = new Decimal(0)
+    player.compUpgs = [[],[],[0,0,0]]
+    player.upgradePoints = [new Decimal(0),new Decimal(0)]
+    player.compAutobuyers = [null,false,1,false,false,false,false,false,[false,false,false,false],false,false,false,false,false,false,false]
+    player.inputValue2 = 0
+    player.compPlane = [[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],[null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]]
+    player.triplers = new Decimal(0)
+    player.compChalCompletions = [null,0,0,0,0,0,0,0,0,0,0]
+    player.compChallenge = 0
+    player.unlocked = 0
+    player.bestPointsInSqrt = new Decimal(0)
+    player.antiSlope = new Decimal(1)
+    player.bankedQuadratics = new Decimal(0)
+    player.transformations = {
+      bought: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+      names: [null,"Translations","Reflections","Rotations","Dilations"],
+      activated: 0,
+      extrusions: [],
+    }
+    player.newsMessagesSeen = 0
+    player.last10runs = {
+      quadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+      complex: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+      yQuadratic: [{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8},{gain:new Decimal(0),time:1e8}],
+    }
+    player.challengeRecords = [null,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8,1e8]
+    player.presets = {
+      info: [null,"","","","","",""],
+      names: [null,"Preset 1","Preset 2","Preset 3","Preset 4","Preset 5","Preset 6"],
+      selected: 0,
+    }
+    player.tabDisplays = [
+      null,
+      true, // Generation
+      true, // Options
+      true, // Statistics
+      true, // Achievements
+      true, // Textbook
+      true, // Upgrades
+      true, // Quadratic
+      true, // Y-Quadratic
+      true, // Complex
+      true, // ??????
+    ]
+    player.zUnlocked = false
+    player.y2 = new Decimal(0)
+    player.totaly2 = new Decimal(0)
+    player.yQuadratics = new Decimal(0)
+    player.yQuadUpgs = [[],[]]
+    player.zlab = {
+      zpower: new Decimal(0),
+      levels: [null,0,0,0,0],
+      particles: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+      empowerments: new Decimal(0),
+      charged: 0,
+    }
+    player.imagPower = new Decimal(0)
+    player.varSynth = {
+      unlocked: [false,false,false,false],
+      xy: new Decimal(0),
+      totalxy: new Decimal(0),
+      chargedXUpgs: [],
+      x2y2: new Decimal(0),
+      circles: new Decimal(0),
+      iExp: new Decimal(0),
+      revolutions: new Decimal(0),
+      iExpBuyables: [null,new Decimal(0),new Decimal(0)],
+    }
+    player.inputValue3 = 0
+    player.obtainedMilestones = []
+    player.yChalsUnlocked = [null,false,false,false,false]
+    player.yChalCompletions = [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]
+    player.yChallenge = 0
+    player.extraUP = new Decimal(0)
+    player.fourthRowCompUpgs = [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)]
+    player.polynomials = {
+      3: { amount: new Decimal(0), bought: new Decimal(0), },
+      4: { amount: new Decimal(0), bought: new Decimal(0), },
+      5: { amount: new Decimal(0), bought: new Decimal(0), },
+      6: { amount: new Decimal(0), bought: new Decimal(0), },
+      7: { amount: new Decimal(0), bought: new Decimal(0), },
+      8: { amount: new Decimal(0), bought: new Decimal(0), },
+      9: { amount: new Decimal(0), bought: new Decimal(0), },
+      10: { amount: new Decimal(0), bought: new Decimal(0), boughtThisRun: false },
+      buyables: [null,new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0),new Decimal(0)],
+    }
+    player.polyPower = new Decimal(0)
+    player.synthEssence = new Decimal(0)
+    player.inSynthDiv = false
+    player.synthDivUpgs = [[null,new Decimal(0),new Decimal(0),new Decimal(0)],[]]
+    player.bestPointsInSynthDiv = new Decimal(0)
+    player.synthDivEnters = 0
+    player.viewedEndingCutscene = false
+    player.gameWon = false
+    player.winTime = 0
+    document.title = "Algebraic Progression v2.3"
+    save()
+    location.reload()
+  }
+}
+
+function restartRun() {
+  if(confirm("Are you sure? You will lose everything except for Secret Achievements and Options!")) {
+    if(confirm("Would you like to enter Speedrun Mode? (Click OK for Yes, click Cancel for No)")) {
+      player.speedrunMode = true
+    }
+    player.gamePoints = player.gamePoints.sub(1)
+    player.totalGP = player.totalGP.sub(1)
+    playAgain(true)
   }
 }

@@ -3,6 +3,7 @@ function yQuadFormula() {
   y2 = y2.mul(Decimal.pow(1.25,totalColliderLevels()))
   if(hasYQU(11,'bought')) y2 = y2.mul(YQUAD_UPGRADES[11].eff2())
   if(player.compChallenge != 10) y2 = y2.mul(COMP_UPGRADES[16].eff())
+  if(hasPermUpgrade(6)) y2 = y2.mul(PERM_UPGRADES[6].eff())
   y2 = y2.floor()
   if(player.y.lt(2222) || player.z.lt(1)) y2 = new Decimal(0)
   return y2

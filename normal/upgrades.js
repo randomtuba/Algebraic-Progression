@@ -62,3 +62,112 @@ function buyUpgrade(x) {
 function hasUpgrade(x) {
   return player.xUpgs.includes(x);
 }
+
+const PERM_UPGRADES = {
+  1: {
+    title: "Enlightened Points",
+    desc: "Multiply point gain by 100x or power point gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.points.pow(0.01).gte(100)) {
+        return player.points.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  2: {
+    title: "Enlightened Quadratic",
+    desc: "Multiply x² and QP gain by 100x or power x² and QP gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.x2.pow(0.01).gte(100)) {
+        return player.x2.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+    eff2() {
+      if(player.quadPower.pow(0.01).gte(100)) {
+        return player.quadPower.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  3: {
+    title: "Enlightened Dilation",
+    desc: "Multiply RE and CE gain by 100x or power RE and CE gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.rootEssence.pow(0.01).gte(100)) {
+        return player.rootEssence.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+    eff2() {
+      if(player.challengeEssence.pow(0.01).gte(100)) {
+        return player.challengeEssence.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  4: {
+    title: "Enlightened Uprise",
+    desc: "Multiply slope gain by 100x or power slope gain by ^1.01, whichever is larger. (applied after both slope softcaps)",
+    eff() {
+      if(player.slope.pow(0.01).gte(100)) {
+        return player.slope.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  5: {
+    title: "Enlightened Imagination",
+    desc: "Multiply i gain by 100x or power i gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.i.pow(0.01).gte(100)) {
+        return player.i.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  6: {
+    title: "Enlightened Dimensionality",
+    desc: "Multiply y² gain by 100x or power y² gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.y2.pow(0.01).gte(100)) {
+        return player.y2.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  7: {
+    title: "Enlightened Research",
+    desc: "Multiply Z-Power gain by 100x or power Z-Power gain by ^1.01, whichever is larger.",
+    eff() {
+      if(player.zlab.zpower.pow(0.01).gte(100)) {
+        return player.zlab.zpower.pow(0.01)
+      } else {
+        return new Decimal(100)
+      }
+    },
+  },
+  8: {
+    title: "Enlightened Omnipotence",
+    desc: "Multiply the efficiency of all polynomials by 10x.",
+  },
+};
+
+function buyPermUpgrade(x) {
+  if(player.gamePoints.gte(1) && !hasPermUpgrade(x)){
+    player.permUpgs.push(x)
+    player.gamePoints = player.gamePoints.sub(1)
+  }
+}
+
+function hasPermUpgrade(x) {
+  return player.permUpgs.includes(x) && !player.speedrunMode;
+}

@@ -10,6 +10,8 @@ function compFormula() {
     neg = neg.mul(Decimal.pow(1.25,totalColliderLevels()))
     if(hasCU(1,9) && player.compChallenge != 10) neg = neg.mul(BCOMP_UPGRADES[9].eff())
     if(player.compChallenge != 10) neg = neg.mul(COMP_UPGRADES[15].eff())
+    if(hasSDU(7)) neg = neg.mul(SYNTH_DIV_UPGRADES[7].eff())
+    if(hasPermUpgrade(5)) neg = neg.mul(PERM_UPGRADES[5].eff())
     neg = neg.pow(COMP_CHALLENGES[10].eff())
     neg = neg.floor()
     if(player.x2.lt("1e2950") || player.rootEssence.lt("1e660")) neg = new Decimal(0)

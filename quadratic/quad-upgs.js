@@ -3,7 +3,7 @@ const QUAD_UPGRADES = {
     title: "Quadratic Bonus",
     desc: "Multiply production based on unspent x².",
     cost: new Decimal(1),
-    eff() {return player.compChallenge == 9 ? new Decimal(1) : new Decimal(4).mul(new Decimal(1).add(player.x2.pow(new Decimal(0.5).add(COMP_CHALLENGES[1].eff()))))},
+    eff() {return player.compChallenge == 9 ? new Decimal(1) : new Decimal(4).mul(new Decimal(1).add(player.x2.pow(new Decimal(0.5).add(COMP_CHALLENGES[1].eff())))).min(new Decimal("1e1e7").mul(Y_CHALLENGES[4].eff()))},
     effectDisplay() {return format(QUAD_UPGRADES[1].eff()) + "x production"},
   },
   2: {
@@ -79,7 +79,12 @@ const QUAD_UPGRADES = {
     title: "Self-Synergy",
     desc: "Gain more points based on points.",
     cost: new Decimal(10000),
-    eff() {return player.points.max(0).pow(hasZlabMilestone(2,1) ? (player.inSqrt ? 0.24 : 0.23) : 0.2).add(1)},
+    eff() {
+      let x = player.points.max(0).pow(hasZlabMilestone(2,1) ? (player.inSqrt ? 0.24 : 0.23) : 0.2).add(1)
+      if(!hasSDU(9)) x = x.min("1e9e6")
+      if(hasSDU(9) && x.gt("1e9e6")) x = x.div("1e9e6").pow(0.75).mul("1e9e6")
+      return x
+    },
     effectDisplay() {return format(QUAD_UPGRADES[13].eff()) + "x production"},
   },
   14: {

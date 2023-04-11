@@ -33,6 +33,9 @@ function nonStaticMultipliers(points) {
   
   //Complex Upgrade 3 effect
   if(hasCU(0,3)) mult = mult.mul(Decimal.pow(1.001,simulatedPoints.div(100000).mul(hasUpgrade(3) && player.challenge != 5 && player.compChallenge != 8 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 && player.compChallenge != 8 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).add(1).floor())) // non-static
+  
+  //Permanent Upgrade 1 effect
+  if(hasPermUpgrade(1)) mult = mult.mul(simulatedPoints.pow(0.01).gte(100) ? simulatedPoints.pow(0.01) : new Decimal(1))
   return mult
 }
 
@@ -43,9 +46,12 @@ function getFinalPoints(level){
   if(hasChallenge(4)) exp = exp.mul(1.03)
   if(hasCU(0,1)) exp = exp.mul(COMP_UPGRADES[1].eff())
   exp = exp.mul(polyPowerEffect())
+  if(player.inSynthDiv) exp = exp.max(0).mul(hasSDU(9)?0.025:0.02)
+  let staticMults = staticMultipliers()
   for(let i=0; i<5; i++){
-    currentPointsValue=nonStaticMultipliers(currentPointsValue).mul(staticMultipliers()).pow(0.55).div(level == 4 ? "1e5665" : 1).pow(exp)
+    currentPointsValue=nonStaticMultipliers(currentPointsValue).mul(staticMults).pow(0.55).div(level == 4 ? "1e5665" : 1).pow(exp)
   }
+  currentPointsValue = currentPointsValue.min("1e5e8")
   return currentPointsValue
 }
 
@@ -65,6 +71,7 @@ function simulateEssence(level) {
     if(hasCU(0,6)) re = re.mul(COMP_UPGRADES[6].eff())
     if(hasCU(0,8)) re = re.mul(COMP_UPGRADES[8].eff())
     if(hasYQU(7,'bought')) re = re.mul(YQUAD_UPGRADES[7].eff())
+    if(hasPermUpgrade(3)) re = re.mul(PERM_UPGRADES[3].eff())
     if(hasYQU(5,'bought')) re = re.pow(YQUAD_UPGRADES[5].eff())
     // If simulated RE > real RE, real RE equals simulated RE
     if (re.gte(player.rootEssence)) {
@@ -75,6 +82,7 @@ function simulateEssence(level) {
     // Challenge Essence formula
     let re = getFinalPoints(4).div(1e12).pow(0.06)
     if(hasCU(1,1)) re = re.mul(10)
+    if(hasPermUpgrade(3)) re = re.mul(PERM_UPGRADES[3].eff2())
     if(re.gt(hasChallenge(10)?1e10:1e8)) re = re.div(hasChallenge(10)?1e10:1e8).pow(hasZlabMilestone(3,4)?0.62:0.6).mul(hasChallenge(10)?1e10:1e8)
     if(hasYQU(5,'bought')) re = re.pow(YQUAD_UPGRADES[5].eff())
     if(re.gt(ceSoftcapStart())) {

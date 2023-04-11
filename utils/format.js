@@ -80,6 +80,21 @@ function formatTime(s) {
     else return formatWhole(Math.floor(s / 31536000)) + " years (how?), " + formatWhole(Math.floor(s / 86400) % 365) + " days, " + formatWhole(Math.floor(s / 3600) % 24) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes, and " + format(s % 60) + " seconds"
 }
 
+function simpleFormatTime(s) {
+  if (s < 60) return format(s)
+    else if (s < 3600) return formatWholeSFT(Math.floor(s / 60)) + ":" + formatWholeSFT(s % 60)
+    else if (s < 86400) return formatWholeSFT(Math.floor(s / 3600)) + ":" + formatWholeSFT(Math.floor(s / 60) % 60) + ":" + formatWholeSFT(s % 60)
+    else if (s < 31536000) return formatWholeSFT(Math.floor(s / 86400) % 365) + ":" + formatWholeSFT(Math.floor(s / 3600) % 24) + ":" + formatWholeSFT(Math.floor(s / 60) % 60) + ":" + formatWholeSFT(s % 60)
+    else return formatWholeSFT(Math.floor(s / 31536000)) + ":" + formatWholeSFT(Math.floor(s / 86400) % 365) + ":" + formatWholeSFT(Math.floor(s / 3600) % 24) + ":" + formatWholeSFT(Math.floor(s / 60) % 60) + ":" + formatWholeSFT(s % 60)
+}
+
+function formatWholeSFT(s) {
+  s = Math.floor(s).toString()
+  if(s.length < 2) s = "0" + s
+  if(s === "60") s = "00"
+  return s
+}
+
 function toPlaces(x, precision, maxAccepted) {
     x = new Decimal(x)
     let result = x.toStringWithDecimalPlaces(precision)

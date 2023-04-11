@@ -24,12 +24,12 @@ const Y_CHALLENGES = {
     effectDisplay() {return format(Y_CHALLENGES[3].eff()) + "x PP generation"},
   },
   4: {
-    title: "???",
-    desc: "???",
-    goal() {return new Decimal(1e100).add(Decimal.mul(1e80,player.yChalCompletions[4]))},
-    rewardDesc: "???",
-    eff() {return new Decimal(player.yChalCompletions[4])},
-    effectDisplay() {return format(Y_CHALLENGES[4].eff()) + "x ???"},
+    title: "Return to the Epicenter",
+    desc: "You are trapped in Root Epicenter Level √-1. The Square Root Upgrade 'Uprooted Points' is disabled.",
+    goal() {return new Decimal(4e8).add(Decimal.mul(2.5e7,player.yChalCompletions[4]))},
+    rewardDesc: "Multiplies the hardcap start of Quadratic Bonus (Quadratic Upgrade 1).",
+    eff() {return Decimal.pow("1e300000",(player.yChalCompletions[4].gte(50) ? player.yChalCompletions[4].div(50).pow(0.8).mul(50) : player.yChalCompletions[4]))},
+    effectDisplay() {return format(Y_CHALLENGES[4].eff()) + "x QU1 hardcap start"},
   },
 }
 
@@ -42,7 +42,7 @@ function yChalUnlockCosts(x) {
       return new Decimal(1e74)
     break;
     case 4:
-      return new Decimal(Infinity)
+      return new Decimal(1e140)
     break;
   }
 }

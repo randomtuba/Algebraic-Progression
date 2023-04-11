@@ -43,6 +43,17 @@ function updateNotifs(){
       });
     }
   }
+  // Speedrun Milestones
+  for(let i in SPEEDRUN_MILESTONES){
+    if(!player.speedrunData[i][1]&&SPEEDRUN_MILESTONES[i].done() && player.speedrunMode){
+      player.speedrunData[i][0] = player.speedrunTimer
+      player.speedrunData[i][1] = true
+      $.notify("Speedrun Milestone Reached: " + SPEEDRUN_MILESTONES[i].name, {
+        style: 'apcurrent',
+        className:'unlock',
+      });
+    }
+  }
 }
 const ACHIEVEMENTS = {
   1: {
@@ -328,22 +339,22 @@ const ACHIEVEMENTS = {
   57: {
     name: "Artificial Operation",
     desc: "Unlock Synthetic Division.",
-    done(){return false},
+    done(){return player.polynomials[6].bought.gte(1)},
   },
   58: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "The Final Frontier",
+    desc: "Unlock Y-Challenge 4.",
+    done(){return player.yChalsUnlocked[4]},
   },
   59: {
-    name: "???",
-    desc: "???",
-    done(){return false},
+    name: "Galactic Emperor",
+    desc: "Start generating Upgrade Points.",
+    done(){return hasSDU(11)},
   },
   60: {
     name: "The End",
     desc: "Beat the game.",
-    done(){return false},
+    done(){return player.points.gte("1e5e8")},
   },
 }
 
@@ -428,9 +439,9 @@ const SECRET_ACHIEVEMENTS = {
     done(){return player.prestigeTimes[1] < 0.02 && player.prestigeTimes[3] < 0.02},
   },
   16: {
-    name: "Only One",
-    desc: "Hide every possible tab.",
-    done(){return everyTabHidden()},
+    name: "Way Too Much",
+    desc: "Reach e1.000e9 Anti-Slope.",
+    done(){return player.antiSlope.gte("1e1e9")},
   },
   17: {
     name: "Show-Off",
@@ -458,6 +469,77 @@ function hasSecretAchievement(x) {
   return player.secretAchievements.includes(x.toString())
 }
 
-function everyTabHidden() {
-  return false
+const SPEEDRUN_MILESTONES = {
+  0: {
+    name:"First X",
+    done(){return player.x.gte(1)}
+  },
+  1: {
+    name:"f(x) Bought",
+    done(){return player.buyables[4].gte(1)}
+  },
+  2: {
+    name:"Gone Quadratic",
+    done(){return player.totalx2.gte(1)}
+  },
+  3: {
+    name:"Coordinate Plane Unlocked",
+    done(){return hasQU(12)}
+  },
+  4: {
+    name:"Square Root Unlocked",
+    done(){return hasQU(16)}
+  },
+  5: {
+    name:"Challenge 1 Completed",
+    done(){return player.chalCompletions.includes(1)}
+  },
+  6: {
+    name:"Quadratic Formula Unlocked",
+    done(){return hasQU(20)}
+  },
+  7: {
+    name:"Root Epicenter Unlocked",
+    done(){return hasSU(16)}
+  },
+  8: {
+    name:"Gone Complex",
+    done(){return player.totali.gte(1)}
+  },
+  9: {
+    name:"Complex Plane Unlocked",
+    done(){return player.complexes.gte(20)}
+  },
+  10: {
+    name:"Complex Challenge 1x1 Completed",
+    done(){return ccTiers() >= 1}
+  },
+  11: {
+    name:"First Z",
+    done(){return player.zUnlocked}
+  },
+  12: {
+    name:"Z Lab Unlocked",
+    done(){return hasYQU(8,'bought')}
+  },
+  13: {
+    name:"Variable Synthesizer Unlocked",
+    done(){return player.varSynth.unlocked[0]}
+  },
+  14: {
+    name:"Y-Challenges Unlocked",
+    done(){return player.yChalsUnlocked[1]}
+  },
+  15: {
+    name:"Polynomials Unlocked",
+    done(){return ccTiers() >= 50}
+  },
+  16: {
+    name:"Synthetic Division Unlocked",
+    done(){return player.polynomials[6].bought.gte(1)}
+  },
+  17: {
+    name:"Game Completed",
+    done(){return player.points.gte("1e5e8")}
+  },
 }

@@ -11,8 +11,10 @@ function quadFormula() {
     if(player.compChallenge == 2) x2 = x2.div(player.antiSlope.cbrt())
     x2 = x2.mul(COMP_CHALLENGES[7].eff())
     if(hasYQU(11,'bought')) x2 = x2.mul(YQUAD_UPGRADES[11].eff())
+    if(hasPermUpgrade(2)) x2 = x2.mul(PERM_UPGRADES[2].eff())
     if(hasCU(1,4) && player.compChallenge != 10) x2 = x2.pow(BCOMP_UPGRADES[4].eff())
     if(player.compChallenge == 1) x2 = x2.pow(cc1Exponent())
+    if(player.inSynthDiv) x2 = x2.max(0).pow(hasSDU(9)?0.025:0.02)
     if(player.yChallenge == 1) x2 = new Decimal(0)
     x2 = x2.floor()
     return x2

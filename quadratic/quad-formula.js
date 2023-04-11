@@ -8,6 +8,7 @@ function qpGen() {
     if(hasCU(1,1) && player.compChallenge != 10) qp = qp.mul(10)
     if(hasCU(0,10) && player.compChallenge != 10) qp = qp.mul(COMP_UPGRADES[10].eff2())
     if(hasYQU(3,'bought')) qp = qp.mul(YQUAD_UPGRADES[3].eff())
+    if(hasPermUpgrade(2)) qp = qp.mul(PERM_UPGRADES[2].eff2())
     if(player.compChallenge == 9) qp = qp.pow(0.5)
     qp = qp.pow(COMP_CHALLENGES[9].eff())
     if(player.yChallenge == 3) qp = new Decimal(0)
@@ -33,7 +34,7 @@ function maxABC() {
   return new Decimal(5).add(player.quadBuyables[4])
 }
 
-// while it is called "quadratic power buyables", this variable stores imaginary power buyables as well
+// while it is called "quadratic power buyables", this const stores imaginary power buyables as well
 const QP_BUYABLES = {
   1: {
     title: "Variable Coupler",

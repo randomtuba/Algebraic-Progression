@@ -13,14 +13,18 @@ var tmp = {
     "Did you forget an exponent?",
   ],
   textbook: {
-    names: [null,"Preface","Terminology","Buildings","Variables","Upgrades","Functions","Quadratic","Coordinate Plane","Square Root","Challenges","Quadratic Formula","Root Epicenter","Complex","Milestones","Complex Upgrades","Complex Plane","Complex Challenges","Y-Quadratic","Z Lab","Variable Synthesizer","Y-Challenges"],
-    expands: [null,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+    names: [null,"Preface","Terminology","Buildings (v1.0)","Variables (v1.0)","Upgrades (v1.0)","Functions (v1.0)","Quadratic (v1.1)","Coordinate Plane (v1.1)","Square Root (v1.2)","Challenges (v1.3)","Quadratic Formula (v1.4)","Root Epicenter (v1.4)","Complex (v2.0)","Milestones (v2.0)","Complex Upgrades (v2.0)","Complex Plane (v2.0)","Complex Challenges (v2.1)","Y-Quadratic (v2.2)","Z Lab (v2.2)","Variable Synthesizer (v2.2)","Y-Challenges (v2.2)","Polynomials (v2.3)","Synthetic Division (v2.3)"],
+    expands: [null,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
   },
   clicks: 0,
   themeSwitches: 0,
   hovers: [null,false,false,false,false,false,false,false,false],
   circleText: [null,"Multiplying Imaginary Power generation","Multiplying Z-Power gain","Delaying the 2nd CE softcap start","Multiplying i exponent generation","Multiplying circles gain"],
   circleMilestones: [null,new Decimal(0),new Decimal(1000),new Decimal(1e5),new Decimal(2e6),new Decimal(1e8)],
+  savedGlitches: [null,"","","","","","","","","","",0,0,0,0,0,0,0,0,0,0],
+  allTabsShown: false,
+  
+  triggeredEndingCutscene: false,
   keptGoing: false,
 };
 
@@ -32,6 +36,7 @@ function clickButton() {
 function pps() { // points per second
   let pps = new Decimal(0);
   pps = pps.add(BUYABLES[1].eff()).add(BUYABLES[2].eff()).add(BUYABLES[3].eff())
+  pps = pps.min("1e5e8")
   return pps;
 }
 
@@ -130,6 +135,12 @@ var changedQAdisplay = false
 var changedESdisplay = false
 var changedCAdisplay = false
 var changedYQAdisplay = false
+var arr1 = [null,new Decimal(2),new Decimal(1.7),new Decimal(1.5),new Decimal(1.2)]
+var arr2 = [null,new Decimal(300),new Decimal(100),new Decimal(40),new Decimal(10)]
+var arr3 = [null,new Decimal(1000),new Decimal(10000),new Decimal(100000),new Decimal(1000)]
+var tabNames = []
+var subtabNames = []
+var s = ""
 
 function mainLoop(){
   if(hasLoaded==1){document.getElementById("loading_page").style = "display: none";document.getElementById("app").style = "";hasLoaded=2}
@@ -143,6 +154,7 @@ function mainLoop(){
   player.prestigeTimes[0] = player.prestigeTimes[0] += diff;
   player.prestigeTimes[2] = player.prestigeTimes[2] += diff;
   if(player.yQuadratics.gte(1)) player.prestigeTimes[4] = player.prestigeTimes[4] += diff;
+  if(player.speedrunMode && !player.speedrunData[17][1]) player.speedrunTimer = player.speedrunTimer += diff;
   
   // PRODUCE STUFF
   if(((player.challenge != 8 && player.compChallenge != 8) || isPrime(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).add(player.buyables[4]).add(player.buyables[5]).add(player.buyables[6]))) && (player.compChallenge != 6 || player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).lt(player.buyables[4].add(player.buyables[5]).add(player.buyables[6])))) player.points = player.points.add(pps().times(diff));
@@ -153,7 +165,7 @@ function mainLoop(){
   for (let i = 1; i <= (player.varSynth.unlocked[3] ? 4 : 3); i++) {
     player.compPlane[1][i] = player.compPlane[1][i].add(compPlaneGen(i).mul(diff))
   }
-  player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05)).min(player.totalPoints.pow(player.prestigeTimes[2])).mul(diff))
+  player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05**diff)).min(player.totalPoints.pow(player.prestigeTimes[2])))
   if(hasYQU(8,'bought')) player.zlab.zpower = player.zlab.zpower.add(zpowerGen().mul(diff))
   for (let i = 1; i <= 4; i++) {
     if(player.zlab.charged == i) {
@@ -174,14 +186,22 @@ function mainLoop(){
       player.varSynth.iExp = new Decimal(0)
     }
   }
-  if(player.varSynth.unlocked[3] && compPlaneEffects(4).gte(player.extraUP)) {
+  if(player.varSynth.unlocked[3] && compPlaneEffects(4).gte(player.extraUP) && !hasSDU(11)) {
     player.upgradePoints[0] = player.upgradePoints[0].add(compPlaneEffects(4).sub(player.extraUP))
     player.upgradePoints[1] = player.upgradePoints[1].add(compPlaneEffects(4).sub(player.extraUP))
     player.extraUP = compPlaneEffects(4)
   }
-  if(player.yChallenge == 1 && player.x.gte(Y_CHALLENGES[1].goal())) player.yChalCompletions[1] = player.x.sub(4.5e8).div(1e7).add(1).floor()
-  if(player.yChallenge == 2 && player.x.gte(Y_CHALLENGES[2].goal())) player.yChalCompletions[2] = player.x.sub(5.1e8).div(1e7).add(1).floor()
-  if(player.yChallenge == 3 && player.x.gte(Y_CHALLENGES[3].goal())) player.yChalCompletions[3] = player.x.sub(1.1e9).div(5e7).add(1).floor()
+  if(hasSDU(11)) {
+    player.upgradePoints[0] = player.upgradePoints[0].add(compPlaneEffects(4).mul(diff))
+    player.upgradePoints[1] = player.upgradePoints[1].add(compPlaneEffects(4).mul(diff))
+  }
+  if((player.yChallenge == 1 || hasSDU(8)) && player.x.gte(Y_CHALLENGES[1].goal())) player.yChalCompletions[1] = player.x.sub(4.5e8).div(1e7).add(1).floor()
+  if((player.yChallenge == 2 || hasSDU(8)) && player.x.gte(Y_CHALLENGES[2].goal())) player.yChalCompletions[2] = player.x.sub(5.1e8).div(1e7).add(1).floor()
+  if((player.yChallenge == 3 || hasSDU(8)) && player.x.gte(Y_CHALLENGES[3].goal())) player.yChalCompletions[3] = player.x.sub(1.1e9).div(5e7).add(1).floor()
+  if(player.yChallenge == 4 && player.x.gte(Y_CHALLENGES[4].goal())) player.yChalCompletions[4] = player.x.sub(4e8).div(2.5e7).add(1).floor()
+  
+  player.points = player.points.min("1e5e8")
+  player.totalPoints = player.totalPoints.min("1e5e8")
   
   // (mostly) UPDATE FUNCTIONS
   updateAuto() //runs the autobuyers
@@ -193,12 +213,20 @@ function mainLoop(){
   updateRootEpicenter() //disables slider when in Square Root and detects Level 4 and -1 completion
   if(ccTiers() >= 50) updatePolynomials(diff) //makes polynomials produce other polynomials
   fixUnixEpoch() //fixes the bug where Quadratic and Complex times jump a Unix Epoch
-  trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5
+  trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5 or Y-Challenge 4
   if(hasMilestone(15)) simulateEssence(1) //passively generates RE
   if(hasMilestone(16)) simulateEssence(4) //passively generates CE
-  checkForEndgame() //detects if the player has all achievements
+  checkForEndgame() //detects if the player has viewed the ending cutscene
   modifiedReality() //hasn't it always been there?
   compChalDetection() //checks if you failed CC4
+  showAllTabs() //disables tab hiding after unlocking Synthetic Division
+  
+  if(player.polynomials[10].boughtThisRun) document.title = "The End"
+  
+  setTimeout(()=>{if(player.points.gte("1e5e8") && !tmp.triggeredEndingCutscene && !player.viewedEndingCutscene) {
+    tmp.triggeredEndingCutscene = true
+    cueEndingCutscene()
+  }},1000)
   
   if(isNaN(player.points)) {
     exportSave()
@@ -306,9 +334,9 @@ function updateAuto() {
     if(player.complexes.lt(20)) {
       while(player.x2.gte(doublerCost())) buyDoubler()
     } else {
-      if(player.x2.lt(hasZlabMilestone(4,1)?"1e500":"1e300")) {
+      if(player.x2.lt(hasZlabMilestone(4,1)?"1e500":"1e300") && player.x2.gte(doublerCost)) {
         player.doublers = player.x2.max(1).log10().sub(9).floor().add(1)
-      } else {
+      } else if(player.x2.gte(doublerCost)) {
         let a = new Decimal(1.1).log10()
         let b = Decimal.sub(1,Decimal.mul(hasZlabMilestone(4,1)?980:580,a))
         let c = Decimal.add(9,a.mul(Decimal.pow(hasZlabMilestone(4,1)?490:290,2))).sub(player.x2.max(1).log10())
@@ -320,9 +348,9 @@ function updateAuto() {
     if(player.complexes.lt(20)) {
       while(player.rootEssence.gte(sqrtDoublerCost())) buySqrtDoubler()
     } else {
-      if(player.rootEssence.lt(hasZlabMilestone(4,2)?"1.105e177":"1.577e72")) {
+      if(player.rootEssence.lt(hasZlabMilestone(4,2)?"1.105e177":"1.577e72") && player.rootEssence.gte(sqrtDoublerCost())) {
         player.sqrtDoublers = player.rootEssence.max(1).log(5).sub(new Decimal(200).log10()).floor().add(1)
-      } else {
+      } else if(player.rootEssence.gte(sqrtDoublerCost())) {
         let a = new Decimal(1.05).log10()
         let b = Decimal.sub(new Decimal(5).log10(),Decimal.mul(hasZlabMilestone(4,2)?500:200,a))
         let c = Decimal.add(new Decimal(200).log10(),a.mul(Decimal.pow(hasZlabMilestone(4,2)?250:100,2))).sub(player.rootEssence.max(1).log10())
@@ -332,14 +360,20 @@ function updateAuto() {
   }
   
   // Y-INTERCEPT
-  if(player.compAutobuyers[4] && hasUpgrade(8)){
-    while(player.slope.gte(bCost())) buyB()
+  if(player.compAutobuyers[4] && hasUpgrade(8) && player.slope.gte(bCost())){
+    let a = new Decimal(1)
+    let b = new Decimal(4)
+    let c = new Decimal(23).sub(player.slope.max(1).log10())
+    player.b = b.mul(-1).add(Decimal.pow(b,2).sub(Decimal.mul(4,a.mul(c))).sqrt()).div(a.mul(2)).add(1).floor()
   }
   
   // QP BUYABLES
   if(player.compAutobuyers[5] && hasQU(20) && player.compChallenge != 9) {
     for (let i = 1; i < 5; i++) {
-      while(player.quadPower.gte(QP_BUYABLES[i].cost())) buyQPBuyable(i)
+      let a = arr1[i].log10()
+      let b = arr2[i].log10()
+      let c = arr3[i].log10().sub(player.quadPower.max(1).log10())
+      player.quadBuyables[i] = b.mul(-1).add(Decimal.pow(b,2).sub(Decimal.mul(4,a.mul(c))).max(0).sqrt()).div(a.mul(2)).add(1).floor().max(0).min(i == 1 ? (hasZlabMilestone(3,2) ? 5 : 4) : Infinity)
     }
   }
   
@@ -353,13 +387,25 @@ function updateAuto() {
   
   // COMPLEX PLANE CURRENCIES
   if(player.compAutobuyers[8][0]) {
-    while(player.i.gte(compPlaneBuyCosts(1))) buyCplaneVar(1)
+    if(player.compPlane[0][1].lt(1000)) {
+      while(player.i.gte(compPlaneBuyCosts(1))) buyCplaneVar(1)
+    } else {
+      player.compPlane[0][1] = player.i.div(100000).max(1).log(1.5).add(1).floor()
+    }
   }
   if(player.compAutobuyers[8][1]) {
-    while(player.i.gte(compPlaneBuyCosts(2))) buyCplaneVar(2)
+    if(player.compPlane[0][2].lt(1000)) {
+      while(player.i.gte(compPlaneBuyCosts(2))) buyCplaneVar(2)
+    } else {
+      player.compPlane[0][2] = player.i.div(1e8).max(1).log(1.75).add(1).floor()
+    }
   }
   if(player.compAutobuyers[8][2]) {
-    while(player.i.gte(compPlaneBuyCosts(3))) buyCplaneVar(3)
+    if(player.compPlane[0][3].lt(1000)) {
+      while(player.i.gte(compPlaneBuyCosts(3))) buyCplaneVar(3)
+    } else {
+      player.compPlane[0][3] = player.i.div(1e18).max(1).log(2).add(1).floor()
+    }
   }
   if(player.compAutobuyers[8][3]) {
     while(player.i.gte(compPlaneBuyCosts(4))) buyCplaneVar(4)
@@ -381,7 +427,17 @@ function updateAuto() {
   
   // I TRIPLERS
   if(player.compAutobuyers[14]){
-    while(player.compPlane[1][1].gte(triplerCost()) && player.compPlane[1][2].gte(triplerCost()) && player.compPlane[1][3].gte(triplerCost())) buyTripler()
+    if(player.triplers.lt(1000)) {
+      while(player.compPlane[1][1].gte(triplerCost()) && player.compPlane[1][2].gte(triplerCost()) && player.compPlane[1][3].gte(triplerCost())) buyTripler()
+    } else {
+      if(player.compPlane[1][1].gte(triplerCost()) && player.compPlane[1][2].gte(triplerCost()) && player.compPlane[1][3].gte(triplerCost())) player.triplers = player.compPlane[1][3].div(10000).max(1).log(hasYQU(9,'bought') ? 25 : 50).add(1).floor()
+    }
+  }
+  
+  // REVOLUTION BUYABLES
+  if(player.compAutobuyers[15]) {
+    player.varSynth.iExpBuyables[1] = player.varSynth.revolutions.div(10).log(4).floor().add(1)
+    player.varSynth.iExpBuyables[2] = player.varSynth.revolutions.div(100).log(3).floor().add(1)
   }
 }
 
@@ -554,42 +610,47 @@ function updateValues() {
   if(hasYQU(12,'bought') && document.getElementById("yquadAuto") && player.currentTab == 'yquad'){
     player.inputValue3 = document.getElementById("yquadAuto").value
   }
+  
+  // Best Points in Synthetic Division
+  if(player.points.gte(player.bestPointsInSynthDiv) && player.inSynthDiv) player.bestPointsInSynthDiv = player.points
 }
 
 function fixUnixEpoch() {
   if(player.prestigeTimes[0] >= 1639872000) player.prestigeTimes[0] = player.timePlayed
   if(player.prestigeTimes[2] >= 1639872000) player.prestigeTimes[2] = player.timePlayed
+  if(player.speedrunTimer >= 1639872000) player.speedrunTimer = 0
 }
 
 function trappedInSqrt() {
-  if(player.compChallenge == 5) {
+  if(player.compChallenge == 5 || player.yChallenge == 4) {
     player.inSqrt = true;
-    player.epicenterLevel = Math.min(player.compChalCompletions[5]+1,5).toString();
+    player.epicenterLevel = player.compChallenge == 0 ? 5 : Math.min(player.compChalCompletions[5]+1,5).toString();
   }
 }
 
 function checkForEndgame() {
-  if (player.achievements.length >= 55 && !player.gameWon) {
+  if (player.viewedEndingCutscene && !player.gameWon) {
     player.gameWon = true
-    player.winTime = player.timePlayed
-  } else if (player.achievements.length < 55) {
+    player.winTime = (player.speedrunMode ? player.speedrunTimer : player.timePlayed)
+  } else if (!player.viewedEndingCutscene) {
     player.gameWon = false;
   }
 }
 
 function modifiedReality() {
   if (player.zUnlocked) {
-    document.title = "Algebraic Progression v2.2.1"
+    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3"
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20cZrrZnt.png?v=1676847726255");
-    tmp.textbook.names[8] = "Coordinate Realm"
+    tmp.textbook.names[8] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
       if(!player.varSynth.unlocked[0] && player.options[14]) document.title = "Hasn't it always been there?";
       if(player.varSynth.unlocked[0] && !player.yChalsUnlocked[1] && player.options[14]) document.title = "The variables grow more distant";
       if(player.yChalsUnlocked[1] && ccTiers() < 50 && player.options[14]) document.title = "Why are you still trying?";
+      if(player.polynomials[6].bought.gte(1) && !player.polynomials[10].boughtThisRun && player.options[14]) document.title = "I hope you're happy";
     }, Math.random()*100);
   } else {
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337");
-    tmp.textbook.names[8] = "Coordinate Plane"
+    tmp.textbook.names[8] = "Coordinate Plane (v1.1)"
   }
   
   if(player.yQuadratics.lt(1)) player.prestigeTimes[4] = player.timePlayed
@@ -605,6 +666,15 @@ function compChalDetection() {
           className:'achieves',
         });
       }
+  }
+}
+
+function showAllTabs() {
+  if(!tmp.allTabsShown && player.polynomials[6].bought.gte(1) && !player.viewedEndingCutscene) {
+    for(let i = 1; i < 11; i++) {
+      player.tabDisplays[i] = true
+    }
+    tmp.allTabsShown = true
   }
 }
 
@@ -691,8 +761,111 @@ document.addEventListener("keydown", function onEvent(event) {
     case "S":
       save()
       break;
+    case "d":
+      if(player.polynomials[6].bought.gte(1)) enterSynthDiv()
+      break;
+    case "ArrowLeft":
+      tabNames = tabArray()
+      s = player.currentTab;
+      for (let i = 0; i < tabNames.length; i++) {
+        if(s === tabNames[i]) {
+          s = i - 1;
+        }
+      }
+      if(s < 0) {
+        s = tabNames.length - 1
+      }
+      tab(tabNames[s])
+      break;
+    case "ArrowRight":
+      tabNames = tabArray()
+      s = player.currentTab;
+      for (let i = 0; i < tabNames.length; i++) {
+        if(s === tabNames[i]) {
+          s = i + 1;
+        }
+      }
+      if(s > tabNames.length - 1) {
+        s = 0
+      }
+      tab(tabNames[s])
+      break;
+    case "ArrowUp":
+      subtabNames = subtabArray()
+      s = player.currentSubtab[subtabIndex()];
+      for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
+        if(s === subtabNames[subtabIndex()][i]) {
+          s = i - 1;
+        }
+      }
+      if(s < 0) {
+        s = subtabNames[subtabIndex()].length - 1
+      }
+      player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
+      break;
+    case "ArrowDown":
+      subtabNames = subtabArray()
+      s = player.currentSubtab[subtabIndex()];
+      for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
+        if(s === subtabNames[subtabIndex()][i]) {
+          s = i + 1;
+        }
+      }
+      if(s > subtabNames[subtabIndex()].length - 1) {
+        s = 0
+      }
+      player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
+      break;
   }
 });
+
+function tabArray() {
+  let arr = [];
+  if(player.tabDisplays[1]) arr.push("gen")
+  if(player.tabDisplays[2]) arr.push("options") // trolling
+  if(player.tabDisplays[3]) arr.push("stats")
+  if(player.tabDisplays[4]) arr.push("achs")
+  if(player.tabDisplays[5]) arr.push("tbook")
+  if((player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.totalGP.gte(1)) && player.tabDisplays[6]) arr.push("upgs")
+  if((player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]) arr.push("quad")
+  if(player.totaly2.gte(1) && player.tabDisplays[8]) arr.push("yquad")
+  if(player.totali.gte(1) && player.tabDisplays[9]) arr.push("comp")
+  if(ccTiers() >= 50 && player.tabDisplays[10]) arr.push("polynomials")
+  return arr
+}
+
+function subtabArray() {
+  let arr = [["upgrades"],["milestones","upgrades"],["stats"],["upgrades","varsynth","challenges"],["regular","secret"],["main","division"]];
+  if(hasQU(12)) arr[0].push("cplane")
+  if(hasQU(16)) arr[0].push("sroot")
+  if(hasSU(16)) arr[0].push("chals")
+  if(hasQU(20)) arr[0].push("formula")
+  if(hasMilestone(12)) arr[1].push("cplane")
+  if(hasCU(1,6)) arr[1].push("challenges")
+  if(hasYQU(8,'bought')) arr[1].push("zlab")
+  if(player.totalx2.gte(1) || player.totali.gte(1)) arr[2].push("tenruns")
+  if(hasSU(12) || player.totali.gte(1)) arr[2].push("chalrecords")
+  if(player.speedrunMode) arr[2].push("speedrun")
+  return arr
+}
+
+function subtabIndex() {
+  if(player.currentTab == "quad") {
+    return 0
+  } else if (player.currentTab == "comp") {
+    return 1
+  } else if (player.currentTab == "stats") {
+    return 2
+  } else if (player.currentTab == "yquad") {
+    return 3
+  } else if (player.currentTab == "achs") {
+    return 4
+  } else if (player.currentTab == "polynomials") {
+    return 5
+  } else {
+    return -1
+  }
+}
 
 // for ending cutscene
 function predictableRandom(x) {
@@ -715,7 +888,7 @@ function randomSymbol() {
     if (frac <= 0) return str;
     const x = str.split("");
     for (let i = 0; i < x.length * frac; i++) {
-      const randomIndex = Math.floor(predictableRandom(Math.floor(Date.now() / 500) % 964372 + 1.618 * i) * x.length);
+      const randomIndex = Math.floor(predictableRandom(Math.floor(Date.now() / 5000) % 964372 + 1.618 * i) * x.length);
       x[randomIndex] = randomSymbol();
     }
     return x.join("");
@@ -728,6 +901,26 @@ function randomSymbol() {
       second.substring(second.length * (1 - param), second.length);
   }
   // transition from original tab name to ending tab name
-  function glitchedTabName(first, second, param) {
-    return randomCrossWords(blendWords(first, second, param),param >= 0.5 ? 1 - ((param - 0.5) * 2) : param * 2)
+  function glitchedTabName(first, second, param, tabNum) {
+    if(Date.now() >= tmp.savedGlitches[tabNum+10]+100) {
+      let str = randomCrossWords(blendWords(first, second, (param > 0.9999 ? 1 : param)),param >= 0.5 ? 1 - (((param > 0.9999 ? 1 : param) - 0.5) * 2) : (param > 0.9999 ? 1 : param) * 2)
+      tmp.savedGlitches[tabNum] = str
+      tmp.savedGlitches[tabNum+10] = Date.now()
+      return str
+    } else {
+      return tmp.savedGlitches[tabNum]
+    }
   }
+
+function cueEndingCutscene() {
+  setTimeout(()=>{player.tabDisplays[10] = false; if(player.currentTab == "polynomials") player.currentTab = "comp"}, 2000)
+  setTimeout(()=>{player.tabDisplays[9] = false; if(player.currentTab == "comp") player.currentTab = "yquad"}, 2500)
+  setTimeout(()=>{player.tabDisplays[8] = false; if(player.currentTab == "yquad") player.currentTab = "quad"}, 3000)
+  setTimeout(()=>{player.tabDisplays[7] = false; if(player.currentTab == "quad") player.currentTab = "upgs"}, 3500)
+  setTimeout(()=>{player.tabDisplays[6] = false; if(player.currentTab == "upgs") player.currentTab = "tbook"}, 4000)
+  setTimeout(()=>{player.tabDisplays[5] = false; if(player.currentTab == "tbook") player.currentTab = "achs"}, 4500)
+  setTimeout(()=>{player.tabDisplays[4] = false; if(player.currentTab == "achs") player.currentTab = "stats"}, 5250)
+  setTimeout(()=>{player.tabDisplays[3] = false; if(player.currentTab == "stats") player.currentTab = "gen"}, 6750)
+  setTimeout(()=>{document.body.classList.add("disappearingbody")},9000)
+  setTimeout(()=>{document.body.classList.remove("disappearingbody"); player.viewedEndingCutscene = true; tmp.allTabsShown = false},17000)
+}

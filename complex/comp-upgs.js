@@ -24,7 +24,7 @@ const BCOMP_UPGRADES = {
   },
   4: {
     title: "S-UP-er Boost",
-    desc: "Power x² gain based on total Upgrade Points. (harcaps at ^1.25)",
+    desc: "Power x² gain based on total Upgrade Points. (hardcaps at ^1.25)",
     cost: new Decimal(5e10),
     eff() {return player.upgradePoints[1].div(200).add(1).div(1.05).pow(0.5).mul(1.05).min(1.25)},
     effectDisplay() {return "^" + format(BCOMP_UPGRADES[4].eff()) + " x² gain"},
