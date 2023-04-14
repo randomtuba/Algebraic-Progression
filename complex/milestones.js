@@ -96,7 +96,7 @@ const MILESTONES = {
   },
   20: {
     title: "50 CC tiers",
-    desc: "Unlock Polynomials. (next update)",
+    desc: "Unlock Polynomials.",
     requirement: 50,
   },
 }
