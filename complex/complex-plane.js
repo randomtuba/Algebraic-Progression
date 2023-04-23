@@ -9,7 +9,7 @@ function compPlaneEffects(x) {
       return player.compPlane[1][2].add(1).log(100).add(1)
       break;
     case 3:
-      return player.compPlane[1][3].add(1).log10().add(1).log(3)
+      return player.compPlane[1][3].add(1).log10().add(1).max(1).log(3)
       break;
     case 4:
       return player.compPlane[1][4].add(1).log10().pow(Decimal.add(0.8,POLY_BUYABLES[1].eff())).mul(POLY_BUYABLES[5].eff()).floor()

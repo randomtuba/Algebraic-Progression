@@ -122,7 +122,7 @@ function start() {
       true, // Quadratic
       true, // Y-Quadratic
       true, // Complex
-      true, // ??????
+      true, // Polynomials
     ],
     zUnlocked: false,
     y2: new Decimal(0),
@@ -377,6 +377,7 @@ function importSave(imported = undefined) {
       });
   }
   player = JSON.parse(atob(imported));
+  fixSave();
   save();
   window.location.reload();
   $.notify('Save Imported!', {

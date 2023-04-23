@@ -12,7 +12,7 @@ const BCOMP_UPGRADES = {
     title: "Quadratic Squared",
     desc: "Boost Quadratic gain based on total i, and all Quadratic-based effects are raised ^4.",
     cost: new Decimal(500000),
-    eff() {return player.totali.log10().add(1).floor()},
+    eff() {return player.totali.max(1).log10().add(1).floor()},
     effectDisplay() {return format(BCOMP_UPGRADES[2].eff()) + "x Quadratics"},
   },
   3: {
@@ -76,7 +76,7 @@ const COMP_UPGRADES = {
   2: {
     desc: "Gain more slope based on times gone Quadratic, applied after the first slope softcap.",
     cost: new Decimal(3),
-    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).pow(player.quadratics.add(player.bankedQuadratics).min(2e7).add(1).log10().mul(2.5)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).pow(player.quadratics.add(player.bankedQuadratics).min(2e7).max(1).log10().mul(2.5)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(COMP_UPGRADES[2].eff()) + "x slope"},
   },
   3: {
@@ -100,7 +100,7 @@ const COMP_UPGRADES = {
   6: {
     desc(){return "Gain more root essence based on times gone Quadratic. (hardcaps at " + (hasZlabMilestone(3,3) ? format(1e9) : format(2e7)) + " Quadratics)"},
     cost: new Decimal(5),
-    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).pow(player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).add(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
+    eff() {return player.compChallenge == 4 ? new Decimal(1) : player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).pow(player.quadratics.add(player.bankedQuadratics).min(hasZlabMilestone(3,3)?1e9:2e7).max(1).log10().mul(3)).add(1).pow(hasCU(1,2)?4:1).pow(COMP_CHALLENGES[4].eff2())},
     effectDisplay() {return format(COMP_UPGRADES[6].eff()) + "x root essence"},
   },
   7: {
