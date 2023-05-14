@@ -11,13 +11,13 @@ function compFormula() {
     if(hasCU(1,9) && player.compChallenge != 10) neg = neg.mul(BCOMP_UPGRADES[9].eff())
     if(player.compChallenge != 10) neg = neg.mul(COMP_UPGRADES[15].eff())
     if(hasSDU(7)) neg = neg.mul(SYNTH_DIV_UPGRADES[7].eff())
-    if(hasPermUpgrade(5)) neg = neg.mul(PERM_UPGRADES[5].eff())
     neg = neg.pow(COMP_CHALLENGES[10].eff())
+    if(hasPermUpgrade(5)) neg = neg.mul(PERM_UPGRADES[5].eff())
     neg = neg.floor()
     if(player.x2.lt("1e2950") || player.rootEssence.lt("1e660")) neg = new Decimal(0)
     return neg
   }else{
-    return new Decimal(1);
+    return new Decimal(1).mul(hasPermUpgrade(5)?PERM_UPGRADES[5].eff():1);
   }
 }
 
@@ -43,7 +43,7 @@ function goComplex(force) {
     player.slope = new Decimal(0)
     player.b = new Decimal(0)
     player.challenge = 0
-    if(!hasMilestone(7)) player.chalCompletions = []
+    player.chalCompletions = hasMilestone(7)?[1,2,3,4,5,6,7,8,9,10]:[]
     player.abc = [null,new Decimal(0),new Decimal(0),new Decimal(0)]
     player.quadPower = new Decimal(0)
     player.quadBuyables[1] = new Decimal(0)
@@ -74,7 +74,7 @@ function goComplex(force) {
     }
     player.options[6] = false
     if(player.options[4] && player.compChallenge == 0 && player.unlocked > 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
-    player.options[4] = false
+    player.options[4] =  (player.compChallenge != 0)&&player.options[4]
     player.compChallenge = 0
     player.antiSlope = new Decimal(1)
     player.z = new Decimal(0)
@@ -116,7 +116,7 @@ function goComplex(force) {
       player.slope = new Decimal(0)
       player.b = new Decimal(0)
       player.challenge = 0
-      if(!hasMilestone(7)) player.chalCompletions = []
+      player.chalCompletions = hasMilestone(7)?[1,2,3,4,5,6,7,8,9,10]:[]
       player.abc = [null,new Decimal(0),new Decimal(0),new Decimal(0)]
       player.quadPower = new Decimal(0)
       player.quadBuyables[1] = new Decimal(0)
@@ -148,7 +148,7 @@ function goComplex(force) {
       }
       player.options[6] = false
       if(player.options[4] && player.compChallenge == 0 && player.unlocked > 0){player.upgradePoints[0] = player.upgradePoints[0].add(COMP_CHALLENGES[player.unlocked].unlockCost); player.unlocked = 0}
-      player.options[4] = false
+      player.options[4] =  (player.compChallenge != 0)&&player.options[4]
       player.compChallenge = 0
       player.antiSlope = new Decimal(1)
       player.z = new Decimal(0)

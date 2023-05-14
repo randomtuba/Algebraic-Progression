@@ -338,3 +338,11 @@ function renamePreset(x) {
  if(prompt===null) return false
   player.presets.names[x] = answer
 }
+
+function savePreset(x){
+const answer = prompt("Type your exported Complex Upgrades preset in here!\nIf you type nothing, it will save your current preset")
+if (answer===null) return false
+let str = player.compUpgs[0].toString();
+if(hasZlabMilestone(1,5)) str += ";" + player.fourthRowCompUpgs[1] + "," + player.fourthRowCompUpgs[2] + "," + player.fourthRowCompUpgs[3] + "," + player.fourthRowCompUpgs[4];
+player.presets.info[x] = answer||str
+}

@@ -229,7 +229,7 @@ function mainLoop(){
   }},1000)
   
   if(isNaN(player.points)) {
-    exportSave()
+    exportAsFile()
     alert("WARNING: NaN Detected! You will see a message that will ask you to confirm a Hard Reset. Please select OK to solve the NaN. Your save has been exported, so import it when the game loads the import prompt.")
     hardReset()
     importSave()

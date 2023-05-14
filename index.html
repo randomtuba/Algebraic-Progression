@@ -800,7 +800,7 @@
         <br>
         Click on a Preset button to select the preset.<br>
         <button v-for="a in 6" :class="{buildingLocked:player.presets.selected == a,buildingBuyable:player.presets.selected != a}" @click="player.presets.selected = a">{{player.presets.names[a]}}</button><br>
-        <button v-if="player.presets.selected > 0" class="hoverable" onclick="player.presets.info[player.presets.selected] = prompt('Type your exported Complex Upgrades preset in here!')">Save</button>
+        <button v-if="player.presets.selected > 0" class="hoverable" onclick="savePreset(player.presets.selected)">Save</button>
         <button v-if="player.presets.selected > 0" class="hoverable" onclick="loadPreset(player.presets.selected)">Load</button>
         <button v-if="player.presets.selected > 0" class="hoverable" onclick="renamePreset(player.presets.selected)">Rename</button>
         </span>
