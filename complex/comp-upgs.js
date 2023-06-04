@@ -17,10 +17,10 @@ const BCOMP_UPGRADES = {
   },
   3: {
     title: "Achievement Bonus",
-    desc: "Multiply the g(x) base based on Achievements completed.",
+    desc: "Multiply the g(n) base based on Achievements completed.",
     cost: new Decimal(1e9),
     eff() {return new Decimal(player.achievements.length).div(20)},
-    effectDisplay() {return format(BCOMP_UPGRADES[3].eff()) + "x g(x) base"},
+    effectDisplay() {return format(BCOMP_UPGRADES[3].eff()) + "x g(n) base"},
   },
   4: {
     title: "S-UP-er Boost",
@@ -68,7 +68,7 @@ const BCOMP_UPGRADES = {
 // index 0 in compUpgs
 const COMP_UPGRADES = {
   1: {
-    desc: "The h(x) base powers point gain at a heavily reduced rate. (^0.01)",
+    desc: "The h(n) base powers point gain at a heavily reduced rate. (^0.01)",
     cost: new Decimal(3),
     eff() {return BUYABLES[6].base().pow(0.01)},
     effectDisplay() {return "^" + format(COMP_UPGRADES[1].eff()) + " production"},
@@ -116,7 +116,7 @@ const COMP_UPGRADES = {
     effectDisplay() {return format(COMP_UPGRADES[8].eff()) + "x RE and sacrificed x²"},
   },
   9: {
-    desc: "Gain more i based on Functions bought, and delay the g(x) and h(x) softcaps by UP purchases.",
+    desc: "Gain more i based on Functions bought, and delay the g(n) and h(n) softcaps by UP purchases.",
     cost: new Decimal(7),
     eff() {return player.buyables[4].add(player.buyables[5]).add(player.buyables[6]).div(100000).add(1).pow(2.5)},
     effectDisplay() {return format(COMP_UPGRADES[9].eff()) + "x i, +" + formatWhole(player.compUpgs[2][0]+player.compUpgs[2][1]+player.compUpgs[2][2]) + " softcap starts"},

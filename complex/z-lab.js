@@ -27,7 +27,7 @@ const COLLIDERS = {
       "<b>Level 1</b><br>Add 0.03 to the exponent of Quadratic Upgrade 13 (+0.04 in Square Root)",
       "<b>Level 3</b><br>Add 0.2 to the exponent of Square Root Upgrade 2",
       "<b>Level 6</b><br>Add 0.01 to the exponent of Square Root Upgrade 5",
-      "<b>Level 12</b><br>Each \"Function Enhancer\" now delays the g(x) and h(x) softcaps by 6 levels",
+      "<b>Level 12</b><br>Each \"Function Enhancer\" now delays the g(n) and h(n) softcaps by 6 levels",
       "<b>Level 20</b><br>The effect from Complex Upgrade 5 is raised ^4",
     ],
   },

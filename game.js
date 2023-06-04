@@ -13,8 +13,8 @@ var tmp = {
     "Did you forget an exponent?",
   ],
   textbook: {
-    names: [null,"Preface","Terminology","Buildings (v1.0)","Variables (v1.0)","Upgrades (v1.0)","Functions (v1.0)","Quadratic (v1.1)","Coordinate Plane (v1.1)","Square Root (v1.2)","Challenges (v1.3)","Quadratic Formula (v1.4)","Root Epicenter (v1.4)","Complex (v2.0)","Milestones (v2.0)","Complex Upgrades (v2.0)","Complex Plane (v2.0)","Complex Challenges (v2.1)","Y-Quadratic (v2.2)","Z Lab (v2.2)","Variable Synthesizer (v2.2)","Y-Challenges (v2.2)","Polynomials (v2.3)","Synthetic Division (v2.3)"],
-    expands: [null,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+    names: [null,"Preface","Terminology","Hotkeys","Buildings (v1.0)","Variables (v1.0)","Upgrades (v1.0)","Functions (v1.0)","Quadratic (v1.1)","Coordinate Plane (v1.1)","Square Root (v1.2)","Challenges (v1.3)","Quadratic Formula (v1.4)","Root Epicenter (v1.4)","Complex (v2.0)","Milestones (v2.0)","Complex Upgrades (v2.0)","Complex Plane (v2.0)","Complex Challenges (v2.1)","Y-Quadratic (v2.2)","Z Lab (v2.2)","Variable Synthesizer (v2.2)","Y-Challenges (v2.2)","Polynomials (v2.3)","Synthetic Division (v2.3)"],
+    expands: [null,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
   },
   clicks: 0,
   themeSwitches: 0,
@@ -23,6 +23,7 @@ var tmp = {
   circleMilestones: [null,new Decimal(0),new Decimal(1000),new Decimal(1e5),new Decimal(2e6),new Decimal(1e8)],
   savedGlitches: [null,"","","","","","","","","","",0,0,0,0,0,0,0,0,0,0],
   allTabsShown: false,
+  dialogShown: false,
   
   triggeredEndingCutscene: false,
   keptGoing: false,
@@ -212,6 +213,7 @@ function mainLoop(){
   updateValues() //makes sure that the values for input elements throughout the game don't reset
   updateRootEpicenter() //disables slider when in Square Root and detects Level 4 and -1 completion
   if(ccTiers() >= 50) updatePolynomials(diff) //makes polynomials produce other polynomials
+  if(ccTiers() >= 20 && !player.zUnlocked && !tmp.dialogShown) updateModal() //shows the z unlock hint modal at 20 CC tiers
   fixUnixEpoch() //fixes the bug where Quadratic and Complex times jump a Unix Epoch
   trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5 or Y-Challenge 4
   if(hasMilestone(15)) simulateEssence(1) //passively generates RE
@@ -615,6 +617,11 @@ function updateValues() {
   if(player.points.gte(player.bestPointsInSynthDiv) && player.inSynthDiv) player.bestPointsInSynthDiv = player.points
 }
 
+function updateModal() {
+  document.getElementById("zUnlockHintModal").showModal()
+  tmp.dialogShown = true
+}
+
 function fixUnixEpoch() {
   if(player.prestigeTimes[0] >= 1639872000) player.prestigeTimes[0] = player.timePlayed
   if(player.prestigeTimes[2] >= 1639872000) player.prestigeTimes[2] = player.timePlayed
@@ -764,6 +771,9 @@ document.addEventListener("keydown", function onEvent(event) {
     case "d":
       if(player.polynomials[6].bought.gte(1)) enterSynthDiv()
       break;
+    case "p":
+      if(ccTiers() >= 50) buyMaxPolynomials()
+      break;
     case "ArrowLeft":
       tabNames = tabArray()
       s = player.currentTab;
@@ -902,7 +912,7 @@ function randomSymbol() {
   }
   // transition from original tab name to ending tab name
   function glitchedTabName(first, second, param, tabNum) {
-    if(Date.now() >= tmp.savedGlitches[tabNum+10]+100) {
+    if(Date.now() >= tmp.savedGlitches[tabNum+10]+200) {
       let str = randomCrossWords(blendWords(first, second, (param > 0.9999 ? 1 : param)),param >= 0.5 ? 1 - (((param > 0.9999 ? 1 : param) - 0.5) * 2) : (param > 0.9999 ? 1 : param) * 2)
       tmp.savedGlitches[tabNum] = str
       tmp.savedGlitches[tabNum+10] = Date.now()
@@ -913,6 +923,7 @@ function randomSymbol() {
   }
 
 function cueEndingCutscene() {
+  player.options[16] = false
   setTimeout(()=>{player.tabDisplays[10] = false; if(player.currentTab == "polynomials") player.currentTab = "comp"}, 2000)
   setTimeout(()=>{player.tabDisplays[9] = false; if(player.currentTab == "comp") player.currentTab = "yquad"}, 2500)
   setTimeout(()=>{player.tabDisplays[8] = false; if(player.currentTab == "yquad") player.currentTab = "quad"}, 3000)

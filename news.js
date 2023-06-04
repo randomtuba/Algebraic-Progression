@@ -244,7 +244,7 @@ if(!s)return
       //distance to travel is s.parentElement.clientWidth + s.clientWidth + parent padding
       //we want to travel at rate pixels per second so we need to travel for (distance / rate) seconds
       let dist = s.parentElement.clientWidth + s.clientWidth + 20; //20 is div_container padding
-      let rate = 140 * player.totalPoints.log10().div(5e7).max(1).min(3).toNumber(); //change this value to change the scroll speed
+      let rate = 140 * player.totalPoints.log10().div(5e7).max(1).min(3).toNumber() * player.newsSpeed; //change this value to change the scroll speed
       let transformDuration = dist / rate;
 
       //set the transition duration
@@ -271,4 +271,9 @@ function newsSelection() {
   } else {
     return Math.random() * 180;
   }
+}
+
+function adjustNewsSpeed() {
+  let x = prompt("Enter the news speed that you want in the input box below! (minimum 50, maximum 200, input gets rounded down)")
+  player.newsSpeed = Math.floor(Math.max(Math.min(new Decimal(x).toNumber(),200),50)) / 100
 }

@@ -1,8 +1,8 @@
 const YQUAD_UPGRADES = {
   1: {
     title: "Functional Recreation",
-    desc: "The f(x) exponent boosts Quadratics gain.",
-    requirement: "Reach 2e222,222 points and 1.00e9 non-banked Quadratics without buying g(x) and h(x).",
+    desc: "The f(n) exponent boosts Quadratics gain.",
+    requirement: "Reach 2e222,222 points and 1.00e9 non-banked Quadratics without buying g(n) and h(n).",
     done() {return player.points.gte("2e222222") && player.quadratics.gte(1e9) && player.buyables[5].eq(0) && player.buyables[6].eq(0)},
     cost: new Decimal(200),
     eff() {return BUYABLES[4].exponent().pow(0.5)},
@@ -27,7 +27,7 @@ const YQUAD_UPGRADES = {
   },
   4: {
     title: "Functional Acceleration",
-    desc: "Basic Complex Upgrade 3 also boosts the h(x) base.",
+    desc: "Basic Complex Upgrade 3 also boosts the h(n) base.",
     requirement: "Reach 54 Upgrade Points.",
     done() {return player.upgradePoints[1].gte(54)},
     cost: new Decimal(120),

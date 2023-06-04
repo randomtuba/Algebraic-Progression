@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.3</title>
+    <title>Algebraic Progression v2.3.1</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -114,7 +114,27 @@
     <button id="tab7" class="tabQua" v-if="(player.totalx2.gte(1) || player.totali.gte(1)) && player.tabDisplays[7]" onclick="tab('quad')">{{player.polynomials[6].bought.gte(1) ? glitchedTabName("Quadratic","Only",player.totalPoints.log10().div(5e8).toNumber(),7) : "Quadratic"}}</button>
     <button id="tab8" class="tabYqua" v-if="player.totaly2.gte(1) && player.tabDisplays[8]" onclick="tab('yquad')">{{player.polynomials[6].bought.gte(1) ? glitchedTabName("Y-Quadratic","Dust",player.totalPoints.log10().div(5e8).toNumber(),8) : "Y-Quadratic"}}</button>
     <button id="tab9" class="tabComp" v-if="player.totali.gte(1) && player.tabDisplays[9]" onclick="tab('comp')">{{player.polynomials[6].bought.gte(1) ? glitchedTabName("Complex","Will",player.totalPoints.log10().div(5e8).toNumber(),9) : "Complex"}}</button>
-    <button id="tab10" class="tabPoly" v-if="ccTiers() >= 50 && player.tabDisplays[10]" onclick="tab('polynomials')">{{player.polynomials[6].bought.gte(1) ? glitchedTabName("Polynomials","Remain",player.totalPoints.log10().div(5e8).toNumber(),10) : "Polynomials"}}</button><br><br>
+    <button id="tab10" class="tabPoly" v-if="ccTiers() >= 50 && player.tabDisplays[10]" onclick="tab('polynomials')">{{player.polynomials[6].bought.gte(1) ? glitchedTabName("Polynomials","Remain",player.totalPoints.log10().div(5e8).toNumber(),10) : "Polynomials"}}</button>
+      <span v-if="player.options[16]">
+        <br>
+        <button id="subtab1alt" class="tabQua" style="font-size: 14px" onclick="tab('quad'); player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
+        <button id="subtab2alt" class="tabQua" style="font-size: 14px" onclick="tab('quad'); player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate {{player.zUnlocked ? "Realm" : "Plane"}}</button>
+        <button id="subtab3alt" class="tabQua" style="font-size: 14px" onclick="tab('quad'); player.currentSubtab[0] = 'sroot'" v-if="hasQU(16)">Square Root</button>
+        <button id="subtab4alt" class="tabQua" style="font-size: 14px" onclick="tab('quad'); player.currentSubtab[0] = 'chals'" v-if="hasSU(12)">Challenges</button>
+        <button id="subtab5alt" class="tabQua" style="font-size: 14px" onclick="tab('quad'); player.currentSubtab[0] = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
+        <br v-if="player.totali.gte(1)">
+        <button id="subtab11alt" class="tabYqua" style="font-size: 14px" onclick="tab('yquad'); player.currentSubtab[3] = 'upgrades'" v-if="player.zUnlocked">Y-Quadratic Upgrades</button>
+        <button id="subtab12alt" class="tabYqua" style="font-size: 14px" onclick="tab('yquad'); player.currentSubtab[3] = 'varsynth'" v-if="player.zUnlocked">Variable Synthesizer</button>
+        <button id="subtab13alt" class="tabYqua" style="font-size: 14px" onclick="tab('yquad'); player.currentSubtab[3] = 'challenges'" v-if="player.zUnlocked">Y-Challenges</button>
+        <button id="subtab6alt" class="tabComp" style="font-size: 14px" onclick="tab('comp'); player.currentSubtab[1] = 'milestones'" v-if="player.totali.gte(1)">Milestones</button>
+        <button id="subtab7alt" class="tabComp" style="font-size: 14px" onclick="tab('comp'); player.currentSubtab[1] = 'upgrades'" v-if="player.totali.gte(1)">Complex Upgrades</button>
+        <br v-if="player.zUnlocked">
+        <button id="subtab8alt" class="tabComp" style="font-size: 14px" onclick="tab('comp'); player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12)">Complex Plane</button>
+        <button id="subtab9alt" class="tabComp" style="font-size: 14px" onclick="tab('comp'); player.currentSubtab[1] = 'challenges'" v-if="hasCU(1,6)">Complex Challenges</button>
+        <button id="subtab10alt" class="tabComp" style="font-size: 14px" onclick="tab('comp'); player.currentSubtab[1] = 'zlab'" v-if="hasYQU(8,'bought')">Z Lab</button>
+        <button id="subtab14alt" class="tabPoly" style="font-size: 14px" onclick="tab('polynomials'); player.currentSubtab[5] = 'main'" v-if="ccTiers() >= 50">Polynomials</button>
+        <button id="subtab15alt" class="tabPoly" style="font-size: 14px" onclick="tab('polynomials'); player.currentSubtab[5] = 'division'" v-if="ccTiers() >= 50">Synthetic Division</button>
+      </span><br><br>
     <table class="autocenter"><tr>
     <td><button id="prestige" v-if="(player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)) && (!player.inSqrt || player.compChallenge == 5 || player.yChallenge == 4)" onclick="goQuadratic(false)">
       Go Quadratic for {{formatWhole(quadFormula())}} x<sup>2</sup><br>(Q)
@@ -191,11 +211,11 @@
       </button><br v-if="player.y.gte(2222) || player.zUnlocked">
       <button v-if="hasYQU(2,'bought')" class="hoverable" onclick="player.autobuyers[11] = !player.autobuyers[11]">Auto: {{player.autobuyers[11] ? 'ON' : 'OFF'}}</button><br v-if="hasYQU(2,'bought')">
       <br>
-      <span v-if="hasUpgrade(4)">Instead of adding to your production, Functions multiply your point production.<br>Note: The "x" in the Function formulas should not be confused with your x variable.</span><br>
-      <span v-if="hasUpgrade(4) && BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2)">Multipliers to the g(x) and h(x) bases are softcapped at 50,000,000 if Dilations are currently active.<br></span>
-      <span v-if="hasUpgrade(4)"><b>f(x) * g(x) * h(x):</b> {{format(BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()))}}</span><br><br>
+      <span v-if="hasUpgrade(4)">Instead of adding to your production, Functions multiply your point production.<br>
+      <span v-if="hasUpgrade(4) && BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2)">Multipliers to the g(n) and h(n) bases are softcapped at 50,000,000 if Dilations are currently active.<br></span>
+      <span v-if="hasUpgrade(4)"><b>f(n) * g(n) * h(n):</b> {{format(BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()))}}</span><br><br>
       <div v-for="a in 3" v-if="BUYABLES[a+3].unl()">
-        <span><b>{{BUYABLES[a+3].title}}x) = <span v-html="BUYABLES[a+3].formula()"></span></b></span><br>
+        <span><b>{{BUYABLES[a+3].title}}n) = <span v-html="BUYABLES[a+3].formula()"></span></b></span><br>
         <span>{{BUYABLES[a+3].title}}{{formatWhole(player.buyables[a+3])}}) = {{format(BUYABLES[a+3].eff())}}</span><br>
         <button :class="{buildingLocked:player.points.lt(BUYABLES[a+3].cost()),buildingBuyable:player.points.gte(BUYABLES[a+3].cost())}" @click="buyBuyable(a+3)">Buy for {{format(BUYABLES[a+3].cost())}} points ({{a+3}})</button><button v-if="hasQU(9)" class="hoverable" @click="player.autobuyers[a+3] = !player.autobuyers[a+3]">Auto: {{player.autobuyers[a+3] ? 'ON' : 'OFF'}}</button><br><br>
       </div>
@@ -223,12 +243,19 @@
       <button id="hardReset" onclick="hardReset()">
         Hard Reset
       </button><br>
+      <button class="hoverable" onclick="importAsFile()">Import as File</button> <input type="file" id="file-upload"><br>
       <b>Visual</b><br>
       <button class="hoverable" onclick="switchTheme()">
         {{player.theme ? "Current Theme: Light" : "Current Theme: Dark"}}
       </button>
       <button class="hoverable" onclick="toggleOption(3)">
         {{player.options[3] ? "News Ticker: Shown" : "News Ticker: Hidden"}}
+      </button>
+      <button class="hoverable" onclick="adjustNewsSpeed()">
+        News Speed: {{formatWhole(player.newsSpeed * 100)}}%
+      </button><br v-if="hasQU(12) || player.totali.gte(1)">
+      <button class="hoverable" onclick="toggleOption(16)" v-if="hasQU(12) || player.totali.gte(1)">
+        {{player.options[16] ? "Always Show Subtabs: ON" : "Always Show Subtabs: OFF"}}
       </button>
       <button class="hoverable" onclick="toggleOption(14)" v-if="player.zUnlocked">
         Title Flickering: {{player.options[14] ? "ON" : "OFF"}}
@@ -269,7 +296,7 @@
       <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="ccTiers() >= 50">Polynomials: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.3<br>
+      Algebraic Progression v2.3.1<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
@@ -468,12 +495,12 @@
             Mode: {{player.compAutobuyers[2] != 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
           </button><br><br>
         </div>
-      <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12)">Quadratic Upgrades</button>
-      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12)">Coordinate {{player.zUnlocked ? "Realm" : "Plane"}}</button>
-      <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'sroot'" v-if="hasQU(16)">Square Root</button>
-      <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'chals'" v-if="hasSU(12)">Challenges</button>
-      <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'formula'" v-if="hasQU(20)">Quadratic Formula</button>
-      <br v-if="hasQU(12)"><br v-if="hasQU(12)">
+      <button id="subtab1" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'upgrades'" v-if="hasQU(12) && !player.options[16]">Quadratic Upgrades</button>
+      <button id="subtab2" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'cplane'" v-if="hasQU(12) && !player.options[16]">Coordinate {{player.zUnlocked ? "Realm" : "Plane"}}</button>
+      <button id="subtab3" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'sroot'" v-if="hasQU(16) && !player.options[16]">Square Root</button>
+      <button id="subtab4" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'chals'" v-if="hasSU(12) && !player.options[16]">Challenges</button>
+      <button id="subtab5" class="tabQua" style="font-size: 14px" onclick="player.currentSubtab[0] = 'formula'" v-if="hasQU(20) && !player.options[16]">Quadratic Formula</button>
+      <br v-if="hasQU(12) && !player.options[16]"><br v-if="hasQU(12) && !player.options[16]">
       <div id="tab7-1disp" v-if="player.currentSubtab[0] == 'upgrades'"> <!--- QUADRATIC UPGRADES !--->
         <table class="autocenter">
         <tr v-for="a in rowAmt(1)">
@@ -503,7 +530,7 @@
         </span>
       </div>
       <div id="tab7-2disp" v-if="player.currentSubtab[0] == 'cplane'"> <!--- COORDINATE PLANE/REALM !--->
-        You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(x) and h(x) bases)<span v-if="hasSU(6)">{{player.zUnlocked ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second)<span v-if="player.zUnlocked">, and <span class="quadText">{{formatWhole(player.sacZ)}}</span> z (multiplying the f(x) exponent by {{format(sacEffect('z'))}})</span>.<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
+        You have sacrificed <span class="quadText">{{formatWhole(player.sacX)}}</span> x (dividing Y cost scaling by {{format(sacEffect('x'))}}){{hasSU(6) ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacY)}}</span> y (adding {{format(sacEffect('y'))}} to the g(n) and h(n) bases)<span v-if="hasSU(6)">{{player.zUnlocked ? ", " : " and "}}<span class="quadText">{{formatWhole(player.sacX2)}}</span> x<sup>2</sup> (producing {{format(sacEffect('x2'))}} slope/second)<span v-if="player.zUnlocked">, and <span class="quadText">{{formatWhole(player.sacZ)}}</span> z (multiplying the f(n) exponent by {{format(sacEffect('z'))}})</span>.<br><br>You have <span class="quadText">{{format(player.slope)}}</span> slope, multiplying production of buildings by {{format(slopeEffect())}}.</span><br><br>
         <span v-if="hasUpgrade(8)">
         You have <span class="quadText">{{formatWhole(player.b)}}</span> b (y-intercept), multiplying slope gain by {{format(bEffect(1))}}, multiplying sacrificed X and Y effects by {{format(bEffect(2))}}, and adding {{format(bEffect(3))}} to the slope effect exponent.<br>
         <button :class="{buildingLocked:player.slope.lt(bCost()),buildingBuyable:player.slope.gte(bCost())}" @click="buyB()">Buy for {{format(bCost())}} slope (B)</button>
@@ -654,10 +681,10 @@
         <div v-if="hasYQU(12,'bought')">
           Y-Quadratic Automator: Go Y-Quadratic for <input id="yquadAuto" v-bind:value="player.inputValue3" size="5"> y<sup>2</sup> <button onclick="player.compAutobuyers[12] = !player.compAutobuyers[12]" class="hoverable">{{player.compAutobuyers[12] ? 'ON' : 'OFF'}}</button><br><br>
         </div>
-        <button id="subtab11" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'upgrades'">Y-Quadratic Upgrades</button>
-        <button id="subtab12" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'varsynth'">Variable Synthesizer</button>
-        <button id="subtab13" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'challenges'">Y-Challenges</button>
-        <br><br>
+        <button id="subtab11" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'upgrades'" v-if="!player.options[16]">Y-Quadratic Upgrades</button>
+        <button id="subtab12" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'varsynth'" v-if="!player.options[16]">Variable Synthesizer</button>
+        <button id="subtab13" class="tabYqua" style="font-size: 14px" onclick="player.currentSubtab[3] = 'challenges'" v-if="!player.options[16]">Y-Challenges</button>
+        <br v-if="!player.options[16]"><br v-if="!player.options[16]">
         <div id="tab8-1disp" v-if="player.currentSubtab[3] == 'upgrades'"> <!--- Y-QUADRATIC UPGRADES !--->
         <span v-if="hasMilestone(18)">
           <button class="hoverable" onclick="toggleOption(12)">Passive x² Generation: {{player.options[12] ? "ON" : "OFF"}}</button><br><br>
@@ -774,12 +801,12 @@
             Mode: {{player.compAutobuyers[10] ? "Time" : "Amount"}}
         </button><br><br>
         </div>
-        <button id="subtab6" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'milestones'">Milestones</button>
-        <button id="subtab7" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'upgrades'">Complex Upgrades</button>
-        <button id="subtab8" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12)">Complex Plane</button>
-        <button id="subtab9" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'challenges'" v-if="hasCU(1,6)">Complex Challenges</button>
-        <button id="subtab10" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'zlab'" v-if="hasYQU(8,'bought')">Z Lab</button>
-        <br><br>
+        <button id="subtab6" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'milestones'" v-if="!player.options[16]">Milestones</button>
+        <button id="subtab7" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'upgrades'" v-if="!player.options[16]">Complex Upgrades</button>
+        <button id="subtab8" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'cplane'" v-if="hasMilestone(12) && !player.options[16]">Complex Plane</button>
+        <button id="subtab9" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'challenges'" v-if="hasCU(1,6) && !player.options[16]">Complex Challenges</button>
+        <button id="subtab10" class="tabComp" style="font-size: 14px" onclick="player.currentSubtab[1] = 'zlab'" v-if="hasYQU(8,'bought') && !player.options[16]">Z Lab</button>
+        <br v-if="!player.options[16]"><br v-if="!player.options[16]">
         <div id="tab9-1disp" v-if="player.currentSubtab[1] == 'milestones'"> <!--- MILESTONES !--->
         You have gone Complex {{formatWhole(player.complexes)}} times.<br><br>
         <div v-for="a in rowAmt(4)">
@@ -939,8 +966,9 @@
       </div>
       <div id="tab10disp" v-if="player.currentTab == 'polynomials'"> <!--- POLYNOMIALS !--->
         You have <span class="polyText">{{format(player.polyPower)}}</span> polynomial power, powering point gain by ^{{regularFormat(polyPowerEffect(),4)}}.<br><br>
-        <button id="subtab14" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'main'">Polynomials</button>
-        <button id="subtab15" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'division'">Synthetic Division</button><br><br>
+        <button id="subtab14" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'main'" v-if="!player.options[16]">Polynomials</button>
+        <button id="subtab15" class="tabPoly" style="font-size: 14px" onclick="player.currentSubtab[5] = 'division'" v-if="!player.options[16]">Synthetic Division</button>
+        <br v-if="!player.options[16]"><br v-if="!player.options[16]">
         <div id="tab10-1disp" v-if="player.currentSubtab[5] == 'main'"> <!--- POLYNOMIALS (SUBTAB) !--->
           <table class="autocenter">
           <tr>
@@ -953,7 +981,10 @@
             </button>
           </td>
           </tr>
-          </table><br>
+          </table><br v-if="player.polynomials[4].bought.gte(1)">
+          <button class="hoverable" onclick="buyMaxPolynomials()">
+            Buy Max Polynomials (P)
+          </button><br><br>
           <span v-for="a in 8" v-if="a == 1 || player.polynomials[a+1].bought.gte(1)">
             You have <span :class="{cubicText:a==1,quarticText:a==2,quinticText:a==3,sexticText:a==4,septicText:a==5,octicText:a==6,nonticText:a==7,decticText:a==8}">{{format(player.polynomials[a+2].amount)}}</span> x<sup>{{a+2}}</sup>, producing <span :class="{cubicText:a==1,quarticText:a==2,quinticText:a==3,sexticText:a==4,septicText:a==5,octicText:a==6,nonticText:a==7,decticText:a==8}">{{format(polynomialGen(a+2))}}</span> {{a == 1 ? "polynomial power" : ""}}<span v-if="a != 1">x<sup>{{a+1}}</sup></span> per second.<br>
             (Efficiency: {{format(Decimal.pow(2,player.polynomials[a+2].bought).mul(seEffect()).mul(POLY_BUYABLES[6].eff()).mul(hasPermUpgrade(8)?10:1))}}x)<br>
@@ -983,6 +1014,15 @@
         </div>
       </div>
       </div>
+      <dialog id="zUnlockHintModal">
+        Congratulations, you've completed 20 CC tiers!<br>
+        I suggest that you equip Translations and check<br>
+        the Generation tab...I think that you've been<br>
+        forgetting something.
+        <form method="dialog">
+          <button class="hoverable">OK</button>
+        </form>
+      </dialog>
     </div>
     <span id="info1"></span>
   </body>

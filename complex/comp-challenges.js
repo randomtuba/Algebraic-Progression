@@ -49,9 +49,9 @@ const COMP_CHALLENGES = {
     title: "Inequality",
     desc() {return "If you have more Buildings bought than Functions bought, your number and points per second will be \"less than\" their amounts, halting point generation. Point gain is divided by 1e75,000, but you start with 1e9 Points."},
     goals: [new Decimal("1e7300"),new Decimal("1e15400"),new Decimal("1e95500"),new Decimal("1e394000"),new Decimal("1e1140000"),new Decimal(Infinity)],
-    rewardDesc: "Delay the g(x) and h(x) softcap starts based on total Buildings bought.",
+    rewardDesc: "Delay the g(n) and h(n) softcap starts based on total Buildings bought.",
     eff() {return player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).add(1).pow(player.compChalCompletions[6] > 0 ? 0.3+(player.compChalCompletions[6] > 3 ? 0.12+((player.compChalCompletions[6]-3) * 0.02) : player.compChalCompletions[6]*0.04) : 0).sub(1).min(10000).floor()},
-    effectDisplay() {return "+" + formatWhole(COMP_CHALLENGES[6].eff()) + " g(x) and h(x) softcaps"},
+    effectDisplay() {return "+" + formatWhole(COMP_CHALLENGES[6].eff()) + " g(n) and h(n) softcaps"},
     unlockCost: new Decimal(50),
   },
   7: {

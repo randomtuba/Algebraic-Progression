@@ -58,7 +58,7 @@ const BUYABLES = {
     cost() {
       return new Decimal(5000000).mul(new Decimal(functionCostScaling(1)).pow(player.buyables[4]))
     },
-    formula(){return (hasQU(3) || hasChallenge(2)) && player.yChallenge != 2 ? "(x + 1)<sup>" + formatWhole(BUYABLES[4].exponent()) + "</sup>" : "x + 1"},
+    formula(){return (hasQU(3) || hasChallenge(2)) && player.yChallenge != 2 ? "(n + 1)<sup>" + formatWhole(BUYABLES[4].exponent()) + "</sup>" : "n + 1"},
     eff() {
       return player.challenge == 5 || player.compChallenge == 8 ? new Decimal(1) : player.buyables[4].add(1).pow(BUYABLES[4].exponent())
     },
@@ -80,7 +80,7 @@ const BUYABLES = {
     cost() {
       return new Decimal(30000000).mul(new Decimal(functionCostScaling(2)).pow(player.buyables[5]))
     },
-    formula() {return player.buyables[5].gte(funcSoftcapStart()) ? format(BUYABLES[5].base()) + "<sup>" + formatWhole(funcSoftcapStart()) + "</sup>*" + format(BUYABLES[5].base()) + "<sup>(x-" + formatWhole(funcSoftcapStart()) + ")<sup>0.5</sup></sup>" : format(BUYABLES[5].base()) + "<sup>x</sup>"},
+    formula() {return player.buyables[5].gte(funcSoftcapStart()) ? format(BUYABLES[5].base()) + "<sup>" + formatWhole(funcSoftcapStart()) + "</sup>*" + format(BUYABLES[5].base()) + "<sup>(n-" + formatWhole(funcSoftcapStart()) + ")<sup>0.5</sup></sup>" : format(BUYABLES[5].base()) + "<sup>n</sup>"},
     base() {
       let base = new Decimal(1.3)
       if(hasQU(9)) base = base.add(0.2)
@@ -109,7 +109,7 @@ const BUYABLES = {
     cost() {
       return new Decimal(100000000).mul(new Decimal(functionCostScaling(3)).pow(player.buyables[6]))
     },
-    formula() {return player.buyables[6].gte(funcSoftcapStart()) ? format(BUYABLES[6].base()) + "<sup>" + formatWhole(funcSoftcapStart()) + "</sup>*" + format(BUYABLES[6].base()) + "<sup>(x-" + formatWhole(funcSoftcapStart()) + ")<sup>0.5</sup></sup>" : format(BUYABLES[6].base()) + "<sup>x</sup>"},
+    formula() {return player.buyables[6].gte(funcSoftcapStart()) ? format(BUYABLES[6].base()) + "<sup>" + formatWhole(funcSoftcapStart()) + "</sup>*" + format(BUYABLES[6].base()) + "<sup>(n-" + formatWhole(funcSoftcapStart()) + ")<sup>0.5</sup></sup>" : format(BUYABLES[6].base()) + "<sup>n</sup>"},
     base() {
       let base = new Decimal(1.6)
       if(hasQU(9)) base = base.add(0.2)

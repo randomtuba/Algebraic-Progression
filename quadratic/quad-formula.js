@@ -51,7 +51,7 @@ const QP_BUYABLES = {
   },
   2: {
     title: "Function Enhancer",
-    desc: "Delay the g(x) and h(x) softcaps by 5 levels per purchase",
+    desc: "Delay the g(n) and h(n) softcaps by 5 levels per purchase",
     cost() {
       return new Decimal(10000).mul(Decimal.pow(100,player.quadBuyables[2])).mul(Decimal.pow(1.7,player.quadBuyables[2].pow(2)))
     },

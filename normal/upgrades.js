@@ -8,7 +8,7 @@ const UPGRADES = {
   2: {
     title: "Overdrive",
     desc: "All buildings are twice as effective.",
-    chargedDesc: "All buildings are twice as effective, multiply the f(x) exponent by 1.2, and multiply the g(x) and h(x) bases by 1.4.",
+    chargedDesc: "All buildings are twice as effective, multiply the f(n) exponent by 1.2, and multiply the g(n) and h(n) bases by 1.4.",
     cost: new Decimal(10),
   },
   3: {
@@ -20,7 +20,7 @@ const UPGRADES = {
   4: {
     title: "Input -> Output",
     desc: "Unlock Functions.",
-    chargedDesc: "Unlock Functions, and multiply the starting g(x) and h(x) softcaps by 1.05.",
+    chargedDesc: "Unlock Functions, and multiply the starting g(n) and h(n) softcaps by 1.05.",
     cost: new Decimal(40),
   },
   5: {

@@ -1,5 +1,5 @@
 function tbookConditions(x) {
-  let conditions = [null,true,true,true,player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1),player.totalx2.gte(1) || player.totali.gte(1),hasQU(12) || player.totali.gte(1),hasQU(16) || player.totali.gte(1),hasSU(12) || player.totali.gte(1),hasQU(20) || player.totali.gte(1),hasSU(16) || player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.complexes.gte(20),hasCU(1,6),player.zUnlocked,hasYQU(8,'bought'),player.varSynth.unlocked[0],player.yChalsUnlocked[1],ccTiers() >= 50,player.polynomials[6].bought.gte(1)]
+  let conditions = [null,true,true,true,true,player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1),hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1),player.totalx2.gte(1) || player.totali.gte(1),hasQU(12) || player.totali.gte(1),hasQU(16) || player.totali.gte(1),hasSU(12) || player.totali.gte(1),hasQU(20) || player.totali.gte(1),hasSU(16) || player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.totali.gte(1),player.complexes.gte(20),hasCU(1,6),player.zUnlocked,hasYQU(8,'bought'),player.varSynth.unlocked[0],player.yChalsUnlocked[1],ccTiers() >= 50,player.polynomials[6].bought.gte(1)]
   return conditions[x];
 }
 
@@ -33,6 +33,24 @@ function tbookDescriptions(x) {
       <b>Softcap:</b> A debuff applied to a resource at a certain point, usually takes the form of an exponent less than 1<br>
       <b>Subtab:</b> The small buttons within a tab that allow you to travel to other pages<br>
       <b>Tab:</b> The large buttons at the top of the screen`, //terminology
+      `<b>1:</b> Buy Autoclicker
+      ${player.buyables[1].gte(1) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>2:</b> Buy Point Factory` : ``}
+      ${player.buyables[2].gte(1) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>3:</b> Buy Point Portal` : ``}
+      ${hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>4:</b> Buy f(n)<br><b>5:</b> Buy g(n)<br><b>6:</b> Buy h(n)` : ``}
+      ${player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>X:</b> Buy X variable` : ``}
+      ${player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>Y:</b> Buy Y variable` : ``}
+      ${player.zUnlocked ? `<br><b>Z:</b> Buy Z variable` : ``}
+      ${player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>Q:</b> Go Quadratic` : ``}
+      ${player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>M:</b> Buy Max` : ``}
+      ${hasQU(16) || player.totali.gte(1) ? `<br><b>S:</b> Enter Square Root` : ``}
+      ${hasUpgrade(8) || player.totali.gte(1) ? `<br><b>B:</b> Buy Y-Intercept` : ``}
+      ${player.totali.gte(1) ? `<br><b>C:</b> Go Complex` : ``}
+      ${player.zUnlocked ? `<br><b>U:</b> Go Y-Quadratic` : ``}
+      ${ccTiers() >= 50 ? `<br><b>P:</b> Buy Max Polynomials` : ``}
+      ${player.polynomials[6].bought.gte(1) ? `<br><b>D:</b> Enter Synthetic Division` : ``}
+      <br><b>Shift+S:</b> Save Game
+      <br><b>Shift+E:</b> Export Save
+      `,
       `Buildings are the primary production units for Point generation. There are three buildings, each one costing and producing more<br>
       than the previous. By default, Building costs scale by 1.15x per purchase.<br><br>
       The only thing stopping you from producing more points is the universe's maximum capacity. Once the percentage at the top<br>
@@ -59,15 +77,15 @@ function tbookDescriptions(x) {
       ${player.totaly2.gte(1) ? `<br><b>Y-Quadratic Upgrades:</b> Y-Quadratic Upgrades are upgrades that can be bought with y<sup>2</sup>.<br>They are kept on Quadratic, Complex, and Y-Quadratic, and there are 12 in total.<br>Each Y-Quadratic Upgrade has a unique requirement for you to fulfill before you can buy them.` : ``}
       ${player.polynomials[6].bought.gte(1) ? `<br><b>Synthetic Division Upgrades:</b> Synthetic Division Upgrades are upgrades that can be bought with SE.<br>They are kept on Quadratic, Complex, and Y-Quadratic, and there are 10 in total.<br>The top three are infinitely repeatable, and the rest are bought once.` : ``}
       ${player.totalx2.gte(1) || player.totali.gte(1) ? `<br><b>Resource Multipliers:</b> Resource multipliers are usually put along with certain upgrade types, but are endlessly repeatable.<br>They multiply a currency by a static amount per purchase. There are two resource doublers and one resource tripler.` : ``}`, // upgrades
-      `Functions are the secondary production units for Point generation. There are three functions: f(x), g(x), and h(x). Together,<br>
-      they multiply the production of Buildings. f(x) gives a linear and later polynomial bonus, while g(x) and h(x) both give an<br>
+      `Functions are the secondary production units for Point generation. There are three functions: f(n), g(n), and h(n). Together,<br>
+      they multiply the production of Buildings. f(n) gives a linear and later polynomial bonus, while g(n) and h(n) both give an<br>
       exponential bonus.<br><br>
       <b>Cost Scaling:</b> 2x, 5x, and 7x respectively<br>
-      <b>Bases:</b> By default, the g(x) and h(x) bases are 1.3x and 1.6x, respectively. These bases can be increased and even multiplied<br>
+      <b>Bases:</b> By default, the g(n) and h(n) bases are 1.3x and 1.6x, respectively. These bases can be increased and even multiplied<br>
       later on.<br>
-      <b>Softcaps:</b> At 15 purchases of g(x) and/or h(x), the formulas of g(x) and/or h(x) are modified to prevent inflation.<br>
+      <b>Softcaps:</b> At 15 purchases of g(n) and/or h(n), the formulas of g(n) and/or h(n) are modified to prevent inflation.<br>
       These softcaps can be delayed with upgrades and bonuses later on.
-      ${BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2) ? `<br>Additionally, the g(x) and h(x) bases are softcapped at 50,000,000 if you have Dilations active.` : ``}`, // functions
+      ${BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2) ? `<br>Additionally, the g(n) and h(n) bases are softcapped at 50,000,000 if you have Dilations active.` : ``}`, // functions
       `Once you obtain 1 y, you can go Quadratic to gain x<sup>2</sup>. Quadratic resets almost all previous content, so it is considered<br>
       as the first Prestige Layer. There is another prestige layer after this, but it will not be unlocked for a long time.<br><br>
       <b>Base x<sup>2</sup> Gain Formula:</b> 1.25<sup>(x/100)-1</sup> * 2<sup>y</sup><br><br>

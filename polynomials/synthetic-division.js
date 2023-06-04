@@ -54,10 +54,10 @@ const SYNTH_DIV_UPGRADES = {
   },
   6: {
     title: "Paradoxical Functions",
-    desc: "Multiply the g(x) and h(x) bases based on SE.",
+    desc: "Multiply the g(n) and h(n) bases based on SE.",
     cost: new Decimal(1e6),
     eff() {return player.synthEssence.max(1).log2()},
-    effectDisplay() {return format(SYNTH_DIV_UPGRADES[6].eff()) + "x g(x) and h(x) bases"},  
+    effectDisplay() {return format(SYNTH_DIV_UPGRADES[6].eff()) + "x g(n) and h(n) bases"},  
   },
   7: {
     title: "Imaginary Pollution",

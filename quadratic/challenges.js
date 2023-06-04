@@ -1,7 +1,7 @@
 const CHALLENGES = {
   1: {
     title: "Building Maintenance",
-    desc: "Autoclickers, Point Factories, and g(x) are useless.",
+    desc: "Autoclickers, Point Factories, and g(n) are useless.",
     goal: new Decimal(1e170),
     effect() {return new Decimal(1.0005).pow(player.buyables[1].add(player.buyables[2]).add(player.buyables[3])).pow(QP_BUYABLES[3].eff()).min(player.hasCompletedLevel4?new Decimal("1e850").pow(COMP_CHALLENGES[8].eff()):new Decimal("1e800").pow(COMP_CHALLENGES[8].eff()))},
     rewardDesc: "Buildings produce more based on total Buildings bought this Quadratic.",
@@ -10,13 +10,13 @@ const CHALLENGES = {
     title: "Generation Slowdown",
     desc: "There's an exponent on point production that increases linearly from 0 to 1 in 15 seconds. If you buy a Building or Function, the exponent resets to 0.",
     goal: new Decimal("1e365"),
-    rewardDesc: "Square f(x) again, and unlock a new row of Quadratic Upgrades.",
+    rewardDesc: "Square f(n) again, and unlock a new row of Quadratic Upgrades.",
   },
   3: {
     title: "(scaled)",
     desc: "Building and Function scaling is tripled. Produced buildings do nothing.",
     goal: new Decimal(1e290),
-    rewardDesc: "Building cost scaling is 1.075x, Function cost scaling is divided by 1.25, and the g(x) and h(x) softcaps start 25 purchases later.",
+    rewardDesc: "Building cost scaling is 1.075x, Function cost scaling is divided by 1.25, and the g(n) and h(n) softcaps start 25 purchases later.",
   },
   4: {
     title: "Time Dilation",
@@ -34,7 +34,7 @@ const CHALLENGES = {
     title: "Hyperinflation",
     desc: "Function cost scalings are multiplied by 10.",
     goal: new Decimal("1e8500"),
-    rewardDesc: "Double the g(x) and h(x) bases.",
+    rewardDesc: "Double the g(n) and h(n) bases.",
   },
   7: {
     title: "Atheism",

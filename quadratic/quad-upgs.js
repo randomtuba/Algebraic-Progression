@@ -14,8 +14,8 @@ const QUAD_UPGRADES = {
     effectDisplay() {return format(QUAD_UPGRADES[2].eff()) + "x Autoclicker effectiveness"},
   },
   3: {
-    title: "Nonlinear f(x)",
-    desc: "Square f(x).",
+    title: "Nonlinear f(n)",
+    desc: "Square f(n).",
     cost: new Decimal(2),
     effectDisplay() {return null},
   },
@@ -53,7 +53,7 @@ const QUAD_UPGRADES = {
   },
   9: {
     title: "Base Addend",
-    desc: "Add 0.2 to the bases of g(x) and h(x), and unlock autobuyers for Functions.",
+    desc: "Add 0.2 to the bases of g(n) and h(n), and unlock autobuyers for Functions.",
     cost: new Decimal(100),
     effectDisplay() {return null},
   },
@@ -65,7 +65,7 @@ const QUAD_UPGRADES = {
   },
   11: {
     title: "Softcap Delay",
-    desc: "The g(x) and h(x) softcaps start 10 purchases later.",
+    desc: "The g(n) and h(n) softcaps start 10 purchases later.",
     cost: new Decimal(500),
     effectDisplay() {return null},
   },

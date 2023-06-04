@@ -136,3 +136,11 @@ function buyPolyBuyable(x) {
     player.polynomials.buyables[x] = player.polynomials.buyables[x].add(1)
   }
 }
+
+function buyMaxPolynomials() {
+  for (let i = 3; i <= 10; i++) {
+    while (i == 3 ? player.x2.gte(polynomialCosts(i)) : player.polynomials[i-1].amount.gte(polynomialCosts(i))) {
+      buyPolynomial(i)
+    }
+  }
+}

@@ -68,6 +68,7 @@ function start() {
       false, // respec charged x upgrades on y-quadratic (13)
       true, // title flickering (14)
       false, // show credits (15)
+      false, // always show subtabs (16)
     ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
@@ -172,6 +173,7 @@ function start() {
     synthDivUpgs: [[null,new Decimal(0),new Decimal(0),new Decimal(0)],[]],
     bestPointsInSynthDiv: new Decimal(0),
     synthDivEnters: 0,
+    newsSpeed: 1,
     
     viewedEndingCutscene: false,
     gameWon: false,
@@ -185,6 +187,7 @@ function start() {
   };
   return a;
 }
+
 function save() {
   localStorage.setItem("idk", btoa(JSON.stringify(player)));
   $.notify('Game Saved', {
@@ -385,6 +388,11 @@ function importSave(imported = undefined) {
     className:'saving',
   });
 }
+
+function importAsFile() {
+  document.getElementById("file-upload").files[0].text().then(txt=>importSave(txt))
+}
+
 function hardReset() {
   if (
     confirm(

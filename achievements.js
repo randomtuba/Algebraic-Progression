@@ -98,7 +98,7 @@ const ACHIEVEMENTS = {
   },
   9: {
     name: "(softcapped)",
-    desc: "Get g(x) and h(x) to 15.",
+    desc: "Get g(n) and h(n) to 15.",
     done(){return player.buyables[5].gte(15) && player.buyables[6].gte(15)},
   },
   10: {
@@ -475,7 +475,7 @@ const SPEEDRUN_MILESTONES = {
     done(){return player.x.gte(1)}
   },
   1: {
-    name:"f(x) Bought",
+    name:"f(n) Bought",
     done(){return player.buyables[4].gte(1)}
   },
   2: {
