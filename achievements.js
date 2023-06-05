@@ -297,7 +297,7 @@ const ACHIEVEMENTS = {
     done(){return player.upgradePoints[1].gte(60)},
   },
   49: {
-    name: "181 best waifu",
+    name: "Study 181",
     desc: "Start passively generating x².",
     done(){return hasMilestone(18)},
   },
