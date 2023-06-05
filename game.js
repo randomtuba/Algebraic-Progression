@@ -648,7 +648,7 @@ function modifiedReality() {
   if (player.zUnlocked) {
     if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3"
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20cZrrZnt.png?v=1676847726255");
-    tmp.textbook.names[8] = "Coordinate Realm (v1.1)"
+    tmp.textbook.names[9] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
       if(!player.varSynth.unlocked[0] && player.options[14]) document.title = "Hasn't it always been there?";
       if(player.varSynth.unlocked[0] && !player.yChalsUnlocked[1] && player.options[14]) document.title = "The variables grow more distant";
@@ -657,7 +657,7 @@ function modifiedReality() {
     }, Math.random()*100);
   } else {
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20current.png?v=1658860107337");
-    tmp.textbook.names[8] = "Coordinate Plane (v1.1)"
+    tmp.textbook.names[9] = "Coordinate Plane (v1.1)"
   }
   
   if(player.yQuadratics.lt(1)) player.prestigeTimes[4] = player.timePlayed
