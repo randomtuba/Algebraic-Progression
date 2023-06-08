@@ -166,7 +166,7 @@ function mainLoop(){
   for (let i = 1; i <= (player.varSynth.unlocked[3] ? 4 : 3); i++) {
     player.compPlane[1][i] = player.compPlane[1][i].add(compPlaneGen(i).mul(diff))
   }
-  player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05**diff)).min(player.totalPoints.pow(player.prestigeTimes[2])))
+  player.antiSlope = player.antiSlope.add(new Decimal(1).add(player.antiSlope.pow(1.05)).min(player.totalPoints.pow(player.prestigeTimes[2])))
   if(hasYQU(8,'bought')) player.zlab.zpower = player.zlab.zpower.add(zpowerGen().mul(diff))
   for (let i = 1; i <= 4; i++) {
     if(player.zlab.charged == i) {
