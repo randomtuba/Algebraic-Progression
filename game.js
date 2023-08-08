@@ -232,9 +232,7 @@ function mainLoop(){
   
   if(isNaN(player.points)) {
     exportAsFile()
-    alert("WARNING: NaN Detected! You will see a message that will ask you to confirm a Hard Reset. Please select OK to solve the NaN. Your save has been exported, so import it when the game loads the import prompt.")
-    hardReset()
-    importSave()
+    alert("WARNING: NaN Detected! Your save file has been exported (unless your browser has blocked file downloads). Try clearing the local storage of the game and importing the exported save. If that doesn't work, try and find a save in the AP save banks on the Discord server. Sorry for the inconvenience :(")
   }
   requestAnimationFrame(mainLoop)
 }
@@ -646,7 +644,7 @@ function checkForEndgame() {
 
 function modifiedReality() {
   if (player.zUnlocked) {
-    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3"
+    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3.2"
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20cZrrZnt.png?v=1676847726255");
     tmp.textbook.names[9] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
@@ -848,7 +846,7 @@ function subtabArray() {
   let arr = [["upgrades"],["milestones","upgrades"],["stats"],["upgrades","varsynth","challenges"],["regular","secret"],["main","division"]];
   if(hasQU(12)) arr[0].push("cplane")
   if(hasQU(16)) arr[0].push("sroot")
-  if(hasSU(16)) arr[0].push("chals")
+  if(hasSU(12)) arr[0].push("chals")
   if(hasQU(20)) arr[0].push("formula")
   if(hasMilestone(12)) arr[1].push("cplane")
   if(hasCU(1,6)) arr[1].push("challenges")

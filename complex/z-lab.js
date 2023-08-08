@@ -50,7 +50,7 @@ const COLLIDERS = {
       null,
       "<b>Level 1</b><br>Delay the x<sup>2</sup> Doubler cost superscaling start by 200 purchases",
       "<b>Level 3</b><br>Delay the RE Doubler cost superscaling start by 150 purchases",
-      "<b>Level 6</b><br>Power the first UP purchase button costs by 0.8",
+      "<b>Level 6</b><br>Power the UP purchase button costs by 0.8",
       "<b>Level 12</b><br>Power the Translation cost by 0.9",
       "<b>Level 20</b><br>The Z cost scaling is divided by 1.5",
     ],

@@ -266,14 +266,14 @@ select,option{
 #enterSqrt {
   width: 150px;
   height: 125px;
-  color: #e08a00;
+  color: #b56700;
   background-color: #ffcb52;
-  border-color: #e08a00;
+  border-color: #b56700;
 }
 
 #enterSqrt:hover {
   color: #ffcb52;
-  background-color: #e08a00;
+  background-color: #b56700;
 }
 
 .challengeDefault {

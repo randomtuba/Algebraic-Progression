@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.3.1</title>
+    <title>Algebraic Progression v2.3.2</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -296,7 +296,7 @@
       <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="ccTiers() >= 50">Polynomials: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.3.1<br>
+      Algebraic Progression v2.3.2<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
@@ -319,63 +319,63 @@
           You have played this game for {{formatTime(player.timePlayed)}}.<br>
           You have produced {{format(player.totalPoints)}} points in total.<br>
           You have seen {{formatWhole(player.newsMessagesSeen)}} news ticker message{{player.newsMessagesSeen != 1 ? "s" : ""}}.<br>
-          <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.totalGP.gte(1)">You have bought {{player.xUpgs.length}} X Upgrades.</span>
+          <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.totalGP.gte(1)">You have bought {{player.xUpgs.length}} X Upgrade{{player.xUpgs.length != 1 ? "s" : ""}}.</span>
           <span v-if="player.totalGP.gte(1)" class="polyText" style="font-size:16px"><br>You have completed the entire game {{formatWhole(player.totalGP)}} time{{player.totalGP.eq(1) ? "" : "s"}}.<br></span>
         </div><br>
         <div v-if="player.totalx2.gte(1) || player.totali.gte(1)">
         <b style="color: #006DB6">Quadratic</b><br>
         You have collected a total of {{formatWhole(player.totalx2)}} x<sup>2</sup>.<br>
-        You have gone Quadratic {{formatWhole(player.quadratics)}} times.<br>
+        You have gone Quadratic {{formatWhole(player.quadratics)}} time{{player.quadratics.gt(1) || player.quadratics.lt(1) ? "s" : ""}}.<br>
         <span v-if="hasMilestone(13)">
           You have {{formatWhole(player.bankedQuadratics)}} Banked Quadratics.<br>
           You will gain {{formatWhole(player.quadratics.div(10).floor())}} Banked Quadratics on Complex.<br>
         </span>
         Your fastest Quadratic is {{formatTime(player.prestigeTimes[1])}}.<br>
         You have spent {{formatTime(player.prestigeTimes[0])}} in this Quadratic.<br>
-        You have bought {{player.quadUpgs.length}} Quadratic Upgrades.
+        You have bought {{player.quadUpgs.length}} Quadratic Upgrade{{player.quadUpgs.length != 1 ? "s" : ""}}.
         <span v-if="hasQU(16)">
           <br>
-          You have entered Square Root {{player.sqrtEnters}} times.<br>
-          You have bought {{player.sqrtUpgs.length}} Square Root Upgrades.
+          You have entered Square Root {{player.sqrtEnters}} time{{player.sqrtEnters != 1 ? "s" : ""}}.<br>
+          You have bought {{player.sqrtUpgs.length}} Square Root Upgrade{{player.sqrtUpgs.length != 1 ? "s" : ""}}.
         </span>
         <span v-if="hasQU(20)">
           <br>
           The sum of a, b, and c is {{formatWhole(player.abc[1].add(player.abc[2]).add(player.abc[3]))}}.<br>
-          You have bought a total of {{formatWhole(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula Buyables.
+          You have bought a total of {{formatWhole(player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]))}} Quadratic Formula Buyable{{player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]).gt(1) || player.quadBuyables[1].add(player.quadBuyables[2]).add(player.quadBuyables[3]).add(player.quadBuyables[4]).gt(1).lt(1) ? "s" : ""}}.
         </span>
         </div><br>
         <div v-if="player.totaly2.gte(1)">
           <b class="yquadText" style="font-size: 16px;">Y-Quadratic</b><br>
           You have collected a total of {{formatWhole(player.totaly2)}} y<sup>2</sup>.<br>
-          You have gone Y-Quadratic {{formatWhole(player.yQuadratics)}} times.<br>
+          You have gone Y-Quadratic {{formatWhole(player.yQuadratics)}} time{{player.yQuadratics.gt(1) || player.yQuadratics.lt(1) ? "s" : ""}}.<br>
           Your fastest Y-Quadratic is {{formatTime(player.prestigeTimes[5])}}.<br>
           You have spent {{formatTime(player.prestigeTimes[4])}} in this Y-Quadratic.<br>
-          You have bought {{player.yQuadUpgs[0].length}} Y-Quadratic Upgrades.<br>
-          <span v-if="player.varSynth.unlocked[2]">You have bought a total of {{formatWhole(player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]))}} Revolution Buyables.<br></span>
-          <span v-if="player.yChalsUnlocked[1]">You have completed a total of {{formatWhole(player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]))}} Y-Challenge tiers.<br></span>
+          You have bought {{player.yQuadUpgs[0].length}} Y-Quadratic Upgrade{{player.yQuadUpgs[0].length != 1 ? "s" : ""}}.<br>
+          <span v-if="player.varSynth.unlocked[2]">You have bought a total of {{formatWhole(player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]))}} Revolution Buyable{{player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]).gt(1) || player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]).lt(1) ? "s" : ""}}.<br></span>
+          <span v-if="player.yChalsUnlocked[1]">You have completed a total of {{formatWhole(player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]))}} Y-Challenge tier{{player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).gt(1) || player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).lt(1) ? "s" : ""}}.<br></span>
           <br>
         </div>
         <div v-if="player.totali.gte(1)">
           <b class="compText" style="font-size: 16px;">Complex</b><br>
           You have collected a total of {{formatWhole(player.totali)}} i.<br>
-          You have gone Complex {{formatWhole(player.complexes)}} times.<br>
+          You have gone Complex {{formatWhole(player.complexes)}} time{{player.complexes.gt(1) || player.complexes.lt(1) ? "s" : ""}}.<br>
           Your fastest Complex is {{formatTime(player.prestigeTimes[3])}}.<br>
           You have spent {{formatTime(player.prestigeTimes[2])}} in this Complex.<br>
-          You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrades<span v-if="hasZlabMilestone(1,5)"> (excluding fourth-row Complex Upgrades)</span>.<br>
-          <span v-if="hasZlabMilestone(1,5)">You have bought {{player.fourthRowCompUpgs[1].add(player.fourthRowCompUpgs[2]).add(player.fourthRowCompUpgs[3]).add(player.fourthRowCompUpgs[4])}} levels of fourth-row Complex Upgrades.<br></span>
-          <span v-if="hasMilestone(14)">You have bought a total of {{formatWhole(player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]))}} Transformations.<br></span>
-          <span v-if="hasYQU(8,'bought')">You have a total of {{totalColliderLevels()}} Z-Collider levels.<br></span>
-          <span v-if="hasZlabMilestone(1,2)">You have bought a total of {{formatWhole(player.quadBuyables[5].add(player.quadBuyables[6]).add(player.quadBuyables[7]).add(player.quadBuyables[8]))}} Imaginary Power Buyables.<br></span>
+          You have bought {{player.compUpgs[0].length + player.compUpgs[1].length}} Complex Upgrade{{(player.compUpgs[0].length + player.compUpgs[1].length) != 1 ? "s" : ""}}<span v-if="hasZlabMilestone(1,5)"> (excluding fourth-row Complex Upgrades)</span>.<br>
+          <span v-if="hasZlabMilestone(1,5)">You have bought {{player.fourthRowCompUpgs[1].add(player.fourthRowCompUpgs[2]).add(player.fourthRowCompUpgs[3]).add(player.fourthRowCompUpgs[4])}} level{{player.fourthRowCompUpgs[1].add(player.fourthRowCompUpgs[2]).add(player.fourthRowCompUpgs[3]).add(player.fourthRowCompUpgs[4]).gt(1) || player.fourthRowCompUpgs[1].add(player.fourthRowCompUpgs[2]).add(player.fourthRowCompUpgs[3]).add(player.fourthRowCompUpgs[4]).lt(1) ? "s" : ""}} of fourth-row Complex Upgrades.<br></span>
+          <span v-if="hasMilestone(14)">You have bought a total of {{formatWhole(player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]))}} Transformation{{player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]).gt(1) || player.transformations.bought[1].add(player.transformations.bought[2]).add(player.transformations.bought[3]).add(player.transformations.bought[4]).lt(1) ? "s" : ""}}.<br></span>
+          <span v-if="hasYQU(8,'bought')">You have a total of {{totalColliderLevels()}} Z-Collider level{{totalColliderLevels() != 1 ? "s" : ""}}.<br></span>
+          <span v-if="hasZlabMilestone(1,2)">You have bought a total of {{formatWhole(player.quadBuyables[5].add(player.quadBuyables[6]).add(player.quadBuyables[7]).add(player.quadBuyables[8]))}} Imaginary Power Buyable{{player.quadBuyables[5].add(player.quadBuyables[6]).add(player.quadBuyables[7]).add(player.quadBuyables[8]).gt(1) || player.quadBuyables[5].add(player.quadBuyables[6]).add(player.quadBuyables[7]).add(player.quadBuyables[8]).lt(1) ? "s" : ""}}.<br></span>
           <br>
         </div>
         <div v-if="ccTiers() >= 50">
           <b class="polyText" style="font-size: 16px;">Polynomials</b><br>
-          You have bought a total of {{formatWhole(player.polynomials[3].bought.add(player.polynomials[4].bought).add(player.polynomials[5].bought).add(player.polynomials[6].bought).add(player.polynomials[7].bought).add(player.polynomials[8].bought).add(player.polynomials[9].bought).add(player.polynomials[10].bought))}} Polynomials.<br>
-          You have bought a total of {{formatWhole(player.polynomials.buyables[1].add(player.polynomials.buyables[2]).add(player.polynomials.buyables[3]).add(player.polynomials.buyables[4]).add(player.polynomials.buyables[5]).add(player.polynomials.buyables[6]))}} Polynomial Buyables.<br>
+          You have bought a total of {{formatWhole(player.polynomials[3].bought.add(player.polynomials[4].bought).add(player.polynomials[5].bought).add(player.polynomials[6].bought).add(player.polynomials[7].bought).add(player.polynomials[8].bought).add(player.polynomials[9].bought).add(player.polynomials[10].bought))}} Polynomial{{player.polynomials[3].bought.add(player.polynomials[4].bought).add(player.polynomials[5].bought).add(player.polynomials[6].bought).add(player.polynomials[7].bought).add(player.polynomials[8].bought).add(player.polynomials[9].bought).add(player.polynomials[10].bought).gt(1) || player.polynomials[3].bought.add(player.polynomials[4].bought).add(player.polynomials[5].bought).add(player.polynomials[6].bought).add(player.polynomials[7].bought).add(player.polynomials[8].bought).add(player.polynomials[9].bought).add(player.polynomials[10].bought).lt(1) ? "s" : ""}}.<br>
+          You have bought a total of {{formatWhole(player.polynomials.buyables[1].add(player.polynomials.buyables[2]).add(player.polynomials.buyables[3]).add(player.polynomials.buyables[4]).add(player.polynomials.buyables[5]).add(player.polynomials.buyables[6]))}} Polynomial Buyable{{player.polynomials.buyables[1].add(player.polynomials.buyables[2]).add(player.polynomials.buyables[3]).add(player.polynomials.buyables[4]).add(player.polynomials.buyables[5]).add(player.polynomials.buyables[6]).gt(1) || player.polynomials.buyables[1].add(player.polynomials.buyables[2]).add(player.polynomials.buyables[3]).add(player.polynomials.buyables[4]).add(player.polynomials.buyables[5]).add(player.polynomials.buyables[6]).lt(1) ? "s" : ""}}.<br>
           <span v-if="player.polynomials[6].bought.gte(1)">
-            You have entered Synthetic Division {{formatWhole(player.synthDivEnters)}} times.<br>
-            You have bought {{formatWhole(player.synthDivUpgs[0][1].add(player.synthDivUpgs[0][2]).add(player.synthDivUpgs[0][3]))}} repeatable Synthetic Division Upgrades.<br>
-            You have bought {{formatWhole(player.synthDivUpgs[1].length)}} non-repeatable Synthetic Division Upgrades.
+            You have entered Synthetic Division {{formatWhole(player.synthDivEnters)}} time{{player.synthDivEnters != 1 ? "s" : ""}}.<br>
+            You have bought {{formatWhole(player.synthDivUpgs[0][1].add(player.synthDivUpgs[0][2]).add(player.synthDivUpgs[0][3]))}} repeatable Synthetic Division Upgrade{{player.synthDivUpgs[0][1].add(player.synthDivUpgs[0][2]).add(player.synthDivUpgs[0][3]).gt(1) || player.synthDivUpgs[0][1].add(player.synthDivUpgs[0][2]).add(player.synthDivUpgs[0][3]).lt(1) ? "s" : ""}}.<br>
+            You have bought {{formatWhole(player.synthDivUpgs[1].length)}} non-repeatable Synthetic Division Upgrade{{player.synthDivUpgs[1].length ? "s" : ""}}.
           </span>
         </div>
       </div>
@@ -632,7 +632,7 @@
         (The one I'm talking about is (-b±√(b²-4ac)) / 2a)<br>
         <span v-if="hasZlabMilestone(1,3)">To generate Imaginary Power, a, b, and c must return a nonreal solution instead.<br></span>
         Base QP{{hasZlabMilestone(1,3) ? " and IP" : ""}} Generation Formula{{hasZlabMilestone(1,3) ? "s" : ""}}: (bc)<sup>a/2 - 0.5</sup><br>
-        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && !hasMilestone(19), realishSolution: player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
+        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && !hasMilestone(19), realishSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && player.abc[1].gt(0) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
           <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}else if(!hasSecretAchievement(19)) {player.secretAchievements.push('19'); $.notify('Secret Achievement Unlocked: Integer Overflow', {style: 'apcurrent',className:'secretAchieves',});};">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.abc[a] = maxABC()">max</button><br>
@@ -811,7 +811,7 @@
         You have gone Complex {{formatWhole(player.complexes)}} times.<br><br>
         <div v-for="a in rowAmt(4)">
           <button :class="{milestoneLocked:a < 13 ? player.complexes < MILESTONES[a].requirement : ccTiers() < MILESTONES[a].requirement,milestoneUnlocked:a < 13 ? player.complexes >= MILESTONES[a].requirement : ccTiers() >= MILESTONES[a].requirement}" @click="if(!hasSecretAchievement(6)) {player.secretAchievements.push('6'); $.notify('Secret Achievement Unlocked: Those Are Buttons?', {style: 'apcurrent',className:'secretAchieves',});};">
-            <b style="font-size: 20px;">{{MILESTONES[a].title}}</b><br>{{MILESTONES[a].desc}}
+            <b style="font-size: 20px;">{{MILESTONES[a].title}}</b><br>{{a == 14 ? MILESTONES[a].desc() : MILESTONES[a].desc}}
           </button><br>
         </div>
         </div>

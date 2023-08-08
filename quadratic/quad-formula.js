@@ -19,7 +19,7 @@ function qpGen() {
 }
 
 function ipGen() {
-  if(player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || hasMilestone(19)){
+  if(player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3]))){
     let ip = player.abc[2].mul(player.abc[3]).pow(player.abc[1].div(2).sub(0.5))
     if(player.quadBuyables[5].eq(1)) ip = ip.mul(QP_BUYABLES[5].eff())
     ip = ip.mul(circleEffects(1))

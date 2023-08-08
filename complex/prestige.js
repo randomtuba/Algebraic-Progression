@@ -55,6 +55,7 @@ function goComplex(force) {
     if(!hasMilestone(9)) player.hasCompletedLevel4 = false
     if(!hasMilestone(9)) player.hasCompletedLevel5 = false
     player.sqrtEnters = 0
+    if(!hasMilestone(2)) player.compAutobuyers[2] = 1
     goQuadratic(true)
     player.x2 = new Decimal(0)
     player.totalx2 = new Decimal(0)
@@ -128,6 +129,7 @@ function goComplex(force) {
       if(!hasMilestone(9)) player.hasCompletedLevel4 = false
       if(!hasMilestone(9)) player.hasCompletedLevel5 = false
       player.sqrtEnters = 0
+      if(!hasMilestone(2)) player.compAutobuyers[2] = 1
       goQuadratic(true)
       player.x2 = new Decimal(0)
       player.totalx2 = new Decimal(0)

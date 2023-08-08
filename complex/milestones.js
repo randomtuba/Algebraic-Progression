@@ -6,7 +6,7 @@ const MILESTONES = {
   },
   2: {
     title: "2 Complexes",
-    desc: "Unlock a new Auto-Quadratic mode.",
+    desc: "Time mode for Auto-Quadratic is always unlocked, and unlock a new Auto-Quadratic mode.",
     requirement: 2,
   },
   3: {
@@ -66,7 +66,7 @@ const MILESTONES = {
   },
   14: {
     title: "10 CC tiers",
-    desc: "Unlock Transformations (found in the Coordinate Plane subtab).",
+    desc() {return `Unlock Transformations (found in the Coordinate ${player.zUnlocked ? `Realm` : `Plane`} subtab).`},
     requirement: 10,
   },
   15: {
