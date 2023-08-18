@@ -174,6 +174,9 @@ function buySU(x) {
   if(player.rootEssence.gte(SQRT_UPGRADES[x].cost) && !hasSU(x)){
     player.rootEssence = player.rootEssence.sub(SQRT_UPGRADES[x].cost)
     player.sqrtUpgs.push(x)
+    if (x == 16 && player.inSqrt) {
+      player.epicenterLevel == "1"
+    }
   }
 }
 

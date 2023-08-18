@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v2.3.2</title>
+    <title>Algebraic Progression v2.3.3</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -237,6 +237,9 @@
       <button class="hoverable" onclick="toggleOption(0)">
         Autosave: {{player.options[0] ? "ON" : "OFF"}}
       </button>
+      <button class="hoverable" onclick="adjustAutosaveInterval()">
+        Autosave Interval: {{formatWhole(player.autosaveInterval/1000)}}s
+      </button>
       <button class="hoverable" onclick="restartRun()" v-if="player.totalGP.gte(1)">
         Restart Run
       </button>
@@ -249,13 +252,19 @@
         {{player.theme ? "Current Theme: Light" : "Current Theme: Dark"}}
       </button>
       <button class="hoverable" onclick="toggleOption(3)">
-        {{player.options[3] ? "News Ticker: Shown" : "News Ticker: Hidden"}}
+        News Ticker: {{player.options[3] ? "Shown" : "Hidden"}}
       </button>
       <button class="hoverable" onclick="adjustNewsSpeed()">
         News Speed: {{formatWhole(player.newsSpeed * 100)}}%
+      </button>
+      <button class="hoverable" onclick="player.notation += 1; if(player.notation > 6){player.notation = 1};">
+        Notation: {{notationDisplay(player.notation)}}
       </button><br v-if="hasQU(12) || player.totali.gte(1)">
       <button class="hoverable" onclick="toggleOption(16)" v-if="hasQU(12) || player.totali.gte(1)">
-        {{player.options[16] ? "Always Show Subtabs: ON" : "Always Show Subtabs: OFF"}}
+        Always Show Subtabs: {{player.options[16] ? "ON" : "OFF"}}
+      </button>
+      <button class="hoverable" onclick="toggleOption(17)">
+        Offline Progress Modal: {{player.options[17] ? "ON" : "OFF"}}
       </button>
       <button class="hoverable" onclick="toggleOption(14)" v-if="player.zUnlocked">
         Title Flickering: {{player.options[14] ? "ON" : "OFF"}}
@@ -296,12 +305,12 @@
       <span v-if="player.totali.gte(1)">Complex: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[9] = !player.tabDisplays[9]">{{player.tabDisplays[9] ? "SHOWN" : "HIDDEN"}}</button><br></span>
       <span v-if="ccTiers() >= 50">Polynomials: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button></span>
       <br><br>
-      Algebraic Progression v2.3.2<br>
+      Algebraic Progression v2.3.3<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Game made with Vue.js, break_eternity.js, jQuery, and notify.js<br><br>
       If you want to make a mod of this game, that's fine, just credit me in some way.<br><br>
-      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://yahtzeemaster26.github.io/algebraic-progression/" target="_blank" onclick="if(!hasSecretAchievement(18)) {player.secretAchievements.push('18'); $.notify('Secret Achievement Unlocked: Olden Days', {style: 'apcurrent',className:'secretAchieves',});};">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
+      <a href="https://discord.gg/HhcavwM5rm" target="_blank">Discord Link</a>&nbsp&nbsp&nbsp<a href="https://algebraic-progression-but-the-test-link-is-long.glitch.me/" target="_blank" onclick="if(!hasSecretAchievement(18)) {player.secretAchievements.push('18'); $.notify('Secret Achievement Unlocked: Olden Days', {style: 'apcurrent',className:'secretAchieves',});};">AP Classic</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/AP-Old/" target="_blank">Original Rewrite</a>&nbsp&nbsp&nbsp<a href="https://randomtuba.github.io/Algebraic-Progression/changelog.html" target="_blank">Changelog</a><br><br>
       Note: Earlier versions of the game have bugs that will not be fixed.
       </div>
     <div id="tab3disp" v-if="player.currentTab == 'stats'"> <!--- STATISTICS !--->
@@ -424,7 +433,7 @@
       <table class="autocenter">
         <tr v-for="a in player.achievements.length >= 60 || player.totalGP.gte(1) ? 12 : Math.floor(player.achievements.length/5)+1">
           <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 60}">
-            <b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{a*5-5+b == 10 ? ACHIEVEMENTS[a*5-5+b].desc() : ACHIEVEMENTS[a*5-5+b].desc}}
+            <b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc()}}
           </td>
         </tr>
       </table>
@@ -491,7 +500,7 @@
       You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
       <div v-if="hasQU(14)">
           Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
-          <button class="hoverable" v-if="hasSU(3)" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
+          <button class="hoverable" v-if="hasSU(3) || hasMilestone(2)" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
             Mode: {{player.compAutobuyers[2] != 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
           </button><br><br>
         </div>
@@ -548,7 +557,7 @@
           <option v-if="player.zUnlocked">Z</option>
         </select> !--->
         <br>
-        <button v-if="hasSU(6)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button><br><br>
+        <button v-if="hasSU(6) || hasQU(19)" class="hoverable" onclick="player.autobuyers[10] = !player.autobuyers[10]">Auto: {{player.autobuyers[10] ? 'ON' : 'OFF'}}</button><br><br>
         By default, clicking the "Sacrifice" button will set whatever currency you're sacrificing to 0.<br>
         If your sacrificed currency is greater than your current sacrificed amount, your sacrificed amount will increase.<br>
         Clicking the second button will change what currency you're sacrificing.<br>
@@ -632,7 +641,7 @@
         (The one I'm talking about is (-b±√(b²-4ac)) / 2a)<br>
         <span v-if="hasZlabMilestone(1,3)">To generate Imaginary Power, a, b, and c must return a nonreal solution instead.<br></span>
         Base QP{{hasZlabMilestone(1,3) ? " and IP" : ""}} Generation Formula{{hasZlabMilestone(1,3) ? "s" : ""}}: (bc)<sup>a/2 - 0.5</sup><br>
-        <span :class="{realSolution: qpGen().gt(0), nonrealSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && !hasMilestone(19), realishSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && player.abc[1].gt(0) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
+        <span :class="{realSolution: (player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3]))), nonrealSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && !hasMilestone(19), realishSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && player.abc[1].gt(0) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
         <div v-for="a in 3">
           <span>{{tmp.letters[a]}}: {{player.abc[a]}}/{{maxABC()}}   </span>
           <button class="hoverable" @click="if(player.abc[a].lt(maxABC())){player.abc[a] = player.abc[a].add(1)}else if(!hasSecretAchievement(19)) {player.secretAchievements.push('19'); $.notify('Secret Achievement Unlocked: Integer Overflow', {style: 'apcurrent',className:'secretAchieves',});};">+</button><button class="hoverable" @click="if(player.abc[a].gt(0)){player.abc[a] = player.abc[a].sub(1)}">-</button><button class="hoverable" @click="player.abc[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.abc[a] = maxABC()">max</button><br>
@@ -921,7 +930,7 @@
                 Completions: {{player.compChalCompletions[a*2-2+b]}}/5<br>
               </button><br>
               <button class="hoverable" v-if="hasMilestone(16) ? true : a*2-2+b < 6" @click="interactWithCC(a*2-2+b)">
-                  {{player.unlocked != a*2-2+b ? (player.unlocked == 0 ? "Unlock Cost: " + COMP_CHALLENGES[a*2-2+b].unlockCost + " UP" : "Another challenge already unlocked") : (player.compChallenge == a*2-2+b ? (player.x2.gte(COMP_CHALLENGES[a*2-2+b].goals[player.compChalCompletions[a*2-2+b]]) ? "Complete Challenge" : "Exit Challenge") : "Start Challenge")}}
+                  {{player.unlocked != a*2-2+b ? (player.unlocked == 0 ? "Unlock Cost: " + (player.notation == 6 ? "" : COMP_CHALLENGES[a*2-2+b].unlockCost) + " UP" : "Another challenge already unlocked") : (player.compChallenge == a*2-2+b ? (player.x2.gte(COMP_CHALLENGES[a*2-2+b].goals[player.compChalCompletions[a*2-2+b]]) ? "Complete Challenge" : "Exit Challenge") : "Start Challenge")}}
                 </button>
               </div>
             </td>
@@ -929,9 +938,9 @@
         </table>
         </div>
         <div id="tab9-5disp" v-if="player.currentSubtab[1] == 'zlab'"> <!--- Z LAB !--->
-          Your <span class="zLabText">{{player.z}}</span> z have generated <span class="zLabText">{{format(player.zlab.zpower)}}</span> Z-Power.<br>
+          Your <span class="zLabText" v-if="player.notation != 6">{{formatWhole(player.z)}}</span> z have generated <span class="zLabText">{{format(player.zlab.zpower)}}</span> Z-Power.<br>
           ({{format(zpowerGen())}}/sec)<br>
-          Your {{totalColliderLevels()}} total Z-Collider level{{totalColliderLevels() != 1 ? "s" : ""}} are multiplying i and y<sup>2</sup> gain by {{format(Decimal.pow(1.25,totalColliderLevels()))}}.<br><br>
+          Your {{formatWhole(totalColliderLevels())}} total Z-Collider level{{totalColliderLevels() != 1 ? "s" : ""}} are multiplying i and y<sup>2</sup> gain by {{format(Decimal.pow(1.25,totalColliderLevels()))}}.<br><br>
           Charging a Z-Collider will generate Z-Particles of its corresponding type, based on the square root of your Z-Power.<br>
           Leveling up your Z-Colliders will allow you to reach milestones with powerful bonuses and unlocks.<br><br>
           <button class="zlabBuyable" onclick="increaseLevel(5)">
@@ -1019,6 +1028,30 @@
         I suggest that you equip Translations and check<br>
         the Generation tab...I think that you've been<br>
         forgetting something.
+        <form method="dialog">
+          <button class="hoverable">OK</button>
+        </form>
+      </dialog>
+      <dialog id="offlineProgressModal">
+        <b>Now that you're back...</b><br>
+        {{!player.points.gt(offline.points) && !player.x2.gt(offline.x2) && !player.rootEssence.gt(offline.rootEssence) && !player.slope.gt(offline.slope) && !player.quadPower.gt(offline.quadPower) && !player.imagPower.gt(offline.imagPower) && !player.challengeEssence.gt(offline.challengeEssence) && !player.compPlane[1][1].gt(offline.compPlane[1][1]) && !player.compPlane[1][2].gt(offline.compPlane[1][2]) && !player.compPlane[1][3].gt(offline.compPlane[1][3]) && !player.compPlane[1][4].gt(offline.compPlane[1][4]) && !player.zlab.zpower.gt(offline.zlab.zpower) && !player.varSynth.circles.gt(offline.varSynth.circles) && !player.varSynth.revolutions.gt(offline.varSynth.revolutions) && !player.polyPower.gt(offline.polyPower) && !player.upgradePoints[1].gt(offline.upgradePoints[1]) ? `Nothing happened.` : ``}}<br v-if="!player.points.gt(offline.points) && !player.x2.gt(offline.x2) && !player.rootEssence.gt(offline.rootEssence) && !player.slope.gt(offline.slope) && !player.quadPower.gt(offline.quadPower) && !player.imagPower.gt(offline.imagPower) && !player.challengeEssence.gt(offline.challengeEssence) && !player.compPlane[1][1].gt(offline.compPlane[1][1]) && !player.compPlane[1][2].gt(offline.compPlane[1][2]) && !player.compPlane[1][3].gt(offline.compPlane[1][3]) && !player.compPlane[1][4].gt(offline.compPlane[1][4]) && !player.zlab.zpower.gt(offline.zlab.zpower) && !player.varSynth.circles.gt(offline.varSynth.circles) && !player.varSynth.revolutions.gt(offline.varSynth.revolutions) && !player.polyPower.gt(offline.polyPower) && !player.upgradePoints[1].gt(offline.upgradePoints[1])">
+        {{player.points.gt(offline.points) ? `Points are increasing from ${format(offline.points)} to ${format(player.points)}` : ``}}<br v-if="player.points.gt(offline.points)">
+        {{player.x2.gt(offline.x2) ? `x&sup2; is increasing from ${format(offline.x2)} to ${format(player.x2)}` : ``}}<br v-if="player.x2.gt(offline.x2)">
+        {{player.rootEssence.gt(offline.rootEssence) ? `Root Essence is increasing from ${format(offline.rootEssence)} to ${format(player.rootEssence)}` : ``}}<br v-if="player.rootEssence.gt(offline.rootEssence)">
+        {{player.slope.gt(offline.slope) ? `Slope is increasing from ${format(offline.slope)} to ${format(player.slope)}` : ``}}<br v-if="player.slope.gt(offline.slope)">
+        {{player.quadPower.gt(offline.quadPower) ? `Quadratic Power is increasing from ${format(offline.quadPower)} to ${format(player.quadPower)}` : ``}}<br v-if="player.quadPower.gt(offline.quadPower)">
+        {{player.imagPower.gt(offline.imagPower) ? `Imaginary Power is increasing from ${format(offline.imagPower)} to ${format(player.imagPower)}` : ``}}<br v-if="player.imagPower.gt(offline.imagPower)">
+        {{player.challengeEssence.gt(offline.challengeEssence) ? `Challenge Essence is increasing from ${format(offline.challengeEssence)} to ${format(player.challengeEssence)}` : ``}}<br v-if="player.challengeEssence.gt(offline.challengeEssence)">
+        {{player.compPlane[1][1].gt(offline.compPlane[1][1]) ? `xi Power is increasing from ${format(offline.compPlane[1][1])} to ${format(player.compPlane[1][1])}` : ``}}<br v-if="player.compPlane[1][1].gt(offline.compPlane[1][1])">
+        {{player.compPlane[1][2].gt(offline.compPlane[1][2]) ? `yi Power is increasing from ${format(offline.compPlane[1][2])} to ${format(player.compPlane[1][2])}` : ``}}<br v-if="player.compPlane[1][2].gt(offline.compPlane[1][2])">
+        {{player.compPlane[1][3].gt(offline.compPlane[1][3]) ? `x&sup2;i Power is increasing from ${format(offline.compPlane[1][3])} to ${format(player.compPlane[1][3])}` : ``}}<br v-if="player.compPlane[1][3].gt(offline.compPlane[1][3])">
+        {{player.compPlane[1][4].gt(offline.compPlane[1][4]) ? `zi Power is increasing from ${format(offline.compPlane[1][4])} to ${format(player.compPlane[1][4])}` : ``}}<br v-if="player.compPlane[1][4].gt(offline.compPlane[1][4])">
+        {{player.zlab.zpower.gt(offline.zlab.zpower) ? `Z-Power is increasing from ${format(offline.zlab.zpower)} to ${format(player.zlab.zpower)}` : ``}}<br v-if="player.zlab.zpower.gt(offline.zlab.zpower)">
+        {{player.varSynth.circles.gt(offline.varSynth.circles) ? `Circles are increasing from ${format(offline.varSynth.circles)} to ${format(player.varSynth.circles)}` : ``}}<br v-if="player.varSynth.circles.gt(offline.varSynth.circles)">
+        {{player.varSynth.revolutions.gt(offline.varSynth.revolutions) ? `Revolutions are increasing from ${format(offline.varSynth.revolutions)} to ${format(player.varSynth.revolutions)}` : ``}}<br v-if="player.varSynth.revolutions.gt(offline.varSynth.revolutions)">
+        {{player.polyPower.gt(offline.polyPower) ? `Polynomial Power is increasing from ${format(offline.polyPower)} to ${format(player.polyPower)}` : ``}}<br v-if="player.polyPower.gt(offline.polyPower)">
+        {{player.upgradePoints[1].gt(offline.upgradePoints[1]) ? `Total Upgrade Points are increasing from ${format(offline.upgradePoints[1])} to ${format(player.upgradePoints[1])}` : ``}}<br v-if="player.upgradePoints[1].gt(offline.upgradePoints[1])">
+        <br>
         <form method="dialog">
           <button class="hoverable">OK</button>
         </form>

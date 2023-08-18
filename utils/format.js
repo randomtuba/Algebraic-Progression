@@ -1,13 +1,14 @@
 function exponentialFormat(num, precision, mantissa = true) {
-    let e = num.log10().floor()
+    let e = player.notation == 3 ? num.log10() : num.log10().div(player.notation == 2 ? 3 : 1).floor().mul(player.notation == 2 ? 3 : 1)
     let m = num.div(Decimal.pow(10, e))
+    if(e.gte(3) && e.lt(33) && player.notation == 4) return mixedFormat(e, m)
     if (m.toStringWithDecimalPlaces(precision) == 10) {
         m = new Decimal(1)
         e = e.add(1)
     }
-    e = (e.gte(1e9) ? format(e, 3) : (e.gte(10000) ? commaFormat(e, 0) : e.toStringWithDecimalPlaces(0)))
+    e = (e.gte(1e9) ? format(e, 3) : (e.gte(player.notation == 3 ? 1000 : 10000) ? commaFormat(e, player.notation == 3 ? 2 : 0) : e.toStringWithDecimalPlaces(player.notation == 3 ? 2 : 0)))
     if (mantissa)
-        return m.toStringWithDecimalPlaces(precision) + "e" + e
+        return (player.notation == 3 ? "" : m.toStringWithDecimalPlaces(precision)) + "e" + e
     else return "e" + e
 }
 
@@ -21,12 +22,31 @@ function commaFormat(num, precision) {
     return portions[0] + "." + portions[1]
 }
 
-
 function regularFormat(num, precision) {
+    if(player.notation == 6) return ""
     if (num === null || num === undefined) return "NaN"
     if (num.mag < 0.0001) return (0).toFixed(precision)
     if (num.mag < 0.1 && precision !==0) precision = Math.max(precision, 4)
     return num.toStringWithDecimalPlaces(precision)
+}
+
+function mixedFormat(e, m) {
+    let arr = [null,"K","M","B","T","Qa","Qi","Sx","Sp","Oc","No"]
+    return m.mul(Decimal.pow(10,e.sub(e.div(3).floor().mul(3)))).toStringWithDecimalPlaces(2) + " " + arr[e.div(3).floor().toNumber()]
+}
+
+function hexadecimalFormat(e,m) {
+  if (m.toStringWithDecimalPlaces(2) == 16) {
+      m = new Decimal(1)
+      e = e.add(1)
+  }
+  e = e.toNumber().toString(16).toUpperCase()
+  let arr = m.toNumber().toString(16).split('')
+  let final = ""
+  for (let i = 0; i < 4; i++) {
+    if(arr[i] != undefined && arr[i] != NaN) final = final + arr[i]
+  }
+  return final.toUpperCase() + (e != "0" ? "e" + e : "") === "NANeNAN" ? "0" : final.toUpperCase() + (e != "0" ? "e" + e : "")
 }
 
 function fixValue(x, y = 0) {
@@ -40,6 +60,7 @@ function sumValues(x) {
 }
 
 function format(decimal, precision = 2, small) {
+    if(player.notation == 6) return ""
     small = small
     decimal = new Decimal(decimal)
     if (decimal.sign < 0) return "-" + format(decimal.neg(), precision, small)
@@ -49,8 +70,9 @@ function format(decimal, precision = 2, small) {
         if (slog.gte(1e6)) return "F" + format(slog.floor())
         else return Decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0)
     }
+    else if (player.notation == 5) return hexadecimalFormat(decimal.log(16).floor(),decimal.div(Decimal.pow(16,decimal.log(16).floor())))
     else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
-    else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
+    else if (decimal.gte(1e3) && player.notation != 5) return player.notation == 4 ? mixedFormat(decimal.log10().floor(),decimal.div(Decimal.pow(10,decimal.log10().floor()))) : commaFormat(decimal, 0)
     else if (decimal.gte(0.0001) || !small) return regularFormat(decimal, precision)
     else if (decimal.eq(0)) return (0).toFixed(precision)
 
@@ -77,7 +99,7 @@ function formatTime(s) {
     else if (s < 3600) return formatWhole(Math.floor(s / 60)) + " minutes and " + format(s % 60) + " seconds"
     else if (s < 86400) return formatWhole(Math.floor(s / 3600)) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes, and " + format(s % 60) + " seconds"
     else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + " days, " + formatWhole(Math.floor(s / 3600) % 24) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes, and " + format(s % 60) + " seconds"
-    else return formatWhole(Math.floor(s / 31536000)) + " years (how?), " + formatWhole(Math.floor(s / 86400) % 365) + " days, " + formatWhole(Math.floor(s / 3600) % 24) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes, and " + format(s % 60) + " seconds"
+    else return formatWhole(Math.floor(s / 31536000)) + " years, " + formatWhole(Math.floor(s / 86400) % 365) + " days, " + formatWhole(Math.floor(s / 3600) % 24) + " hours, " + formatWhole(Math.floor(s / 60) % 60) + " minutes, and " + format(s % 60) + " seconds"
 }
 
 function simpleFormatTime(s) {

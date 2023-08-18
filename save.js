@@ -1,4 +1,5 @@
 var player = {};
+var offline = {};
 let hasLoaded = 0;
 function start() {
   let a = {
@@ -69,6 +70,7 @@ function start() {
       true, // title flickering (14)
       false, // show credits (15)
       false, // always show subtabs (16)
+      true, // offline progress modal (17)
     ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
@@ -174,6 +176,8 @@ function start() {
     bestPointsInSynthDiv: new Decimal(0),
     synthDivEnters: 0,
     newsSpeed: 1,
+    autosaveInterval: 30000,
+    notation: 1,
     
     viewedEndingCutscene: false,
     gameWon: false,
@@ -226,14 +230,18 @@ function load() {
 
   if (get === null || get === undefined) {
     player = start();
+    offline = start();
   } else {
     player = Object.assign(
       start(),
       JSON.parse(/*decodeURIComponent(escape(*/atob(get)/*))*/)
     );
+    offline = Object.assign(
+      start(),
+      JSON.parse(/*decodeURIComponent(escape(*/atob(get)/*))*/)
+    );
     fixSave();
   }
-  
   maskChangelog()
   
   document.getElementById("style").href = player.theme ? "style.css" : "style-dark.css";
@@ -295,7 +303,14 @@ window.onload = function () {
   load();
   hasLoaded = 1
   if(!player.options[1])player.lastTick = Date.now()
-window.saveInterval = player.options[0] ? setInterval(save,30000) : 0
+window.saveInterval = player.options[0] ? setInterval(save,player.autosaveInterval) : 0
+}
+
+function adjustAutosaveInterval() {
+  let x = prompt("Enter the autosave interval that you want in the input box below! (minimum 10s, maximum 300s, input gets rounded down)")
+  player.autosaveInterval = Math.floor(Math.max(Math.min(new Decimal(x).toNumber(),300),10)) * 1000
+  save();
+  window.location.reload();
 }
 
 function exportSave() {

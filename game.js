@@ -23,7 +23,7 @@ var tmp = {
   circleMilestones: [null,new Decimal(0),new Decimal(1000),new Decimal(1e5),new Decimal(2e6),new Decimal(1e8)],
   savedGlitches: [null,"","","","","","","","","","",0,0,0,0,0,0,0,0,0,0],
   allTabsShown: false,
-  dialogShown: false,
+  dialogShown: [false,false],
   
   triggeredEndingCutscene: false,
   keptGoing: false,
@@ -132,6 +132,11 @@ function toggleOption(x){
   player.options[x] = !player.options[x]
 }
 
+function notationDisplay(x) {
+  let arr = ["Scientific","Engineering","Logarithm","Mixed","Hexadecimal","Blind"]
+  return arr[x-1]
+}
+
 var changedQAdisplay = false
 var changedESdisplay = false
 var changedCAdisplay = false
@@ -213,7 +218,7 @@ function mainLoop(){
   updateValues() //makes sure that the values for input elements throughout the game don't reset
   updateRootEpicenter() //disables slider when in Square Root and detects Level 4 and -1 completion
   if(ccTiers() >= 50) updatePolynomials(diff) //makes polynomials produce other polynomials
-  if(ccTiers() >= 20 && !player.zUnlocked && !tmp.dialogShown) updateModal() //shows the z unlock hint modal at 20 CC tiers
+  if(location.href != "https://galaxy.click/play/19" && location.href != "https://galaxy.click/play/19/") updateModal() //shows modals when requirements are met
   fixUnixEpoch() //fixes the bug where Quadratic and Complex times jump a Unix Epoch
   trappedInSqrt() //traps the player in Square Root when in Complex Challenge 5 or Y-Challenge 4
   if(hasMilestone(15)) simulateEssence(1) //passively generates RE
@@ -225,7 +230,7 @@ function mainLoop(){
   
   if(player.polynomials[10].boughtThisRun) document.title = "The End"
   
-  setTimeout(()=>{if(player.points.gte("1e5e8") && !tmp.triggeredEndingCutscene && !player.viewedEndingCutscene) {
+  setTimeout(()=>{if(player.points.gte("1e5e8")  && !isNaN(player.points) && !tmp.triggeredEndingCutscene && !player.viewedEndingCutscene) {
     tmp.triggeredEndingCutscene = true
     cueEndingCutscene()
   }},1000)
@@ -500,37 +505,33 @@ player.points = trueSum.sub(priceMult.pow(player.x).sub(1).div(priceMult.sub(1))
   }
   
   // BUILDINGS
-  if(player.points.gte(BUYABLES[3].cost()) && player.challenge != 10 && player.compChallenge != 8){
-    player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
-    if(!hasQU(8)) player.points = player.points.sub(BUYABLES[3].cost())
-    player.buyables[3] = player.buyables[3].add(1)
-    player.chalExponents[0] = new Decimal(0)
-  }
-  if(player.points.gte(BUYABLES[2].cost()) && player.challenge != 10 && player.compChallenge != 8){
-    player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
-    if(!hasQU(8)) player.points = player.points.sub(BUYABLES[2].cost())
-    player.buyables[2] = player.buyables[2].add(1)
-    player.chalExponents[0] = new Decimal(0)
-  }
-  if(player.points.gte(BUYABLES[1].cost()) && player.challenge != 10 && player.compChallenge != 8){
-    player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
-    if(!hasQU(8)) player.points = player.points.sub(BUYABLES[1].cost())
-    player.buyables[1] = player.buyables[1].add(1)
-    player.chalExponents[0] = new Decimal(0)
-  }
-}
-
-function accurateBuyMax(){
-  // by gapples2, to be finished soon
-  // variables
-  if(player.points.gte(xCost()) && player.challenge != 10){
-    if(player.compChallenge == 3) {
-      player.x = player.points.root(10).div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
-    } else {
-      player.x = player.points.div(100000).mul(hasUpgrade(3) && player.challenge != 5 ? 2 : 1).mul(hasUpgrade(5) && player.challenge != 5 ? 1000000 : 1).mul(hasChallenge(5)?1e9:1).max(1).log(new Decimal(1).add(Decimal.div(0.11,xDivision()))).floor()
+  if(!hasQU(8)) {
+    for (let i = 3; i > 0; i--) {
+      let j = 0
+      while (player.points.gte(BUYABLES[i].cost()) && j < 1000) {
+        buyBuyable(i)
+        j++
+      }
     }
-    if(!hasQU(8)) player.points = player.points.sub(xCost())
-    player.x = player.x.add(1)
+  } else {
+    if(player.points.gte(BUYABLES[3].cost()) && player.challenge != 10 && player.compChallenge != 8){
+      player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
+      if(!hasQU(8)) player.points = player.points.sub(BUYABLES[3].cost())
+      player.buyables[3] = player.buyables[3].add(1)
+      player.chalExponents[0] = new Decimal(0)
+    }
+    if(player.points.gte(BUYABLES[2].cost()) && player.challenge != 10 && player.compChallenge != 8){
+      player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
+      if(!hasQU(8)) player.points = player.points.sub(BUYABLES[2].cost())
+      player.buyables[2] = player.buyables[2].add(1)
+      player.chalExponents[0] = new Decimal(0)
+    }
+    if(player.points.gte(BUYABLES[1].cost()) && player.challenge != 10 && player.compChallenge != 8){
+      player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
+      if(!hasQU(8)) player.points = player.points.sub(BUYABLES[1].cost())
+      player.buyables[1] = player.buyables[1].add(1)
+      player.chalExponents[0] = new Decimal(0)
+    }
   }
 }
 
@@ -616,8 +617,14 @@ function updateValues() {
 }
 
 function updateModal() {
-  document.getElementById("zUnlockHintModal").showModal()
-  tmp.dialogShown = true
+  if(ccTiers() >= 20 && !player.zUnlocked && !tmp.dialogShown[0]) {
+    document.getElementById("zUnlockHintModal").showModal()
+    tmp.dialogShown[0] = true
+  }
+  if(player.options[1] && player.options[17] && (!player.gameWon || tmp.keptGoing) && (new Decimal(offline.points).gt(0) || new Decimal(offline.totalx2).gte(1) || new Decimal(offline.totali).gte(1)) && !tmp.dialogShown[1]) {
+    document.getElementById("offlineProgressModal").showModal()
+    tmp.dialogShown[1] = true
+  }
 }
 
 function fixUnixEpoch() {
@@ -644,7 +651,7 @@ function checkForEndgame() {
 
 function modifiedReality() {
   if (player.zUnlocked) {
-    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3.2"
+    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v2.3.3"
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/AP%20cZrrZnt.png?v=1676847726255");
     tmp.textbook.names[9] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
