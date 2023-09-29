@@ -768,68 +768,76 @@ document.addEventListener("keydown", function onEvent(event) {
       }
       break;
     case "E":
-      exportSave()
+      if(player.options[2]) exportSave()
       break;
     case "S":
-      save()
+      if(player.options[2]) save()
       break;
     case "d":
-      if(player.polynomials[6].bought.gte(1)) enterSynthDiv()
+      if(player.polynomials[6].bought.gte(1) && player.options[2]) enterSynthDiv()
       break;
     case "p":
-      if(ccTiers() >= 50) buyMaxPolynomials()
+      if(ccTiers() >= 50 && player.options[2]) buyMaxPolynomials()
       break;
     case "ArrowLeft":
-      tabNames = tabArray()
-      s = player.currentTab;
-      for (let i = 0; i < tabNames.length; i++) {
-        if(s === tabNames[i]) {
-          s = i - 1;
+      if(player.options[2] && document.activeElement != document.getElementById("quadAuto") && document.activeElement != document.getElementById("compAuto") && document.activeElement != document.getElementById("yquadAuto")) {
+        tabNames = tabArray()
+        s = player.currentTab;
+        for (let i = 0; i < tabNames.length; i++) {
+          if(s === tabNames[i]) {
+            s = i - 1;
+          }
         }
+        if(s < 0) {
+          s = tabNames.length - 1
+        }
+        tab(tabNames[s])
       }
-      if(s < 0) {
-        s = tabNames.length - 1
-      }
-      tab(tabNames[s])
       break;
     case "ArrowRight":
-      tabNames = tabArray()
-      s = player.currentTab;
-      for (let i = 0; i < tabNames.length; i++) {
-        if(s === tabNames[i]) {
-          s = i + 1;
+      if(player.options[2] && document.activeElement != document.getElementById("quadAuto") && document.activeElement != document.getElementById("compAuto") && document.activeElement != document.getElementById("yquadAuto")) {
+        tabNames = tabArray()
+        s = player.currentTab;
+        for (let i = 0; i < tabNames.length; i++) {
+          if(s === tabNames[i]) {
+            s = i + 1;
+          }
         }
+        if(s > tabNames.length - 1) {
+          s = 0
+        }
+        tab(tabNames[s])
       }
-      if(s > tabNames.length - 1) {
-        s = 0
-      }
-      tab(tabNames[s])
       break;
     case "ArrowUp":
-      subtabNames = subtabArray()
-      s = player.currentSubtab[subtabIndex()];
-      for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
-        if(s === subtabNames[subtabIndex()][i]) {
-          s = i - 1;
+      if(player.options[2] && document.activeElement != document.getElementById("quadAuto") && document.activeElement != document.getElementById("compAuto") && document.activeElement != document.getElementById("yquadAuto")) {
+        subtabNames = subtabArray()
+        s = player.currentSubtab[subtabIndex()];
+        for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
+          if(s === subtabNames[subtabIndex()][i]) {
+            s = i - 1;
+          }
         }
+        if(s < 0) {
+          s = subtabNames[subtabIndex()].length - 1
+        }
+        player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
       }
-      if(s < 0) {
-        s = subtabNames[subtabIndex()].length - 1
-      }
-      player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
       break;
     case "ArrowDown":
-      subtabNames = subtabArray()
-      s = player.currentSubtab[subtabIndex()];
-      for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
-        if(s === subtabNames[subtabIndex()][i]) {
-          s = i + 1;
+      if(player.options[2] && document.activeElement != document.getElementById("quadAuto") && document.activeElement != document.getElementById("compAuto") && document.activeElement != document.getElementById("yquadAuto")) {
+        subtabNames = subtabArray()
+        s = player.currentSubtab[subtabIndex()];
+        for (let i = 0; i < subtabNames[subtabIndex()].length; i++) {
+          if(s === subtabNames[subtabIndex()][i]) {
+            s = i + 1;
+          }
         }
+        if(s > subtabNames[subtabIndex()].length - 1) {
+          s = 0
+        }
+        player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
       }
-      if(s > subtabNames[subtabIndex()].length - 1) {
-        s = 0
-      }
-      player.currentSubtab[subtabIndex()] = subtabNames[subtabIndex()][s]
       break;
   }
 });

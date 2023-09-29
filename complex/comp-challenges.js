@@ -19,7 +19,7 @@ const COMP_CHALLENGES = {
   },
   3: {
     title: "Greatest Common Factor",
-    desc() {return "X cost is ^10 and Y cost is ^4. If your X and Y amounts share a GCF, point gain will be negatively affected based on the factor. Note: Greatest Common Factor is also known as \"Greatest Common Divisor\"."},
+    desc() {return "X cost is ^10 and Y cost is ^4. If your X and Y amounts share a Greatest Common Factor (GCF), point gain will be negatively affected based on the factor."},
     goals: [new Decimal("1e9100"),new Decimal("1e9900"),new Decimal("1e10900"),new Decimal("1e11200"),new Decimal("1e11700"),new Decimal(Infinity)],
     rewardDesc: "Divide the X and Y cost scalings.",
     eff() {return new Decimal(1).add(Decimal.mul(0.03,player.compChalCompletions[3]))},

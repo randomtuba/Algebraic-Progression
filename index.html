@@ -147,7 +147,7 @@
     </button></td>
     </tr></table><br v-if="player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1)">
     <span v-if="player.hasCompletedLevel5 && player.x2.lt('1e2950') && player.rootEssence.lt('1e660') && player.totali.lt(1)">
-      <span style="color:#229100">You need 1e2950 x<sup>2</sup> and 1e660 Root Essence to go Complex.</span><br><br>
+      <span style="color:#229100">You need {{format(new Decimal("1e2950"))}} x<sup>2</sup> and {{format(new Decimal("1e660"))}} Root Essence to go Complex.</span><br><br>
     </span>
     <div id="points">
       Number {{player.compChallenge == 6 && player.buyables[1].add(player.buyables[2]).add(player.buyables[3]).gt(player.buyables[4].add(player.buyables[5]).add(player.buyables[6])) ? "&lt;" : "="}} {{player.z.gte(1) ? formatWhole(player.z) + 'z+' : ''}}{{player.y.gte(1) ? formatWhole(player.y) + 'y+' : ''}}{{player.x.gte(1) ? formatWhole(player.x) + 'x+' : ''}}{{format(player.points)}}  
@@ -713,7 +713,7 @@
       </div>
       <div id="tab8-2disp" v-if="player.currentSubtab[3] == 'varsynth'"> <!--- VARIABLE SYNTHESIZER !--->
         <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e17) || ccTiers() < 35,buildingBuyable:player.y2.gte(1e17) && ccTiers() >= 35}" onclick="if(player.y2.gte(1e17) && ccTiers() >= 35){player.varSynth.unlocked[0] = true}" v-if="!player.varSynth.unlocked[0]">
-          Unlock for 1.00e17 y<sup>2</sup> and 35 CC tiers
+          Unlock for {{format(1e17)}} y<sup>2</sup> and {{format(35)}} CC tiers
         </button>
         <div v-if="player.varSynth.unlocked[0]">
           Welcome to the Variable Synthesizer! Here you will be able to craft illegal variables that probably shouldn't exist.<br>
@@ -772,7 +772,7 @@
       </div>
       <div id="tab8-3disp" v-if="player.currentSubtab[3] == 'challenges'"> <!--- Y-CHALLENGES !--->
         <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e44) || ccTiers() < 45,buildingBuyable:player.y2.gte(1e44) && ccTiers() >= 45}" onclick="if(player.y2.gte(1e44) && ccTiers() >= 45){player.yChalsUnlocked[1] = true}" v-if="!player.yChalsUnlocked[1]">
-          Unlock for 1.00e44 y<sup>2</sup> and 45 CC tiers
+          Unlock for {{format(1e44)}} y<sup>2</sup> and {{format(45)}} CC tiers
         </button>
         <div v-if="player.yChalsUnlocked[1]">
           Endure harder Y-Quadratics and reach the goal to get rewards!<br>
