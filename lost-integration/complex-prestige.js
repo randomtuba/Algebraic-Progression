@@ -63,6 +63,7 @@ const ComplexPrestigeLI = {
                 }
                 player.challengeEssence = new Decimal(0)
                 player.sqrtEnters = 0
+                if(!hasComplexMilestoneLI(9)) player.epicenterLevel = '1'
                 if(!hasComplexMilestoneLI(3)) player.currentSubtab[0] = "upgrades"
                 ResetPrestige.reset(true)
                 player.x2 = new Decimal(0)
@@ -153,7 +154,7 @@ const ComplexMilestonesLI = {
 }
 
 function hasComplexMilestoneLI(x) {
-    return player.inLostIntegration && (player.complexes.gte(ComplexMilestonesLI[x].requirement) || FractalMilestones.has(3))
+    return player.inLostIntegration && (player.complexes.gte(ComplexMilestonesLI[x].requirement) || FractalMilestones.has(3) || (x == 10 && FractalMilestones.has(1)))
 }
 
 const ComplexPlaneLI = {

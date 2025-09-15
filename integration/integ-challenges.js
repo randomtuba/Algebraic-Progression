@@ -174,6 +174,7 @@ const IntegrationChallenges = {
       case 1:
         if(player.integration.challenge == 1) {
           if(player.i.gte(IntegrationChallenges[1].goal(player.compChallenge)) && !player.integration.chalCompletions[1].includes(player.challenge + (player.compChallenge * 10))) {
+            player.integration.challenge = 0
             player.integration.chalCompletions[1].push(player.challenge + (player.compChallenge * 10))
           }
           IntegrationPrestige.integrate(true);
@@ -463,6 +464,17 @@ const IntegrationChallenges = {
             10: { amount: new Decimal(0) },
             buyables: Array(24).fill(new Decimal(0)),
           }
+          player.tabDisplays = [null,true,true,true,true,true,true,true,true,true,true,true,true],
+          player.subtabDisplays = {
+            0: [true,true,true,true,true], // Quadratic
+            1: [true,true,true,true,true,true], // Complex
+            2: [true,true,true,true], // Statistics
+            3: [true,true,true,true], // Y-Quadratic
+            4: [true,true,true], // Achievements
+            5: [true,true], // Polynomials
+            6: [true,true,true,true,true,true,true], // Integration
+            7: [true,true,true,true], // Sinusoidal
+          }
 
           player.inLostIntegration = true
         }
@@ -486,5 +498,15 @@ const IntegrationChallenges = {
       if(player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0) && player.zlab.empowerments.eq(0) && player.b.eq(0) && player.hypercompUpgs.dynamic.length < 4 && (player.gamePrestigeTimes[6].lt(3.1536e13) || player.gamePrestigeTimes[8].lt(3.1536e13)) && player.polynomials[10].amount.lt(1) && player.integration.chalCompletions[5] >= 5 && player.integration.chalCompletions[5] < 6) {player.integration.chalCompletions[5] = 6; return}
       if(player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0) && player.zlab.empowerments.eq(0) && player.b.eq(0) && player.hypercompUpgs.dynamic.length < 4 && (player.gamePrestigeTimes[6].lt(3.1536e13) || player.gamePrestigeTimes[8].lt(3.1536e13)) && player.polynomials[10].amount.lt(1) && player.integration.challenge == 3 && player.integration.chalCompletions[5] >= 6 && player.integration.chalCompletions[5] < 7) {player.integration.chalCompletions[5] = 7; return}
     }
+  },
+  attemptToFufillReqs() {
+    let c = player.integration.chalCompletions[5]
+    player.integration.autobuyers.synthDivUpgs = false // no rebuyable SDUs
+    if(c >= 1) player.integration.autobuyers.zEmpowerments = false // no Z-Empowerments
+    if(c >= 2) player.compAutobuyers[4] = false // no Y-Intercept
+    if(c >= 3 && player.hypercompUpgs.dynamic.length > 4) HypercompUpgrades.respec(true) // at most 4 Hypercomplex Upgrades
+    if(c >= 4) player.options[18] = false // Temporal Plane inactive
+    if(c >= 5) player.integration.autobuyers.polynomials[10] = false // no x^10
+    if(c >= 6) IntegrationChallenges.start(3) // must be in IC3
   }
 }

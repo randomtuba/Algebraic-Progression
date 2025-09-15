@@ -56,6 +56,10 @@ function buyUpgrade(x) {
   } else if (player.varSynth.xy.gte(1) && hasUpgrade(x) && !hasChargedUpgrade(x)) {
     player.varSynth.chargedXUpgs.push(x)
     player.varSynth.xy = player.varSynth.xy.sub(1)
+  } else if (tmp.shiftToggleBehavior && hasChargedUpgrade(x)) {
+    player.varSynth.xy = player.varSynth.xy.add(1)
+    player.varSynth.chargedXUpgs = singleUpgradeRespec(player.varSynth.chargedXUpgs,x)
+    goYQuadratic(true)
   }
 }
 
@@ -231,5 +235,5 @@ function buyPermUpgrade(x) {
 }
 
 function hasPermUpgrade(x) {
-  return player.permUpgs.includes(x) && !player.speedrunMode;
+  return player.permUpgs.includes(x) && !player.options[31];
 }

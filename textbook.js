@@ -324,9 +324,11 @@ function tbookDescriptions(x,world) {
         You still keep your Challenge records and some things underneath the General header in the Statistics tab. dx and empty sets<br>
         will become your most important currencies from this point forward.<br><br>
         <b>Base dx Gain Formula:</b> 5 * (1000<sup>(log<sub>10</sub>(max(i,1))/270000)-1</sup>) * (10<sup>(log<sub>10</sub>(max(y<sup>2</sup>,1e510))/510)-1</sup>)<br>
-        <b>Base Empty Sets Gain Formula:</b> i<sup>1/270000</sup>/10 * log<sub>10</sub>(PP+1)/500 * max(SE<sup>1/50</sup>/10,1) * max(complexes<sup>1/10</sup>/10,1)<br><br>
+        <b>Base Empty Sets Gain Formula:</b> i<sup>1/270000</sup>/10 * log<sub>10</sub>(PP+1)/500 * max(SE<sup>1/50</sup>/10,1) * max(complexes<sup>1/10</sup>/10,1)<br>
+        <b>Base Holes Gain Formula:</b> max(log<sub>10</sub>(pending dx + 1) / 100,1)<br><br>
+        Holes are used for purchasing Integration Upgrades on the Perk Tree.<br>
         Empty sets are used for assigning Number Sets.<br>
-        dx is used for unlocking effect slots and type slots and purchasing Integration Upgrades.`, // integration
+        dx is used for unlocking effect slots and type slots and purchasing Integration Upgrades on the Production Tree.`, // integration
         `Number Sets are a group of 20 effects split into 5 groups known as Set types. Each Set type and Set effect must be activated<br>
         with type slots and effect slots, respectively. Type slots and effect slots can be bought with dx. Each Number Set type focuses on<br>
         a unique section of the game. For example, Natural Set effects focus on Pre-Quadratic content,<br>
@@ -400,7 +402,8 @@ function tbookDescriptions(x,world) {
         <b>sec(θ) Set Effect Formula:</b> log<sub>3</sub>(log<sub>10</sub>(power+1)+1) + 1<br>
         <b>cot(θ) Set Effect Formula:</b> log<sub>10</sub>(log<sub>10</sub>(power+1)+1) + 1`, // trigonometric functions
         `<b>>j(n):</b> Based on your variable amounts in The Limit with all Challenge Factors maxed, you'll gain j(n).<br>
-        j(n) normally produces second derivatives, but it starts producing third derivatives after reaching 5,000,000.<br><br>
+        j(n) normally produces second derivatives, but it starts producing third derivatives after reaching 5,000,000 j(n).<br><br>
+        <b>Base j(n) Gain Formula:</b> (x*y*z)<sup>0.25</sup><br>
         <b>Base Second Derivatives Generation Formula:</b> (j(n) / 10,000)<sup>0.5</sup><br>
         <b>Base Third Derivatives Generation Formula:</b> (j(n) / 1e10)<sup>0.75</sup><br><br>
         Similar to Polynomials, each derivative tier produces the previous one, except for antiderivatives, which<br>
@@ -456,6 +459,10 @@ function tbookDescriptions(x,world) {
         <b>1st Quaternion Purchase Button Cost Formula:</b> 1e3250<sup>(1.25<sup>purchases</sup>)</sup><br>
         <b>2nd Quaternion Purchase Button Cost Formula:</b> 1e230<sup>(1.2<sup>purchases</sup>)</sup><br>
         <b>3rd Quaternion Purchase Button Cost Formula:</b> 500<sup>(1.15<sup>purchases</sup>)</sup><br><br>
+        Once Hypercomplex Upgrades are unlocked, you will begin producing j and k, the main currencies of Hypercomplex.<br>
+        j and k are used for different purposes, and are both generated based on your W amount and i amount.<br><br>
+        <b>Base j Generation Formula:</b> 2.25<sup>w</sup> * ((log<sub>10</sub>(i + 1) / 2e8) + 1)<br>
+        <b>Base k Generation Formula:</b> 1.75<sup>w</sup> * ((log<sub>10</sub>(i + 1) / 4e8) + 1)<br><br>
         Similar to Complex Upgrades, you can respec Hypercomplex Upgrades, export<br>
         and load Hypercomplex Upgrade strings, and save Hypercomplex Upgrade presets.`, // hypercomplex upgrades
         `In Hypercomplex Flune, you can use j and k to purchase 8 different currencies. Each Hypercomplex Flune currency<br>

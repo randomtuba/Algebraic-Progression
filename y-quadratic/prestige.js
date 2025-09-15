@@ -13,6 +13,7 @@ function yQuadFormula() {
   if(HypercompUpgrades.has(4)) y2 = y2.pow(HypercompUpgrades[4].eff())
   if(player.integration.inTheLimit) y2 = y2.pow(Limit.challengeFactorEffects(7))
   if(player.integration.challenge == 6 && player.integration.ic6Version == 0) y2 = y2.pow(0.5)
+  y2 = y2.min("1e6.5e9")
   y2 = y2.floor()
   if(player.y.lt(2222) || player.z.lt(1)) y2 = new Decimal(0)
   return y2

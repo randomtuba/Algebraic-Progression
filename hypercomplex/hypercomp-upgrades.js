@@ -110,6 +110,10 @@ const HypercompUpgrades = {
     if(player.quaternions[0].gte(HypercompUpgrades[x].cost) && !HypercompUpgrades.has(x)){
       player.quaternions[0] = player.quaternions[0].sub(HypercompUpgrades[x].cost)
       player.hypercompUpgs.dynamic.push(x)
+    } else if (tmp.shiftToggleBehavior && HypercompUpgrades.has(x)) {
+      player.quaternions[0] = player.quaternions[0].add(HypercompUpgrades[x].cost)
+      player.hypercompUpgs.dynamic = singleUpgradeRespec(player.hypercompUpgs.dynamic,x)
+      IntegrationPrestige.integrate(true)
     }
   },
   has(x) {

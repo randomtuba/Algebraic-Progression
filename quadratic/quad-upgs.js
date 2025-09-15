@@ -169,6 +169,10 @@ function buyQU(x) {
   } else if (player.y2z2.amount.gte(1) && hasQU(x) && !hasChargedQU(x)) {
     player.chargedQuadUpgs.push(x)
     player.y2z2.amount = player.y2z2.amount.sub(1)
+  } else if (tmp.shiftToggleBehavior && hasChargedQU(x)) {
+    player.y2z2.amount = player.y2z2.amount.add(1)
+    player.chargedQuadUpgs = singleUpgradeRespec(player.chargedQuadUpgs,x)
+    IntegrationPrestige.integrate(true)
   }
   if(player.integration.challenge == 3 && player.integration.activations > 0 && !(x == 5 || x == 6 || x == 8 || x == 9 || x == 10 || x == 12 || x == 14 || x == 16 || x == 19 || x == 20) && !player.integration.upgsActiveInIC3.includes(x)) {
     player.integration.activations -= 1

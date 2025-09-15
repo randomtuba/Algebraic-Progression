@@ -75,7 +75,7 @@ const QP_BUYABLES = {
   },
   3: {
     title: "Challenge Amplifier",
-    desc: "Raise the C1 reward effect by +0.1 per purchase",
+    desc() {return `Raise the C1 ${hasChallenge(10) ? "and C9 " : ""}reward effect${hasChallenge(10) ? "s" : ""} by +0.1 per purchase`},
     cost() {
       return new Decimal(100000).mul(Decimal.pow(40,player.quadBuyables[3])).mul(Decimal.pow(1.5,player.quadBuyables[3].pow(2)))
     },
@@ -83,7 +83,7 @@ const QP_BUYABLES = {
       return player.yChallenge == 3 ? new Decimal(1) : new Decimal(1).add(player.quadBuyables[3].add(compPlaneEffects(1)).div(10))
     },
     effectDisplay() {
-      return "^" + format(QP_BUYABLES[3].eff()) + " C1 reward effect";
+      return "^" + format(QP_BUYABLES[3].eff()) + " C1 " + (hasChallenge(10) ? "and C9 " : "") + "reward effect" + (hasChallenge(10) ? "s" : "");
     },
   },
   4: {

@@ -347,6 +347,14 @@ const NumberSets = {
     let sac = player.integration.assignedSets[set].mul(percent/100)
     if(!BasicHypercompUpgrades.has(1)) player.integration.assignedSets[set] = player.integration.assignedSets[set].sub(sac)
     player.integration.setSacrificeValues[set] = player.integration.setSacrificeValues[set].add(sac.mul(IntegrationChallenges[1].eff()))
+
+    if(player.dailyAchievements[0].includes('114') && !player.dailyAchievements[1].includes('114') && sac.gte(1e10) && percent >= 100){
+      player.dailyAchievements[1].push('114')
+      $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('114').name, {
+        style: 'apcurrent',
+        className:'dailyAchieves',
+      });
+    }
   },
   sacrificeValueEffects(x) {
     switch (x) {

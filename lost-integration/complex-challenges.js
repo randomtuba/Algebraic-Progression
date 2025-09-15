@@ -52,7 +52,7 @@ const ComplexChallengesLI = {
         unlockCost: new Decimal(25),
     },
     5: {
-        desc() {return "You cannot gain X and Y. The way Reset Points are gained is changed to compensate for this. You are also trapped in Square Root with Root Epicenter Task -1, just for fun."},
+        desc() {return "You cannot gain X and Y. The base Reset Points gain formula is 1, so only multipliers apply. You are also trapped in Square Root with Root Epicenter Task -1, just for fun."},
         secondaryRequirement: {
             internal() {return player.challengeEssence},
             name: "square roots",
@@ -124,6 +124,12 @@ const ComplexChallengesLI = {
                     player.compChalCompletions[x]++;
                     if(!FractalMilestones.has(5)) player.upgradePoints[0] = player.upgradePoints[0].add(ComplexChallengesLI[x].unlockCost);
                     player.unlocked = 0
+                    if(ccTiers() == 12 && !player.zUnlocked) {
+                        $.notify('The strange presence enters the Generation tab...', {
+                            style: 'apcurrent',
+                            className:'unlock',
+                        });
+                    }
                 }
                 ComplexPrestigeLI.goComplex(true);
             }

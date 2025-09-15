@@ -9,6 +9,7 @@ const SinusoidalPrestige = {
     gain = gain.pow(SinusoidalUpgrades[30].eff())
     if(BasicHypercompUpgrades.has(11)) gain = gain.pow(1.05)
     if(hasPermUpgrade(14)) gain = gain.mul(PERM_UPGRADES[14].eff())
+    gain = gain.min("1e600000")
     gain = gain.floor()
     return gain
   },
@@ -40,6 +41,15 @@ const SinusoidalPrestige = {
         player.chargedQuadUpgs = []
         player.y2z2.amount = player.y2z2.total
         player.options[29] = false
+      }
+
+      // check for daily achievement
+      if(player.dailyAchievements[0].includes('124') && !player.dailyAchievements[1].includes('124') && player.integration.active.types.length == 0){
+        player.dailyAchievements[1].push('124')
+        $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('124').name, {
+          style: 'apcurrent',
+          className:'dailyAchieves',
+        });
       }
       
       if(!IntegrationUpgrades.mil2.isBought() && !IntegrationUpgrades.zla.isBought()) player.currentSubtab[1] = "milestones"

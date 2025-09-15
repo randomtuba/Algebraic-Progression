@@ -73,6 +73,12 @@ function startChallenge(x) {
       goQuadratic(true)
       player.challenge = x
     }
+  } else if (player.integration.challenge == 1 && player.dailyAchievements[0].includes('123') && !player.dailyAchievements[1].includes('123')) {
+      player.dailyAchievements[1].push('123')
+      $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('123').name, {
+        style: 'apcurrent',
+        className:'dailyAchieves',
+      });
   }
 }
 

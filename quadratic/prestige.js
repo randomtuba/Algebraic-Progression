@@ -24,6 +24,7 @@ function quadFormula() {
     if(player.integration.challenge == 6 && player.integration.ic6Version == 0) x2 = x2.pow(0.5)
     if(player.yChallenge == 1) x2 = new Decimal(0)
     if(hasPermUpgrade(2)) x2 = x2.mul(PERM_UPGRADES[2].eff())
+    x2 = x2.min("1e3e14")
     x2 = x2.floor()
     return x2
   }else{
@@ -79,6 +80,13 @@ function goQuadratic(force) {
     else if(quadFormula().gte(1)){
       if(!player.options[7] || player.autobuyers[9] || confirm("Going Quadratic will reset Buildings, Functions, Variables, and X Upgrades, but you will receive x² in return. Are you sure you want to do this?")) {
         let q = quadFormula()
+        if(player.dailyAchievements[0].includes('44') && !player.dailyAchievements[1].includes('44') && q.gte(player.x2.mul("1e1000"))){
+          player.dailyAchievements[1].push('44')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('44').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
+          });
+        }
         player.x2 = player.x2.add(q)
         player.totalx2 = player.totalx2.add(q)
         player.last10runs.quadratic.splice(0,0,{gain:q,time:player.prestigeTimes[0],gameTime:player.gamePrestigeTimes[0]})
@@ -98,6 +106,13 @@ function goQuadratic(force) {
         player.x = new Decimal(0)
         player.y = new Decimal(0)
         if(!hasQU(6) && !IntegrationUpgrades.cxu.isBought()) player.xUpgs = []
+        if(player.dailyAchievements[0].includes('33') && !player.dailyAchievements[1].includes('33') && player.gamePrestigeTimes[0].lt(0.2) && player.quadBuyables[1].gte(4)){
+          player.dailyAchievements[1].push('33')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('33').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
+          });
+        }
         if(player.prestigeTimes[0] < player.prestigeTimes[1]) player.prestigeTimes[1] = player.prestigeTimes[0]
         if(player.gamePrestigeTimes[0].lt(player.gamePrestigeTimes[1])) player.gamePrestigeTimes[1] = player.gamePrestigeTimes[0]
         player.prestigeTimes[0] = 0

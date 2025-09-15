@@ -96,6 +96,8 @@ function start() {
       false, // respec hypercomplex upgrades on integration/sinusoidal (27)
       false, // show hypercomplex upgrade presets (28)
       false, // respec charged quadratic upgrades on integration/sinusoidal (29)
+      false, // hide obscured achievement rows (30)
+      true, // permanent upgrades active (31)
     ],
     abc: [null,new Decimal(0),new Decimal(0),new Decimal(0)],
     quadPower: new Decimal(0),
@@ -164,7 +166,7 @@ function start() {
       1: [true,true,true,true,true,true], // Complex
       2: [true,true,true,true], // Statistics
       3: [true,true,true,true], // Y-Quadratic
-      4: [true,true], // Achievements
+      4: [true,true,true], // Achievements
       5: [true,true], // Polynomials
       6: [true,true,true,true,true,true,true], // Integration
       7: [true,true,true,true], // Sinusoidal
@@ -383,6 +385,7 @@ function start() {
     },
     chargedQuadUpgs: [],
     inLostIntegration: false,
+    dailyAchievements: [[],[]],
     
     viewedEndingCutscene: false,
     gameWon: false,
@@ -483,6 +486,14 @@ function load(num) {
       secretAchieves: {
         "white-space": "nowrap",
         "background-color": "#deadff",
+        "color": "black",
+        "padding": "5px",
+        "border-radius": "5px",
+        "border-color":"black",
+      },
+      dailyAchieves: {
+        "white-space": "nowrap",
+        "background-color": "#ff9900",
         "color": "black",
         "padding": "5px",
         "border-radius": "5px",

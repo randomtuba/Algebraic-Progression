@@ -17,6 +17,7 @@ const IntegrationPrestige = {
     if(PythagoreanTriples.hasMilestone(6)) gain = gain.pow(1.05)
     gain = gain.pow(HypercompFlune[3].eff())
     if(hasPermUpgrade(10)) gain = gain.mul(PERM_UPGRADES[10].eff())
+    gain = gain.min("1e50000000")
     gain = gain.floor()
     return gain
   },
@@ -43,6 +44,7 @@ const IntegrationPrestige = {
 
     if(hasPermUpgrade(11)) gain = gain.mul(PERM_UPGRADES[11].eff())
     
+    gain = gain.min("1e1500000")
     gain = gain.floor()
     return gain
   },
@@ -73,6 +75,22 @@ const IntegrationPrestige = {
               className:'unlock',
             });
           }
+        }
+
+        // check for daily achievements
+        if(player.dailyAchievements[0].includes('94') && !player.dailyAchievements[1].includes('94') && f.gte(5000) && player.gamePrestigeTimes[6].eq(player.prestigeTimes[6])){
+          player.dailyAchievements[1].push('94')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('94').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
+          });
+        }
+        if(player.dailyAchievements[0].includes('95') && !player.dailyAchievements[1].includes('95') && player.polynomials[7].bought.eq(0)){
+          player.dailyAchievements[1].push('95')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('95').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
+          });
         }
         
         // check if you unlocked Integration Challenge 5

@@ -25,6 +25,7 @@ function compFormula() {
     if(player.integration.challenge == 3) neg = neg.pow(0.25)
     if(player.integration.challenge == 6 && player.integration.ic6Version == 0) neg = neg.pow(0.5)
     if(hasPermUpgrade(5)) neg = neg.mul(PERM_UPGRADES[5].eff())
+    neg = neg.min("1e2.5e12")
     neg = neg.floor()
     if(player.x2.lt("1e2950") || player.rootEssence.lt("1e660")) neg = new Decimal(0)
     return neg
@@ -109,6 +110,13 @@ function goComplex(force) {
           $.notify("Achievement Unlocked: One Mechanic Bites The Dust", {
             style: 'apcurrent',
             className:'achieves',
+          });
+        }
+        if(player.dailyAchievements[0].includes('45') && !player.dailyAchievements[1].includes('45') && player.buyables[1].eq(1) && player.buyables[2].eq(0) && player.buyables[3].eq(0) && player.buyables[4].eq(0) && player.buyables[5].eq(0) && player.buyables[6].eq(0)){
+          player.dailyAchievements[1].push('45')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('45').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
           });
         }
 

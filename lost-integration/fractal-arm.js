@@ -552,7 +552,7 @@ const FractalArm = {
     respec(force) {
         if(force || confirm("Are you sure you want to respec your Fractal Arm? You will enter the Mandelbrot with no reward!")) {
             player.quaternions[0] = player.quaternions[1]
-            if(player.hypercompUpgs.dynamic.length == 0 && !hasSecretAchievement(28)) {
+            if(player.hypercompUpgs.dynamic.length == 0 && !hasSecretAchievement(28) && force == false) {
               player.secretAchievements.push('28')
               $.notify("Secret Achievement Unlocked: This Again?", {
                 style: 'apcurrent',

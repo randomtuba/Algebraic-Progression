@@ -13,34 +13,17 @@ const PythagoreanTriples = {
   maxDEF() {
     return new Decimal(10).add(PythagoreanTriples.buyables[4].eff())
   },
-  doItForMe(x) {
+  doItForMe() {
+    if(player.dailyAchievements[0].includes('163') && !player.dailyAchievements[1].includes('163') && player.pythTriples.def[1].eq(new Decimal(PythagoreanTriples.maxDEF().mul(0.6))) && player.pythTriples.def[2].eq(new Decimal(PythagoreanTriples.maxDEF().mul(0.8))) && player.pythTriples.def[3].eq(new Decimal(PythagoreanTriples.maxDEF()))){
+      player.dailyAchievements[1].push('163')
+      $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('163').name, {
+        style: 'apcurrent',
+        className:'dailyAchieves',
+      });
+    }
     player.pythTriples.def[1] = new Decimal(PythagoreanTriples.maxDEF().mul(0.6))
     player.pythTriples.def[2] = new Decimal(PythagoreanTriples.maxDEF().mul(0.8))
     player.pythTriples.def[3] = new Decimal(PythagoreanTriples.maxDEF())
-    /* let n = 1
-    let m = 2
-    while (new Decimal((m**2) + (n**2)).lt(x)) {
-      while (m > n) {
-        n++
-      }
-      m++
-      n = 1
-    }
-    player.pythTriples.def[1] = new Decimal((m**2)-(n**2))
-    player.pythTriples.def[2] = new Decimal(2*m*n)
-    player.pythTriples.def[3] = new Decimal((m**2)+(n**2))
-    if(player.pythTriples.def[3].gt(x)) {
-      m -= 1
-      while (m > n && new Decimal((m**2) + (n**2)).lt(x)) {
-        n++
-      }
-      player.pythTriples.def[3] = new Decimal((m**2)+(n**2))
-      if(player.pythTriples.def[3].gt(x)) n -= 1
-      player.pythTriples.def[1] = new Decimal((m**2)-(n**2))
-      player.pythTriples.def[2] = new Decimal(2*m*n)
-      player.pythTriples.def[3] = new Decimal((m**2)+(n**2))
-    }
-    console.log("m: " + m + ", n: " + n) */
   },
   buyables: {
     1: {

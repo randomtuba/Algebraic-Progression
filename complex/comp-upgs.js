@@ -199,7 +199,12 @@ function buyCU(x,y) {
           player.fourthRowCompUpgs[y-12] = player.fourthRowCompUpgs[y-12].add(1)
         }
       } else {
-        if(player.upgradePoints[0].gte(COMP_UPGRADES[y].cost) && !hasCU(0,y) && !(player.inLostIntegration && player.compChallenge == 10)){
+        if(tmp.shiftToggleBehavior && hasCU(0,y)) {
+          player.upgradePoints[0] = player.upgradePoints[0].add(COMP_UPGRADES[y].cost)
+          player.compUpgs[x] = singleUpgradeRespec(player.compUpgs[x],y)
+          if(!player.inLostIntegration) goComplex(true)
+          if(player.inLostIntegration) ComplexPrestigeLI.goComplex(true)
+        } else if (player.upgradePoints[0].gte(COMP_UPGRADES[y].cost) && !hasCU(0,y) && !(player.inLostIntegration && player.compChallenge == 10)) {
           player.upgradePoints[0] = player.upgradePoints[0].sub(COMP_UPGRADES[y].cost)
           if(!player.compUpgs[x].includes(y)) player.compUpgs[0].push(y)
           player.integration.usedComplexUpgrades = true
@@ -369,4 +374,13 @@ if (answer===null) return false
 let str = player.compUpgs[0].toString();
 if(hasZlabMilestone(1,5)) str += ";" + player.fourthRowCompUpgs[1] + "," + player.fourthRowCompUpgs[2] + "," + player.fourthRowCompUpgs[3] + "," + player.fourthRowCompUpgs[4];
 player.presets.info[x] = answer||str
+}
+
+function singleUpgradeRespec(x,y) {
+  let arr = x
+  let index = arr.indexOf(y);
+  if (index > -1) { // only splice array when item is found
+    arr.splice(index, 1); // 2nd parameter means remove one item only
+  }
+  return arr
 }

@@ -15,6 +15,7 @@ function updatePolynomials(diff) {
   } else {
     for(let i=2; i<10; i++){
       player.polynomials[i].amount = player.polynomials[i].amount.add(XPowers.gen(i).mul(diff))
+      player.polynomials[i].amount = player.polynomials[i].amount.min("1e250000")
     }
     if(FractalMilestones.has(12)) {
       for(let i=3; i<11; i++){

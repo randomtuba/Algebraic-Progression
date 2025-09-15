@@ -60,6 +60,8 @@ var tmp = {
   shiftToggleBehavior: false,
   maxDiff: 0,
   clickedSecretUpgrade: false,
+  versionNumber: "v3.0.2",
+  absurdMode: false,
   
   triggeredEndingCutscene: false,
   keptGoing: false,
@@ -145,7 +147,7 @@ const dev = {
       }
     }
   },
-  enterWorld(x) { // 1 enters Point Universe and resets all stats, 2 enters Lost integration and resets all stats
+  enterWorld(x) { // 1 enters Standard Equation and resets all stats, 2 enters Lost integration and resets all stats
     if(x == 1){
       restartRun()
     } else if (x == 2) {
@@ -253,6 +255,7 @@ const dev = {
     tmp.shiftToggleBehavior = false
     tmp.maxDiff = 0
     tmp.clickedSecretUpgrade = false
+    tmp.absurdMode = false
 
     tmp.triggeredEndingCutscene = false
     tmp.keptGoing = false
@@ -374,7 +377,7 @@ function buyVariable(x) {
   switch (x) {
     case "x":
       if (player.points.gte(xCost()) && (player.purchases > 0 || (player.challenge != 10 && player.compChallenge != 8))){
-        if(!hasQU(8)) player.points = player.points.sub(xCost())
+        if((!hasQU(8) && !player.inLostIntegration) || (player.inLostIntegration && !hasComplexMilestoneLI(10))) player.points = player.points.sub(xCost())
         player.x = player.x.add(1)
         if(player.inLostIntegration) player.abc[1] = player.abc[1].add(1)
         if(player.compChallenge != 8) player.purchases -= 1
@@ -443,7 +446,11 @@ function toggleOption(x){
       className:'secretAchieves',
     });
   }
-  player.options[x] = !player.options[x]
+  if(x < 69420) {
+    player.options[x] = !player.options[x]
+  } else if (confirm("Absurd Mode may be dangerous for those with photosensitive epilepsy and makes the game generally unfun to play. Are you sure you want to enable Absurd Mode? (Absurd Mode is automatically disabled upon refresh.)")) {
+    tmp.absurdMode = true
+  }
 }
 
 function notationDisplay(x) {
@@ -471,7 +478,9 @@ function mainLoop(){
   if(diff > tmp.maxDiff) tmp.maxDiff = diff
   if(tmp.maxDiff > 1e8) tmp.maxDiff = 0
   if(!player.options[9])diff = document.hidden?0:Math.min(diff,0.075)
+  let lastDailyTimer = Math.floor(player.lastTick / 86400000)
   player.lastTick = Date.now()
+  if(Math.floor(Date.now() / 86400000) > lastDailyTimer || player.dailyAchievements[0].length == 0) DailyAchievements.refresh()
   
   // UPDATE TIMES
   player.timePlayed = (Date.now() - player.startingTime) / 1000;
@@ -713,6 +722,11 @@ function mainLoop(){
   IntegrationChallenges.updateIC5() //updates integration challenge 5 completions
   if(player.inLostIntegration) updateExponentialCurve() // updates geometric sequence values for Exponential Curve
   // showAllTabs() //disables tab hiding after unlocking Synthetic Division
+
+  if(tmp.absurdMode) {
+    let absurdArr = [(Math.random() * 4) - 2,(Math.random() * 4) - 2,(Math.random() * 4) - 2,Math.random() * Math.PI * 2]
+    document.getElementsByTagName("body")[0].setAttribute('style',`transform: rotate3d(${absurdArr[0]}, ${absurdArr[1]}, ${absurdArr[2]}, ${absurdArr[3]}rad)`)
+  }
   
   if(FractalArm.hasUpgrade(221)) document.title = "The End"
   
@@ -1506,7 +1520,7 @@ player.points = trueSum.sub(priceMult.pow(player.x).sub(1).div(priceMult.sub(1))
   }
   
   // BUILDINGS
-  if(!hasQU(8)) {
+  if(!hasQU(8) && !player.inLostIntegration) {
     for (let i = 3; i > 0; i--) {
       let j = 0
       while (player.points.gte(BUYABLES[i].cost()) && j < 1000) {
@@ -1516,24 +1530,27 @@ player.points = trueSum.sub(priceMult.pow(player.x).sub(1).div(priceMult.sub(1))
     }
   } else {
     if(player.points.gte(BUYABLES[3].cost()) && player.challenge != 10 && player.compChallenge != 8 && player.inLostIntegration && hasCU(0,1)){
-      player.buyables[5] = player.points.div(1000000).max(1).log(buildingCostScaling()).floor()
+      player.buyables[5] = player.buyables[5].add(Decimal.affordGeometricSeries(player.points,1000000,buildingCostScaling(),player.buyables[5])).sub(1)
       if(!hasComplexMilestoneLI(10)) player.points = player.points.sub(BUYABLES[7].cost())
       player.buyables[5] = player.buyables[5].add(1)
     }
     if(player.points.gte(BUYABLES[3].cost()) && player.challenge != 10 && player.compChallenge != 8){
-      player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
+      if(!player.inLostIntegration) player.buyables[3] = player.points.div(15000).max(1).log(buildingCostScaling()).floor()
+      if(player.inLostIntegration) player.buyables[3] = player.buyables[3].add(Decimal.affordGeometricSeries(player.points,15000,buildingCostScaling(),player.buyables[3])).sub(1)
       if((!hasQU(8) && !player.inLostIntegration) || (player.inLostIntegration && !hasComplexMilestoneLI(10))) player.points = player.points.sub(BUYABLES[3].cost())
       player.buyables[3] = player.buyables[3].add(1)
       player.chalExponents[0] = new Decimal(0)
     }
     if(player.points.gte(BUYABLES[2].cost()) && player.challenge != 10 && player.compChallenge != 8){
-      player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
+      if(!player.inLostIntegration) player.buyables[2] = player.points.div(200).max(1).log(buildingCostScaling()).floor()
+      if(player.inLostIntegration) player.buyables[2] = player.buyables[2].add(Decimal.affordGeometricSeries(player.points,200,buildingCostScaling(),player.buyables[2])).sub(1)
       if((!hasQU(8) && !player.inLostIntegration) || (player.inLostIntegration && !hasComplexMilestoneLI(10))) player.points = player.points.sub(BUYABLES[2].cost())
       player.buyables[2] = player.buyables[2].add(1)
       player.chalExponents[0] = new Decimal(0)
     }
     if(player.points.gte(BUYABLES[1].cost()) && player.challenge != 10 && player.compChallenge != 8){
-      player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
+      if(!player.inLostIntegration) player.buyables[1] = player.points.div(25).max(1).log(buildingCostScaling()).floor()
+      if(player.inLostIntegration) player.buyables[1] = player.buyables[1].add(Decimal.affordGeometricSeries(player.points,25,buildingCostScaling(),player.buyables[1])).sub(1)
       if((!hasQU(8) && !player.inLostIntegration) || (player.inLostIntegration && !hasComplexMilestoneLI(10))) player.points = player.points.sub(BUYABLES[1].cost())
       player.buyables[1] = player.buyables[1].add(1)
       player.chalExponents[0] = new Decimal(0)
@@ -1568,16 +1585,7 @@ function updateExps(diff) {
 function updateValues() {
   // Auto-Quadratic
   if(!player.inLostIntegration) {
-    if(player.currentTab == 'quad' && document.getElementById("quadAuto")?.value == "" && player.inputValue != ""){
-      changedQAdisplay = false
-    }
-    if(!changedQAdisplay && player.currentTab == 'quad'){
-      changedQAdisplay = true
-      if(document.getElementById("quadAuto"))document.getElementById("quadAuto").value = player.inputValue
-    }
-    if(player.quadUpgs.includes(14) && document.getElementById("quadAuto") && player.currentTab == 'quad'){
-      player.inputValue = document.getElementById("quadAuto").value
-    }
+    player.inputValue = document.getElementById("quadAuto").value
   }
   if(player.inLostIntegration && player.currentTab == 'quad') {
     player.inputValue = document.getElementById("quadAuto2").value
@@ -1593,16 +1601,7 @@ function updateValues() {
   
   // Auto-Complex
   if(!player.inLostIntegration) {
-    if(player.currentTab == 'comp'&& document.getElementById("compAuto").value == "" && player.inputValue2 != ""){
-      changedCAdisplay = false
-    }
-    if(!changedCAdisplay && player.currentTab == 'comp'){
-      changedCAdisplay = true
-      if(document.getElementById("compAuto"))document.getElementById("compAuto").value = player.inputValue2
-    }
-    if(hasMilestone(12) && document.getElementById("compAuto") && player.currentTab == 'comp'){
-      player.inputValue2 = document.getElementById("compAuto").value
-    }
+    player.inputValue2 = document.getElementById("compAuto").value
   }
   if(player.inLostIntegration && player.currentTab == 'comp') {
     player.inputValue2 = document.getElementById("compAuto2").value
@@ -1616,16 +1615,7 @@ function updateValues() {
   
   // Y-Quadratic Autobuyer
   if(!player.inLostIntegration) {
-    if(player.currentTab == 'yquad' && document.getElementById("yquadAuto").value == "" && player.inputValue3 != ""){
-      changedYQAdisplay = false
-    }
-    if(!changedYQAdisplay && player.currentTab == 'yquad'){
-      changedYQAdisplay = true
-      if(document.getElementById("yquadAuto"))document.getElementById("yquadAuto").value = player.inputValue3
-    }
-    if(hasYQU(12,'bought') && document.getElementById("yquadAuto") && player.currentTab == 'yquad'){
-      player.inputValue3 = document.getElementById("yquadAuto").value
-    }
+    player.inputValue3 = document.getElementById("yquadAuto").value
   }
   if(player.inLostIntegration && player.currentTab == 'yquad') {
     player.inputValue3 = document.getElementById("yquadAuto2").value
@@ -1762,7 +1752,7 @@ function checkForEndgame() {
 
 function modifiedReality() {
   if (player.zUnlocked) {
-    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression v3.0.1"
+    if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression " + tmp.versionNumber
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/logo2.png?v=1743469008828");
     tmp.textbook.names[9] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
@@ -1774,7 +1764,7 @@ function modifiedReality() {
       }
     }, Math.random()*100);
   } else {
-    document.title = "Algebraic Progression v3.0.1"
+    document.title = "Algebraic Progression " + tmp.versionNumber
     document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/logo1.png?v=1743469004406");
     tmp.textbook.names[9] = "Coordinate Plane (v1.1)"
   }
@@ -1808,7 +1798,7 @@ function updateComplexSubtab() {
 }
 
 function showAllTabs() {
-  if(!tmp.allTabsShown && (player.polynomials[6].bought.gte(1) || IntegrationUpgrades.sdr.isBought()) && !player.viewedEndingCutscene) {
+  if(!tmp.allTabsShown && !player.viewedEndingCutscene) {
     for(let i = 1; i < 11; i++) {
       player.tabDisplays[i] = true
     }
@@ -1860,7 +1850,7 @@ function challengeHeaderDisplay() {
   if(player.challenge != 0 && player.challenge > 10) arr.push(25 + player.challenge) // RTEs have ids 36-41
   if(player.integration.challenge != 0 && player.integration.challenge > 8) arr.push(33 + player.integration.challenge) // MCs have ids 42-46
   
-  if(arr.length == 0) return (player.inLostIntegration ? "the Lost Integration" : "the Point Universe") // default case for if you are not in a challenge
+  if(arr.length == 0) return (player.inLostIntegration ? "the Lost Integration" : "the Standard Equation") // default case for if you are not in a challenge
   
   let str = "" // defines display string
   
@@ -1916,9 +1906,9 @@ function exitChallengeDisplay() {
   if(min == 0) {
     str = "Exit Square Root"
   } else if (min > 35 && min < 42) {
-    str = "Exit Root Epicenter Task"
+    str = canCompleteChallengeDisplay() + " Root Epicenter Task"
   } else if (((min > 0 && min < 27) || min > 28) || player.integration.challenge == 7) {
-    str = "Exit Challenge"
+    str = canCompleteChallengeDisplay() + " Challenge"
   } else if (min == 27) {
     str = "Exit Synthetic Division"
   } else if (min == 28 && player.integration.challenge != 7) {
@@ -1926,6 +1916,37 @@ function exitChallengeDisplay() {
   }
 
   return str
+}
+
+function canCompleteChallengeDisplay() {
+  let min = Infinity // updated to challenge w/ smallest id
+  
+  if(player.integration.challenge != 0 && player.integration.challenge > 8) min = 33 + player.integration.challenge // MCs have ids 42-46
+  if(player.challenge != 0 && player.challenge > 10) min = 25 + player.challenge // RTEs have ids 36-41
+  if(player.integration.challenge != 0 && player.integration.challenge < 8) min = 28 + player.integration.challenge // ICs have ids 29-35
+  if(player.yChallenge != 0) min = 20 + player.yChallenge // YCs have ids 21-26
+  if(player.compChallenge != 0 && player.integration.challenge != 1) min = 10 + player.compChallenge // CCs have ids 11-20
+  if(player.challenge != 0 && player.challenge < 11 && player.integration.challenge != 1) min = player.challenge // challenges have ids 1-10
+
+  let str = "" // defines display string
+  if(min > 0 && min < 11) {
+    return player.points.gte(CHALLENGES[player.challenge].goal) && !hasChallenge(player.challenge) ? "Complete" : "Exit"
+  } else if (min > 10 && min < 21) {
+    if(!player.inLostIntegration) return player.x2.gte(COMP_CHALLENGES[player.compChallenge].goals[player.compChalCompletions[player.compChallenge]]) ? "Complete" : "Exit"
+    if(player.inLostIntegration) return player.x2.gte(ComplexChallengesLI[player.compChallenge].goals[player.compChallenge]) ? "Complete" : "Exit"
+  } else if (min == 29) {
+    return player.i.gte(IntegrationChallenges[1].goal(player.compChallenge) && !player.integration.chalCompletions[1].includes(player.challenge + (player.compChallenge * 10))) ? "Complete" : "Exit"
+  } else if (min == 31) {
+    return player.i.gte(IntegrationChallenges[3].goals[player.integration.chalCompletions[3]]) ? "Complete" : "Exit"
+  } else if (min == 32) {
+    return player.y2.gte(IntegrationChallenges[4].goals[player.integration.chalCompletions[4]]) ? "Complete" : "Exit"
+  } else if (min == 34) {
+    return player.i.gte(IntegrationChallenges[6].goals[player.integration.ic6Version] && !player.integration.chalCompletions[6].includes(player.integration.ic6Version)) ? "Complete" : "Exit"
+  } else if (min > 35 && min < 42) {
+    return player.epicenterLevel > 0 && player.points.gte(RootEpicenterLI.goals[player.epicenterLevel]) && !hasChallenge(player.epicenterLevel + 10) ? "Complete" : "Exit"
+  } else {
+    return "Exit"
+  }
 }
 
 function generalExitChallenge() {
@@ -2290,6 +2311,7 @@ function subtabArray() {
 
   if(player.subtabDisplays[4][0]) arr[4].push("regular")
   if(player.subtabDisplays[4][1]) arr[4].push("secret")
+  if(player.subtabDisplays[4][2]) arr[4].push("daily")
   
   if(player.subtabDisplays[5][0]) arr[5].push("main")
   if(player.subtabDisplays[5][1]) arr[5].push("division")

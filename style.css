@@ -469,6 +469,30 @@ select,option{
   border-color: green;
 }
 
+.ic6RedComplete {
+  color: #880000;
+  background-color: #ff6666;
+  border-color: #880000;
+}
+
+.ic6GreenComplete {
+  color: #004400;
+  background-color: #00BB00;
+  border-color: #004400;
+}
+
+.ic6BlueComplete {
+  color: #000088;
+  background-color: #6666ff;
+  border-color: #000088;
+}
+
+.ic6PurpleComplete {
+  color: #880088;
+  background-color: #ff66ff;
+  border-color: #880088;
+}
+
 .compChalDefault {
   border-color: #de5d5d;
   color: #de5d5d;

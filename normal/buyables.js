@@ -102,7 +102,7 @@ const BUYABLES = {
       if(hasChargedUpgrade(2) && player.challenge != 5 && player.compChallenge != 8) base = base.mul(1.4)
       if(hasSDU(6)) base = base.mul(SYNTH_DIV_UPGRADES[6].eff())
       base = base.mul(NumberSets.sacrificeValueEffects(1))
-      if(base.gte(5e7) && player.transformations.activated == 4) base = base.div(5e7).pow(0.5).mul(5e7)
+      if(base.gte(5e7)) base = base.div(5e7).pow(0.5).mul(5e7)
       if(IntegrationUpgrades.points2.isBought()) base = base.mul(2)
       base = base.mul(Derivatives.buyables[6].eff())
       if(player.yChallenge == 2) base = new Decimal(1.3)
@@ -138,7 +138,7 @@ const BUYABLES = {
       if(hasChargedUpgrade(2) && player.challenge != 5 && player.compChallenge != 8) base = base.mul(1.4)
       if(hasSDU(6)) base = base.mul(SYNTH_DIV_UPGRADES[6].eff())
       base = base.mul(NumberSets.sacrificeValueEffects(1))
-      if(base.gte(5e7) && player.transformations.activated == 4) base = base.div(5e7).pow(0.5).mul(5e7)
+      if(base.gte(5e7)) base = base.div(5e7).pow(0.5).mul(5e7)
       if(IntegrationUpgrades.points2.isBought()) base = base.mul(2)
       base = base.mul(Derivatives.buyables[6].eff())
       if(player.yChallenge == 2) base = new Decimal(1.6)
@@ -183,7 +183,7 @@ const BUYABLES = {
 
 function buyBuyable(x) {
   if(player.points.gte(BUYABLES[x].cost()) && (player.purchases > 0 || (player.challenge != 10 && player.compChallenge != 8))){
-    if(!hasQU(8)) player.points = player.points.sub(BUYABLES[x].cost())
+    if((!hasQU(8) && !player.inLostIntegration) || (player.inLostIntegration && !hasComplexMilestoneLI(10))) player.points = player.points.sub(BUYABLES[x].cost())
     if(x < 7) player.buyables[x] = player.buyables[x].add(1)
     if(x == 7) player.buyables[5] = player.buyables[5].add(1)
     player.chalExponents[0] = new Decimal(0)

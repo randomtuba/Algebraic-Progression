@@ -38,7 +38,7 @@ const COMP_CHALLENGES = {
   },
   5: {
     title: "Constance",
-    desc() {return "You cannot gain " + (player.zUnlocked ? "X, Y, and Z" : "X and Y") + ". The way x² is gained is changed to compensate for this. You are also trapped in Root Epicenter Level √" + (player.compChalCompletions[5] >= 4 ? "-1" : player.compChalCompletions[5]+1) + ", just for fun."},
+    desc() {return "You cannot gain " + (player.zUnlocked ? "X, Y, and Z" : "X and Y") + ". The base x² gain formula is 1, so only multipliers apply. You are also trapped in Root Epicenter Level √" + (player.compChalCompletions[5] >= 4 ? "-1" : player.compChalCompletions[5]+1) + ", just for fun."},
     goals: [new Decimal("1e2620"),new Decimal("1e3800"),new Decimal("1e4650"),new Decimal("1e6200"),new Decimal("1e8000"),new Decimal("1e2.15e12"),new Decimal(Infinity)],
     rewardDesc: "Multiply the gains of sacrificed X and Y.",
     eff() {return player.compChalCompletions[5] >= 6 ? new Decimal(1e9) : Decimal.pow(1.2,player.compChalCompletions[5])},
@@ -114,6 +114,13 @@ function interactWithCC(x) {
       }
     } else if (player.unlocked == x && player.compChallenge == x) { // exit/complete complex challenge
       if(IntegrationUpgrades.ccb.isBought() && player.x2.gte(COMP_CHALLENGES[x].goals[player.compChalCompletions[x]]) && player.compChalCompletions[x] < 5) {
+        if(player.dailyAchievements[0].includes('93') && !player.dailyAchievements[1].includes('93') && estimatedCompletions(x) == 5){
+          player.dailyAchievements[1].push('93')
+          $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('93').name, {
+            style: 'apcurrent',
+            className:'dailyAchieves',
+          });
+        }
         while(player.x2.gte(COMP_CHALLENGES[x].goals[player.compChalCompletions[x]])) {
           player.compChalCompletions[x]++;
         }
@@ -134,6 +141,12 @@ function interactWithCC(x) {
       player.unlocked = 0
       player.options[4] = false
     }
+  } else if (player.integration.challenge == 1 && player.dailyAchievements[0].includes('123') && !player.dailyAchievements[1].includes('123')) {
+      player.dailyAchievements[1].push('123')
+      $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('123').name, {
+        style: 'apcurrent',
+        className:'dailyAchieves',
+      });
   }
 }
 

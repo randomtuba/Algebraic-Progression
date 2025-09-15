@@ -25,7 +25,7 @@ const UnitCircle = {
         if(player.unitCircle.quadrant == 1 || player.unitCircle.quadrant == 2) {
           return "cosecant, secant, and cotangent power production is powered ^1.05, but their effects are powered ^0.75"
         } else if (player.unitCircle.quadrant == 3 && Alterations.has(1)) {
-          return "sin(θ), cos(θ), and tan(θ) effects are powered ^1.05, and their power production is powered ^1.05"
+          return "csc(θ), sec(θ), and cot(θ) effects are powered ^1.05, and their power production is powered ^1.05"
         } else if (player.unitCircle.quadrant == 3 || player.unitCircle.quadrant == 4) {
           return "csc(θ), sec(θ), and cot(θ) effects are powered ^1.05, but their power production is powered ^0.75"
         } else {

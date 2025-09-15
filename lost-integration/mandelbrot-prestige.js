@@ -92,7 +92,7 @@ const MandelbrotPrestige = {
 const FractalMilestones = {
     1: {
         title: "∞ Complexes",
-        desc: "Unlock an autobuyer for the y² doubler and unlock Auto-Complex Challenges",
+        desc: "Unlock an autobuyer for the y² doubler, unlock Auto-Complex Challenges, and always keep Complex Milestone 10",
         requirement: Infinity,
     },
     2: {

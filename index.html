@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v3.0.1</title>
+    <title>Algebraic Progression v3.0.2</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -384,7 +384,7 @@
       <br>
       <span v-if="!player.inLostIntegration">
         <span v-if="hasUpgrade(4)">Instead of adding to your production, Functions multiply your point production.<br></span>
-        <span v-if="hasUpgrade(4) && BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2)">Multipliers to the g(n) and h(n) bases are softcapped at 50,000,000 if Dilations are currently active.<br></span>
+        <span v-if="hasUpgrade(4) && BUYABLES[5].base().gte(1e7) && hasZlabMilestone(1,2)">Multipliers to the g(n) and h(n) bases are softcapped at 50,000,000.<br></span>
         <span v-if="hasUpgrade(4)"><b>f(n) * g(n) * h(n):</b> {{format(BUYABLES[4].eff().mul(BUYABLES[5].eff()).mul(BUYABLES[6].eff()))}}</span><br><br>
         <div v-for="a in 3" v-if="BUYABLES[a+3].unl()">
           <span><b>{{BUYABLES[a+3].title}}n) = <span v-html="BUYABLES[a+3].formula()"></span></b></span><br>
@@ -442,6 +442,9 @@
       <button class="hoverable" onclick="player.notation += 1; if(player.notation > 6){player.notation = 1};">
         Notation: {{notationDisplay(player.notation)}}
       </button><br v-if="hasQU(12) || player.totali.gte(1) || player.integrations.gte(1)">
+      <button class="hoverable" onclick="toggleOption(69420)">
+        Absurd Mode: {{tmp.absurdMode ? "ON" : "OFF"}}
+      </button>
       <button class="hoverable" onclick="toggleOption(16)" v-if="hasQU(12) || player.totali.gte(1) || player.integrations.gte(1)">
         Always Show Subtabs: {{player.options[16] ? "ON" : "OFF"}}
       </button>
@@ -467,7 +470,7 @@
       <button class="hoverable" onclick="document.getElementById('confirmationsModal').showModal()" v-if="player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1)">
         Confirmations
       </button><br><br>
-      Algebraic Progression v3.0.1<br>
+      Algebraic Progression {{tmp.versionNumber}}<br>
       Made by randomtuba<br>
       Thanks to downvoid, gapples2, and DEMEMZEA for bugfixing and some QoL mechanics.<br>
       Thanks to Yhvr for helping with the upgrade trees.<br>
@@ -489,7 +492,7 @@
           You have bought a total of {{formatWhole(player.buyables[1].add(player.buyables[2]).add(player.buyables[3]))}} {{player.inLostIntegration ? "Generators" : "Buildings"}}.<br>
           <span v-if="hasUpgrade(4) || player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1)">You have bought {{player.inLostIntegration ? "" : "a total of"}} {{formatWhole(player.buyables[4].add(player.inLostIntegration ? 0 : player.buyables[5]).add(player.inLostIntegration ? 0 : player.buyables[6]))}} {{player.inLostIntegration ? "Generator Multiplier upgrades" : "Functions"}}.<br></span>
           You have played this game for {{formatTime(player.timePlayed)}}.<br>
-          <span v-if="player.integration.temporalPlane.unlocked">You have spent {{formatTime(player.gameTimePlayed)}} in the Point Universe.<br></span>
+          <span v-if="player.integration.temporalPlane.unlocked">You have spent {{formatTime(player.gameTimePlayed)}} in the Standard Equation.<br></span>
           You have produced {{format(player.totalPoints)}} points in total.<br>
           <span v-if="player.integrations.gte(1)">You have produced {{format(player.totalPointsThisIntegration)}} points this {{player.inLostIntegration ? "Mandelbrot" : "Integration"}}.<br></span>
           You {{player.inLostIntegration ? "saw" : "have seen"}} {{formatWhole(player.newsMessagesSeen)}} news ticker message{{player.newsMessagesSeen != 1 ? "s" : ""}}.<br>
@@ -527,7 +530,7 @@
           You have spent {{formatTime(player.gamePrestigeTimes[4])}} in this Y-Quadratic.<span v-if="player.integration.temporalPlane.unlocked"> ({{simpleFormatTime(player.prestigeTimes[4])}} real time)</span><br>
           You have bought {{player.yQuadUpgs[0].length}} Y-Quadratic Upgrade{{player.yQuadUpgs[0].length != 1 ? "s" : ""}}.<br>
           <span v-if="(player.varSynth.unlocked[2] || player.integrations.gte(1)) && !player.inLostIntegration">You have bought a total of {{formatWhole(player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]))}} Revolution Buyable{{player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]).gt(1) || player.varSynth.iExpBuyables[1].add(player.varSynth.iExpBuyables[2]).lt(1) ? "s" : ""}}.<br></span>
-          <span v-if="player.yChalsUnlocked[1] || player.integrations.gte(1)">You have completed a total of {{formatWhole(player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]))}} Y-Challenge tier{{player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]).gt(1) || player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]).lt(1) ? "s" : ""}}.<br></span>
+          <span v-if="player.yChalsUnlocked[1] || player.integrations.gte(1)">You have completed a total of {{formatWhole(player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]))}} Y{{player.inLostIntegration ? " " : "-"}}Challenge tier{{player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]).gt(1) || player.yChalCompletions[1].add(player.yChalCompletions[2]).add(player.yChalCompletions[3]).add(player.yChalCompletions[4]).add(player.yChalCompletions[5]).add(player.yChalCompletions[6]).lt(1) ? "s" : ""}}.<br></span>
           <span v-if="player.yPolynomials[3].bought.gte(1)">You have bought a total of {{formatWhole(player.yPolynomials[3].bought.add(player.yPolynomials[4].bought).add(player.yPolynomials[5].bought).add(player.yPolynomials[6].bought).add(player.yPolynomials[7].bought).add(player.yPolynomials[8].bought).add(player.yPolynomials[9].bought).add(player.yPolynomials[10].bought))}} Y-Polynomial{{player.yPolynomials[3].bought.add(player.yPolynomials[4].bought).add(player.yPolynomials[5].bought).add(player.yPolynomials[6].bought).add(player.yPolynomials[7].bought).add(player.yPolynomials[8].bought).add(player.yPolynomials[9].bought).add(player.yPolynomials[10].bought) ? "s" : ""}}.<br></span>
           <br>
         </div>
@@ -658,21 +661,26 @@
       <div v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
         <button id="achsubtab1" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'regular'" v-if="player.subtabDisplays[4][0]">Achievements</button>
         <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'secret'" v-if="player.subtabDisplays[4][1]">Secret Achievements</button>
+        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'daily'" v-if="player.subtabDisplays[4][2]">Daily Achievements</button>
       </div><br v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
       <div id="tab4-1disp" v-if="player.currentSubtab[4] == 'regular'"> <!--- REGULAR ACHIEVEMENTS !--->
       {{player.achievements.length}}/90 Achievements completed ({{format(player.achievements.length / 0.9)}}%)<br><br>
       <button class="hoverable" onclick="toggleOption(25)">
         Hide Completed Achievement Rows: {{player.options[25] ? "ON" : "OFF"}}
+      </button><br>
+      <button class="hoverable" onclick="toggleOption(30)">
+        Hide Obscured Achievement Rows: {{player.options[30] ? "ON" : "OFF"}}
       </button><br><br>
       <table class="autocenter">
-        <tr v-for="a in player.achievements.length >= 90 ? 18 : Math.max(Math.floor(player.achievements.length/5)+1,player.integrations.gte(1) ? 13 : 1)">
+        <tr v-for="a in !player.options[30] ? 18 : (player.achievements.length >= 90 ? 18 : Math.max(Math.floor(player.achievements.length/5)+1,player.integrations.gte(1) ? 13 : 1))">
           <td v-for="b in 5" :class="{achievementLocked:!hasAchievement(a*5-5+b),achievementUnlocked:hasAchievement(a*5-5+b),achievementGolden:player.achievements.length == 90}" v-if="!(player.options[25] && player.achievements.includes((a*5-5+1).toString()) && player.achievements.includes((a*5-5+2).toString()) && player.achievements.includes((a*5-5+3).toString()) && player.achievements.includes((a*5-5+4).toString()) && player.achievements.includes((a*5).toString()))">
-            <b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc()}}
+            <span v-if="player.achievements.length >= 90 ? 18 : Math.max(Math.floor(player.achievements.length/5)+1,player.integrations.gte(1) ? 13 : 1) >= a"><b><span style="font-size:20px">{{a*5-5+b == 19 ? ACHIEVEMENTS[a*5-5+b].name() : ACHIEVEMENTS[a*5-5+b].name}}</span></b><br>{{ACHIEVEMENTS[a*5-5+b].desc()}}</span>
+            <span v-if="Math.max(Math.floor(player.achievements.length/5)+1,player.integrations.gte(1) ? 13 : 1) < a"><b><span style="font-size:20px">???</span></b><br>???</span>
           </td>
         </tr>
       </table>
       </div>
-      <div id="tab4-2disp" v-if="player.currentSubtab[4] == 'secret'"> <!--- SECRET ACHIEVEMENTS !--->
+    <div id="tab4-2disp" v-if="player.currentSubtab[4] == 'secret'"> <!--- SECRET ACHIEVEMENTS !--->
       {{player.secretAchievements.length}}/30 Secret Achievements completed ({{format(player.secretAchievements.length / 0.3)}}%)<br><br>
       <table class="autocenter">
         <tr v-for="a in 6">
@@ -681,6 +689,19 @@
           </td>
         </tr>
       </table>
+      </div>
+      <div id="tab4-3disp" v-if="player.currentSubtab[4] == 'daily'"> <!--- DAILY ACHIEVEMENTS !--->
+      Time until daily achievements reset: {{simpleFormatTime((Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), 24, 0, 0) - Date.now()) / 1000)}}<br><br>
+      <table class="autocenter">
+        <tr>
+          <td v-for="a in 3" :class="{achievementLocked:!player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]),achievementUnlocked:player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]),achievementGolden:player.dailyAchievements[1].length == 3}">
+            <b><span style="font-size:20px">{{DailyAchievements.standardize(player.dailyAchievements[0][a-1]).name}}</span></b><br>{{player.dailyAchievements[1].length >= a-1 || player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]) || player.dailyAchievements[0][a-1] > 170 ? DailyAchievements.standardize(player.dailyAchievements[0][a-1]).desc() : "???"}}
+          </td>
+        </tr>
+      </table><br>
+      Daily achievements are randomly generated every 24 hours, and refresh at midnight UTC. (This means the timer is the same for everyone.)<br>
+      You are not expected to complete all 3 daily achievements in 24 hours every day, and this could potentially be dangerous for your health.<br>
+      Not all sections of the game have daily achievements for them and this mechanic is an experimental feature, so please report any issues you encounter!
       </div>
     </div>
     <div id="tab5disp" v-if="player.currentTab == 'tbook'"> <!--- TEXTBOOK !--->
@@ -702,7 +723,8 @@
         Buying an X Upgrade will remove 50% of the X Upgrade's cost (rounded down) from your X amount.<br>
         <span v-if="player.varSynth.unlocked[0]">
         You have charged {{player.varSynth.chargedXUpgs.length}}/{{player.varSynth.totalxy.min(8).max(player.varSynth.chargedXUpgs.length)}} X Upgrades. Charging an X Upgrade costs 1 xy.<br>
-        X Upgrade charges can be respecced on Y-Quadratic, if desired.<br>
+        X Upgrade charges can be respecced on Y-Quadratic, if desired.<br><br>
+        Click a charged upgrade while holding <b>Shift</b> to respec it automatically.<br><br>
         <button class="hoverable" onclick="toggleOption(13)">Respec Charged X Upgrades on Y-Quadratic: {{player.options[13] ? "ON" : "OFF"}}</button>
         <button class="hoverable" v-if="IntegrationUpgrades.cxu.isBought()" onclick="toggleOption(21)">Autobuy Charged X Upgrades: {{player.options[21] ? "ON" : "OFF"}}</button>
         <br><br>
@@ -736,8 +758,9 @@
         <br><br>
         You have <span class="polyText">{{formatWhole(player.gamePoints)}}</span> game point{{player.gamePoints.eq(1) ? "" : "s"}} (GP).<br>
         You gain 2 game points every time you click "Play Again" at the end of the game.<br>
-        Game points can be spent on Permanent Upgrades that are <i>not</i> refundable, and are disabled in Speedrun Mode!<br>
+        Game points can be spent on Permanent Upgrades that are <i>not</i> refundable! In Speedrun Mode, you need Permanent Upgrades inactive to quality for a WR.<br>
         Permanent Upgrade effects are also unaffected by softcaps.<br><br>
+        <button class="hoverable" onclick="toggleOption(31)">Permanent Upgrades Active: {{player.options[31] ? "ON" : "OFF"}}</button><br><br>
         <b>Permanent Upgrades:</b><br>
         <table class="autocenter">
         <tr v-for="a in 4">
@@ -780,8 +803,12 @@
       <span v-if="FractalMilestones.has(10)"><button class="hoverable" onclick="player.integration.autobuyers.polyBuyables = !player.integration.autobuyers.polyBuyables">X Powers Buyables Autobuyer: {{player.integration.autobuyers.polyBuyables ? "ON" : "OFF"}}</button><br></span>
       <span v-if="FractalMilestones.has(10)"><button class="hoverable" onclick="player.integration.autobuyers.polyFactoring = !player.integration.autobuyers.polyFactoring">X Powers Boosters Autobuyer: {{player.integration.autobuyers.polyFactoring ? "ON" : "OFF"}}</button><br></span>
     </div>
-    <div id="tab7disp" v-if="player.currentTab == 'quad' && !player.inLostIntegration"> <!--- QUADRATIC !--->
-      You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br><br>
+    <div id="tab7disp" :style="{ display: player.currentTab == 'quad' && !player.inLostIntegration ? 'block' : 'none' }"> <!--- QUADRATIC !--->
+      You have <span class="quadText">{{formatWhole(player.x2)}}</span> x<sup>2</sup>.<br>
+      <span v-if="player.x.gte(xFactorSoftcapStart())" style="color:red">
+        x counts less towards the base x<sup>2</sup> gain formula past {{format(xFactorSoftcapStart())}}x due to the X Factor Softcap!<br>
+        (Effective X: {{format(player.x.div(xFactorSoftcapStart()).pow(xFactorSoftcapStrength()).mul(xFactorSoftcapStart()))}})<br>
+      </span><br>
       <span v-if="Alterations.has(2)">
         You have <span class="quadFormulaText">{{formatWhole(player.parabolas)}}</span> parabolas, adding {{format(Decimal.mul(1e11,player.parabolas))}} to the X Factor Softcap start and adding {{format(xFactorSoftcapStrength().sub(0.45))}} to the X Factor Softcap strength exponent.<br>
         <button style="width: 130px; height: 90px;" :class="{buildingLocked:player.x2.lt(parabolaCost()),parabolaBuyable:player.x2.gte(parabolaCost())}" onclick="if(player.x2.gte(parabolaCost())){player.parabolas = player.parabolas.add(1)}">
@@ -818,7 +845,8 @@
         </span>
         <span v-if="Alterations.has(4)">
           You have charged {{player.chargedQuadUpgs.length}}/{{player.y2z2.total.min(20)}} Quadratic Upgrades. Charging an Quadratic Upgrade costs 1 y<sup>2</sup>z<sup>2</sup>.<br>
-          Quadratic Upgrade charges can be respecced on Integration/Sinusoidal, if desired.<br>
+          Quadratic Upgrade charges can be respecced on Integration/Sinusoidal, if desired.<br><br>
+          Click a charged upgrade while holding <b>Shift</b> to respec it automatically.<br><br>
           <button class="hoverable" onclick="toggleOption(29)">Respec Charged Quadratic Upgrades on Integration/Sinusoidal: {{player.options[29] ? "ON" : "OFF"}}</button>
           <br><br>
           You have {{formatWhole(player.y2z2.amount)}} y<sup>2</sup>z<sup>2</sup>.<br>
@@ -936,7 +964,7 @@
         You have <span class="quadFormulaText">{{format(player.quadPower)}}</span> quadratic power. ({{format(qpGen())}}/sec)<br>
         <span v-if="hasZlabMilestone(1,3)">You have <span class="compText">{{format(player.imagPower)}}</span> imaginary power. ({{format(ipGen())}}/sec)<br></span>
         To generate Quadratic Power, a, b, and c when plugged into the <b>Quadratic Formula</b> must return a {{!hasMilestone(19) ? "real" : ""}}<s v-if="hasMilestone(19)" class="nonrealSolution">real</s> solution.<br>
-        (The one I'm talking about is (-b±√(b²-4ac)) / 2a)<br>
+        (The formula being referred to is (-b±√(b²-4ac)) / 2a, so try to have b<sup>2</sup> - 4ac ≥ 0)<br>
         <span v-if="hasZlabMilestone(1,3)">To generate Imaginary Power, a, b, and c must return a nonreal solution instead.<br></span>
         Base QP{{hasZlabMilestone(1,3) ? " and IP" : ""}} Generation Formula{{hasZlabMilestone(1,3) ? "s" : ""}}: (bc)<sup>a/2 - 0.5</sup><br>
         <span :class="{realSolution: (player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3]))), nonrealSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && !hasMilestone(19), realishSolution: (player.abc[2].pow(2).round().lt(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) || (player.abc[1].eq(0))) && hasMilestone(19)}">{{player.abc[2].pow(2).round().gte(new Decimal(4).mul(player.abc[1]).mul(player.abc[3])) && player.abc[1].gt(0) ? "a, b, and c return a real solution!" : (hasMilestone(19) ? "a, b, and c return a nonreal solution, but that's okay somehow!" : "a, b, and c return a nonreal solution...")}}</span><br><br>
@@ -955,7 +983,7 @@
           <td v-for="a in 4">
             <button style="width: 150px; height: 175px;" :class="{upgradeLocked:player.quadPower.lt(QP_BUYABLES[a].cost()),qpBuyable:player.quadPower.gte(QP_BUYABLES[a].cost()),upgradeBought:a==1&&player.quadBuyables[1].eq(hasZlabMilestone(3,2) ? (IntegrationUpgrades.points8.isBought() ? (hasChargedQU(6) ? 8 : 6) : 5) : 4),tooltip:QP_BUYABLES[a].cost().sub(player.quadPower).div(qpGen()).gt(1) && QP_BUYABLES[a].cost().lt(1e100)}" @click="buyQPBuyable(a)">
               <b>{{QP_BUYABLES[a].title}}</b><br>
-              {{a == 2 ? QP_BUYABLES[a].desc() : QP_BUYABLES[a].desc}}<br>
+              {{a == 2 || a == 3 ? QP_BUYABLES[a].desc() : QP_BUYABLES[a].desc}}<br>
               Amount: {{formatWhole(player.quadBuyables[a])}}{{a == 1 ? (hasZlabMilestone(3,2) ? (IntegrationUpgrades.points8.isBought() ? (hasChargedQU(6) ? "/8" : "/6") : "/5") : "/4") : ""}}{{player.compPlane[1][1].gte(9) && new Decimal(a).gt(1) && new Decimal(a).lt(4) ? " + " + formatWhole(compPlaneEffects(1)) : ""}}<br>
               Cost: {{QP_BUYABLES[a].cost().eq(Infinity) ? "Maxed!" : format(QP_BUYABLES[a].cost())}}<br>
               Effect: {{QP_BUYABLES[a].effectDisplay()}}
@@ -1096,7 +1124,7 @@
         </table>
       </div>
     </div>
-    <div id="tab8disp" v-if="player.currentTab == 'yquad' && !player.inLostIntegration"> <!--- Y-QUADRATIC !--->
+    <div id="tab8disp" :style="{ display: player.currentTab == 'yquad' && !player.inLostIntegration ? 'block' : 'none' }"> <!--- Y-QUADRATIC !--->
       You have <span class="yquadText">{{formatWhole(player.y2)}}</span> y<sup>2</sup>.<br><br>
         <div :style="{ display: hasYQU(12,'bought') ? 'block' : 'none' }">
         Y-Quadratic Automator: Go Y-Quadratic {{player.integration.autobuyers.yQuadraticAutomatorMode == 1 ? 'after' : 'when reaching'}} <input id="yquadAuto" v-bind:value="player.inputValue3" size="5"> <span v-html="player.integration.autobuyers.yQuadraticAutomatorMode != 0 ? (player.integration.autobuyers.yQuadraticAutomatorMode == 2 ? 'times your unspent y<sup>2</sup>' : 'seconds') : 'y<sup>2</sup>'"></span> <button onclick="player.compAutobuyers[12] = !player.compAutobuyers[12]" class="hoverable">{{player.compAutobuyers[12] ? 'ON' : 'OFF'}}</button>
@@ -1347,7 +1375,7 @@
         </span>
       </div>
     </div>
-    <div id="tab9disp" v-if="player.currentTab == 'comp' && !player.inLostIntegration"> <!--- COMPLEX !--->
+    <div id="tab9disp" :style="{ display: player.currentTab == 'comp' && !player.inLostIntegration ? 'block' : 'none' }"> <!--- COMPLEX !--->
       You have <span class="compText">{{formatWhole(player.i)}}</span> i.<br><br>
       <span v-if="player.wUnlocked">
         You have <span class="decticText">{{format(player.j)}}</span> j<span v-if="Alterations.has(2)"> ({{format(HypercompUpgrades.jGen())}}/sec)</span> and <span class="decticText">{{format(player.k)}}</span> k<span v-if="Alterations.has(2)"> ({{format(HypercompUpgrades.kGen())}}/sec)</span>.<br><br>
@@ -1436,6 +1464,7 @@
         </button><br><br></span>
       Use the 3 buttons above to purchase Upgrade Points with some of your previous currencies.<br>
       Upgrade points are spent on the 12 Complex Upgrades that can be respecced.<br>
+      Click a bought upgrade while holding <b>Shift</b> to respec it automatically.<br>
       <span v-if="hasZlabMilestone(1,5)" class="realSolution">
         Fourth-row Complex Upgrades can be repeatedly bought to increase their effects.<br>
       </span><br>
@@ -1505,6 +1534,7 @@
         </table>
         <br>Use the 3 buttons above to purchase quaternions with some of your previous currencies.<br>
         Quaternions are spent on the 16 Hypercomplex Upgrades that can be respecced.<br>
+        Click a bought upgrade while holding <b>Shift</b> to respec it automatically.<br>
         <span v-if="!BasicHypercompUpgrades.has(8)">Note: Generation of j and k is not affected by global speed.<br></span><br>
         <b>Basic Hypercomplex Upgrades:</b>
         <table class="autocenter">
@@ -1566,7 +1596,7 @@
           <span v-if="ccTiers() < 50">
             <br>
             <b>Time until next automatic CC completion:</b> {{formatTime(player.integration.autoCCTimer)}} (real time)<br>
-            <b>Time until all CC tiers completed:</b> {{formatTime((maxAutoCCTimer()*((player.inLostIntegration?24:50)-ccTiers()))+player.integration.autoCCTimer)}} (real time)
+            <b>Time until all CC tiers completed:</b> {{formatTime((maxAutoCCTimer()*((player.inLostIntegration?23:49)-ccTiers()))+player.integration.autoCCTimer)}} (real time)
           </span><br><br>
         </span>
         <button class="hoverable" onclick="toggleOption(4)">Respec CC on Complex: {{player.options[4] ? "ON" : "OFF"}}</button><br><br>
@@ -1711,12 +1741,13 @@
           Buy an upgrade point<br>
           Cost: {{format(upgradePointCost(2))}} Reset Points
         </button></td>
-        <td><button :class="{compUpgradeLocked:player.i.lt(upgradePointCost(3)),compUpgradeBuyable:player.i.gte(upgradePointCost(3))}" style="height: 125px; width: 175px" onclick="buyUP(3)">
+        <td><button :class="{compUpgradeLocked:player.i.lt(upgradePointCost(3)) || (player.complexes.lt(2) && player.integrations.lt(1)),compUpgradeBuyable:player.i.gte(upgradePointCost(3)) && (player.complexes.gte(2) || player.integrations.gte(1))}" style="height: 125px; width: 175px" onclick="buyUP(3)">
           Buy an upgrade point<br>
           Cost: {{formatWhole(upgradePointCost(3))}} i<br v-if="player.complexes < 2">
           <span v-if="player.complexes.lt(2) && player.integrations.lt(1)" style="color:red;">(2 Complexes required)</span>
         </button></td>
-        </tr></table><br>
+        </tr></table><br><br>
+        Click a bought upgrade while holding <b>Shift</b> to respec it automatically.<br><br>
         <b>Basic Complex Upgrades:</b>
         <table class="autocenter">
         <tr v-for="a in 3">
@@ -2262,6 +2293,9 @@
           <button class="hoverable" onclick="player.compAutobuyers[15] = !player.compAutobuyers[15]" v-if="hasSDU(5)">
             Auto Revolution Buyables: {{player.compAutobuyers[15] ? "ON" : "OFF"}}
           </button>
+          <button class="hoverable" onclick="toggleOption(21)" v-if="IntegrationUpgrades.cxu.isBought()">
+            Autobuy Charged X Upgrades: {{player.options[21] ? "ON" : "OFF"}}
+          </button>
           <button class="hoverable" onclick="player.integration.autobuyers.xy = !player.integration.autobuyers.xy" v-if="IntegrationUpgrades.yquadratic7.isBought()">
             Auto-xy: {{player.integration.autobuyers.xy ? "ON" : "OFF"}}
           </button>
@@ -2270,13 +2304,13 @@
           </button>
           <button class="hoverable" onclick="player.integration.autobuyers.yPolynomials[4] = !player.integration.autobuyers.yPolynomials[4]" v-if="Alterations.has(1)">
             Auto-y<sup>4</sup>: {{player.integration.autobuyers.yPolynomials[4] ? "ON" : "OFF"}}
-          </button>
+          </button><br>
           <button class="hoverable" onclick="player.integration.autobuyers.yPolynomials[5] = !player.integration.autobuyers.yPolynomials[5]" v-if="Alterations.has(1)">
             Auto-y<sup>5</sup>: {{player.integration.autobuyers.yPolynomials[5] ? "ON" : "OFF"}}
           </button>
           <button class="hoverable" onclick="player.integration.autobuyers.yPolynomials[6] = !player.integration.autobuyers.yPolynomials[6]" v-if="Alterations.has(1)">
             Auto-y<sup>6</sup>: {{player.integration.autobuyers.yPolynomials[6] ? "ON" : "OFF"}}
-          </button><br>
+          </button>
           <button class="hoverable" onclick="player.integration.autobuyers.yPolynomials[7] = !player.integration.autobuyers.yPolynomials[7]" v-if="Alterations.has(1)">
             Auto-y<sup>7</sup>: {{player.integration.autobuyers.yPolynomials[7] ? "ON" : "OFF"}}
           </button>
@@ -2448,13 +2482,16 @@
         <table class="autocenter">
         <tr v-for="a in 4">
           <td v-for="b in 2">
-            <button style="width: 360px; height: 180px;" @click="IntegrationChallenges.start(a*2-2+b)" :class="{challengeDefault: player.integration.challenge != a*2-2+b, challengeIncomplete: player.integration.challenge == a*2-2+b, challengeComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b,tooltip: a*2-2+b == 2 || a*2-2+b == 5}" v-if="IntegrationChallenges[a*2-2+b].unlocked()">
+            <button style="width: 360px; height: 180px;" @click="IntegrationChallenges.start(a*2-2+b)" :class="{challengeDefault: player.integration.challenge != a*2-2+b, challengeIncomplete: player.integration.challenge == a*2-2+b, challengeComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b && a*2-2+b != 6, ic6RedComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b && a*2-2+b == 6 && player.integration.ic6Timer < 10, ic6GreenComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b && a*2-2+b == 6 && player.integration.ic6Timer >= 10 && player.integration.ic6Timer < 20, ic6BlueComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b && a*2-2+b == 6 && player.integration.ic6Timer >= 20 && player.integration.ic6Timer < 30, ic6PurpleComplete: IntegrationChallenges.hasChallenge(a*2-2+b) && player.integration.challenge != a*2-2+b && a*2-2+b == 6 && player.integration.ic6Timer >= 30, tooltip: a*2-2+b == 2 || a*2-2+b == 5}" v-if="IntegrationChallenges[a*2-2+b].unlocked()">
               <b>{{IntegrationChallenges[a*2-2+b].title}}</b><br>
               <span v-html="IntegrationChallenges[a*2-2+b].desc()"></span><br>
               Goal: {{IntegrationChallenges[a*2-2+b].goalDesc()}}<br>
               Reward: {{a*2-2+b == 6 ? IntegrationChallenges[a*2-2+b].rewardDesc() : IntegrationChallenges[a*2-2+b].rewardDesc}}<br>
               {{a*2-2+b != 6 && a*2-2+b != 8 ? "Currently: " + IntegrationChallenges[a*2-2+b].effectDisplay() : ""}}<br v-if="a*2-2+b != 6 && a*2-2+b != 8">
               Completions: {{a*2-2+b == 1 || a*2-2+b == 6 ? player.integration.chalCompletions[a*2-2+b].length : player.integration.chalCompletions[a*2-2+b]}}/{{a*2-2+b == 7 ? "∞" : IntegrationChallenges[a*2-2+b].maxCompletions}}
+              <span v-if="a*2-2+b == 6">
+                <br>Next variant in {{format(10 - (player.integration.ic6Timer % 10))}}s
+              </span>
               <span class="tooltiptext" style="width:300px;margin-left:-150px;" v-if="a*2-2+b == 2">
                 <b>Challenge Rewards:</b>
                 <span v-if="player.integration.chalCompletions[2] == 0">
@@ -2474,28 +2511,34 @@
               </span>
               <span class="tooltiptext" style="width:300px;margin-left:-150px;" v-if="a*2-2+b == 5">
                 Reach {{format(IntegrationChallenges[5].goal())}} i while following the requirements below:
-                <span v-if="player.integration.chalCompletions[5] >= 0">
-                  <br><br>While having no rebuyable Synthetic Division Upgrades
+                <span v-if="player.integration.chalCompletions[5] >= 0" :class="{nonrealSolution:!(player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0)),realSolution:player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0)}">
+                  <br><br>While having no rebuyable Synthetic Division Upgrades <b>({{player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0) ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 1">
-                  <br><br>While having no Z-Empowerments
+                <span v-if="player.integration.chalCompletions[5] >= 1" :class="{nonrealSolution:!player.zlab.empowerments.eq(0),realSolution:player.zlab.empowerments.eq(0)}">
+                  <br>While having no Z-Empowerments <b>({{player.zlab.empowerments.eq(0) ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 2">
-                  <br><br>While not purchasing Y-Intercept
+                <span v-if="player.integration.chalCompletions[5] >= 2" :class="{nonrealSolution:!player.b.eq(0),realSolution:player.b.eq(0)}">
+                  <br>While not purchasing Y-Intercept <b>({{player.b.eq(0) ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 3">
-                  <br><br>While having less than 4 Hypercomplex Upgrades bought
+                <span v-if="player.integration.chalCompletions[5] >= 3" :class="{nonrealSolution:player.hypercompUpgs.dynamic.length >= 4,realSolution:player.hypercompUpgs.dynamic.length < 4}">
+                  <br>While having less than 4 Hypercomplex Upgrades bought <b>({{player.hypercompUpgs.dynamic.length < 4 ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 4">
-                  <br><br>While having Temporal Plane inactive
+                <span v-if="player.integration.chalCompletions[5] >= 4" :class="{nonrealSolution:!(player.gamePrestigeTimes[6].lt(3.1536e13) || player.gamePrestigeTimes[8].lt(3.1536e13)),realSolution:player.gamePrestigeTimes[6].lt(3.1536e13) || player.gamePrestigeTimes[8].lt(3.1536e13)}">
+                  <br>While having Temporal Plane inactive <b>({{player.gamePrestigeTimes[6].lt(3.1536e13) || player.gamePrestigeTimes[8].lt(3.1536e13) ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 5">
-                  <br><br>While not purchasing x<sup>10</sup>
+                <span v-if="player.integration.chalCompletions[5] >= 5" :class="{nonrealSolution:player.polynomials[10].amount.gte(1),realSolution:player.polynomials[10].amount.lt(1)}">
+                  <br>While not purchasing x<sup>10</sup> <b>({{player.polynomials[10].amount.lt(1) ? "✔" : "✘"}})</b>
                 </span>
-                <span v-if="player.integration.chalCompletions[5] >= 6">
-                  <br><br>While in Integration Challenge 3
+                <span v-if="player.integration.chalCompletions[5] >= 6" :class="{nonrealSolution:player.integration.challenge != 3,realSolution:player.integration.challenge == 3}">
+                  <br>While in Integration Challenge 3 <b>({{player.integration.challenge == 3 ? "✔" : "✘"}})</b>
                 </span>
               </span>
+            </button><br v-if="a*2-2+b == 5 || a*2-2+b == 6">
+            <button class="hoverable" v-if="a*2-2+b == 5" onclick="IntegrationChallenges.attemptToFufillReqs()">
+              Attempt to Fufill Requirements
+            </button>
+            <button class="hoverable" v-if="a*2-2+b == 6" onclick="player.integration.ic6Timer += 10">
+              Manually Switch IC6 Variant
             </button>
           </td>
         </tr>
@@ -2654,6 +2697,7 @@
         Endure harder Mandelbrots and reach the goal to get rewards!<br>
         Each Mandelbrot Challenge must be unlocked on the Fractal Arm with fractal spirals.<br>
         Once you generate 100% Challenge Power within a Mandelbrot Challenge, it is completed. Try to complete it as fast as you can!<br>
+        (Note: The more points you have while in a Mandelbrot Challenge, the faster that Challenge Power will generate!)<br>
         Click a Mandelbrot Challenge to enter it. Click it again to exit it.<br>
         <i>Note: Entering the Mandelbrot will exit you from your current Mandelbrot Challenge.</i><br><br>
         <table class="autocenter">
@@ -2753,14 +2797,14 @@
         <div :style="{ display: player.pythTriples.unlocked ? 'block' : 'none' }">
           You have <span class="sinText">{{format(player.pythTriples.essence)}}</span> pythagorean essence. ({{format(PythagoreanTriples.peGen())}}/sec)<br>
           <span v-if="!BasicHypercompUpgrades.has(8)">Generation of PE is not affected by global speed.<br></span>
-          To generate Pythagorean Essence (PE), d, e, and f must return a valid pythagorean triple.<br>
-          Base PE Generation Formula: (ef)<sup>d/4 - 0.25</sup><br>
+          To generate Pythagorean Essence (PE), d, e, and f must return a valid pythagorean triple (d<sup>2</sup> + e<sup>2</sup> = f<sup>2</sup>).<br>
+          Base PE Generation Formula: (de)<sup>f/4 - 0.25</sup><br>
           <span :class="{realSolution:player.pythTriples.def[1].pow(2).round().add(player.pythTriples.def[2].pow(2).round()).eq(player.pythTriples.def[3].pow(2).round()) && player.pythTriples.def[1] != 0 && player.pythTriples.def[2] != 0 && player.pythTriples.def[3] != 0,nonrealSolution:!player.pythTriples.def[1].pow(2).round().add(player.pythTriples.def[2].pow(2).round()).eq(player.pythTriples.def[3].pow(2).round()) || (player.pythTriples.def[1] == 0 || player.pythTriples.def[2] == 0 || player.pythTriples.def[3] == 0)}">{{player.pythTriples.def[1].pow(2).round().add(player.pythTriples.def[2].pow(2).round()).eq(player.pythTriples.def[3].pow(2).round()) && player.pythTriples.def[1] != 0 && player.pythTriples.def[2] != 0 && player.pythTriples.def[3] != 0 ? "d, e, and f return a valid pythagorean triple!" : (player.pythTriples.def[1] == 0 || player.pythTriples.def[2] == 0 || player.pythTriples.def[3] == 0 ? "d, e, or f cannot be zero." : "d, e, and f do not return a valid pythagorean triple...")}}</span><br><br>
           <div v-for="a in 3">
             <span>{{tmp.letters[a+3]}}: {{formatWhole(player.pythTriples.def[a])}}/{{formatWhole(PythagoreanTriples.maxDEF())}}   </span>
             <button class="hoverable" @click="if(player.pythTriples.def[a].lt(PythagoreanTriples.maxDEF())){player.pythTriples.def[a] = player.pythTriples.def[a].add(1)};">+</button><button class="hoverable" @click="if(player.pythTriples.def[a].gt(0)){player.pythTriples.def[a] = player.pythTriples.def[a].sub(1)}">-</button><button class="hoverable" @click="player.pythTriples.def[a] = new Decimal(0)">0</button><button class="hoverable" @click="player.pythTriples.def[a] = PythagoreanTriples.maxDEF()">max</button><br>
           </div>
-          <button class="hoverable" onclick="PythagoreanTriples.doItForMe(PythagoreanTriples.maxDEF())">Do it for me!</button>
+          <button class="hoverable" onclick="PythagoreanTriples.doItForMe()">Do it for me!</button>
           <button v-if="PythagoreanTriples.hasMilestone(9)" onclick="player.integration.autobuyers.autoAdjust = !player.integration.autobuyers.autoAdjust" class="hoverable">
             Auto-Adjust: {{player.integration.autobuyers.autoAdjust ? "ON" : "OFF"}}
           </button><br><br>
@@ -2906,7 +2950,8 @@
         </span><br>
         Achievements: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[4] = !player.tabDisplays[4]">{{player.tabDisplays[4] ? "SHOWN" : "HIDDEN"}}</button><br>
         <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][0] = !player.subtabDisplays[4][0]">Achievements: {{player.subtabDisplays[4][0] ? "SHOWN" : "HIDDEN"}}</button> 
-        <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][1] = !player.subtabDisplays[4][1]">Secret Achievements: {{player.subtabDisplays[4][1] ? "SHOWN" : "HIDDEN"}}</button><br>
+        <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][1] = !player.subtabDisplays[4][1]">Secret Achievements: {{player.subtabDisplays[4][1] ? "SHOWN" : "HIDDEN"}}</button>
+        <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][2] = !player.subtabDisplays[4][2]">Daily Achievements: {{player.subtabDisplays[4][2] ? "SHOWN" : "HIDDEN"}}</button><br>
         Textbook: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[5] = !player.tabDisplays[5]">{{player.tabDisplays[5] ? "SHOWN" : "HIDDEN"}}</button><br>
         <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.totalGP.gte(1) || player.integrations.gte(1)">Upgrades: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[6] = !player.tabDisplays[6]">{{player.tabDisplays[6] ? "SHOWN" : "HIDDEN"}}</button><br></span>
         <span v-if="hasQU(10) && player.inLostIntegration">Automation: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button><br></span>

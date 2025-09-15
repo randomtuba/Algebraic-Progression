@@ -37,7 +37,7 @@ function updateNewsArray() {
   ["BREAKING NEWS: We ran out of ideas",true,"a26"], //v1.0
   ["BREAKING NEWS: Florida Man rents Point Portal, causes hole in space-time",player.buyables[3].gte(1) || player.integrations.gte(1),"a27"], //v1.0
   ["BREAKING NEWS: Algebraic Progression saves leaked across the nation by a professional hacker. Investigation is ongoing.",true,"a28"], //v1.0
-  ["^",true,"a29"], //v1.1
+  ["^ this",true,"a29"], //v1.1
   ["It's important that the news ticker can't be disabled. The news ticker will never disappear and you will get tired of it faster...wait, you can disable it now??",true,"a30"], //v1.1
   ["Part 2: Tuba screws up",true,"a31"], //v1.1
   ["The action of adding news messages is like using drugs. It's easy and makes you feel happy when you do it, but you can't do too much of it.",true,"a32"], //v1.1
@@ -51,7 +51,7 @@ function updateNewsArray() {
   ["Fun Fact: Offline progress exists! Most currencies will keep growing at the same rate as if you were online, even when the game is closed. However, take note that automation does not work while offline.",true,"a40"], //v1.2
   ["\"hmmm today I will dev AP\" -randomtuba, 5 seconds before disaster struck",true,"a41"], //v1.2
   ["Want another game to play while you're idling? Check out randomtuba's main website! Link: <a href='https://randomtuba.github.io/' target='_blank'>https://randomtuba.github.io/</a>",true,"a42"], //v1.2
-  ["If you're wondering about new content, v3.0 was the last content update. Sorry.",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a43"], //v1.2
+  ["If you're wondering about new content, v3.1 could happen, but I'm still not sure about it. You may have to wait a while...",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a43"], //v1.2
   ["\"shit game remove timewalls\" -reda",true,"a44"], //v1.2
   ["if i see one more 5 hours joke i will die in real life",true,"a45"], //v1.2
   ["BREAKING NEWS: Tuba finally fixed Buy Max",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a46"], //v1.2
@@ -86,7 +86,7 @@ function updateNewsArray() {
   ["If you've been looking around in the code, you may have noticed that all of the game's variables are stored in save.js. \"Why are they not stored in game.js?\", you may ask. Well, as a developer of this game, I actually have no clue why we have them stored in save.js. Maybe it's to prevent a bug? Who knows!",true,"a75"], //Incrementy Planet
   ["We regret to inform you that this news message has been (softcapped)",true,"a76"], //Incrementy Planet
   ["randomtuba and 3^3=7 (FactorXXX) walk into a bar. randomtuba looks at his watch. \"It's 8 o'clock,\" he says. 3^3=7 orders a drink, walks out of the bar, and heads to their house to go to bed.",true,"a77"], //Incrementy Planet
-  ["\"Pronouns: he/him\" -Tuba's About Me",true,"a78"], //AP Rewritten^2
+  ["\"Pronouns: Professional procrastinator\" -Tuba's About Me",true,"a78"], //AP Rewritten^2
   ["WARNING: Cring Breach Detected! You must return to the B.R.U.H. (Big Red Underground Hole) Bunker ammediately!",true,"a79"], //AP Rewritten^2
   ["Click the big cookie to get more cookies!",true,"a80"], //Tuba's Tree
   ["Cool Bug Fact's: You know what you did",true,"a81"], //Tuba's Tree
@@ -94,7 +94,7 @@ function updateNewsArray() {
   ["The news ticker is similar to Minecraft's splash text: It's there, it has no effect on the main game, and you ignore it after a while.",true,"a83"], //Tuba's Tree
   ["Come to think of it, these messages really aren't that funny.",true,"a84"], //Tuba's Tree
   ["Here's a guide to the 4 different types of balancing! Jacorbian Balancing: Solid gameplay in earlygame and midgame, but too much strategy in lategame. Aarex Balancing: Solid gameplay in earlygame, but too many AAREX TIMEWALLS in midgame and lategame. Tuba Balancing: Solid gameplay in earlygame and midgame, but inflation and repetition in lategame. Reinhardt Balancing: We don't talk about Reinhardt Balancing.",true,"a85"], //Tuba's Tree
-  ["When life gives you lemons, you sacrifice it for the next lemon-related prestige layer.",true,"a86"], //Tuba's Tree
+  ["When life gives you lemons, you sacrifice them for the next lemon-related prestige layer.",true,"a86"], //Tuba's Tree
   ["too short 1/0",true,"a87"], //Prestige Game
   ["\"Discord is not a good thing.\" -Michael Stevens, also known as \"VSauce\"",true,"a88"], //Tuba's Tree
   ["Fun Fact: The function that calls the news ticker code is called doodooWater(). In November 2020, Tuba thought this was very funny.",true,"a89"], //Tuba's Tree
@@ -119,7 +119,7 @@ function updateNewsArray() {
   ["Have you realized that 90% of the news messages are just a bunch of words together that don't make sense, or are in the wrong order? If you have, wake up. No news messages are like that. It's been 8 years, the car accident was not your fault.",true,"a108"], //v1.4.1
   ["What's the second prestige layer, you ask? Well...it's complicated.",player.totali.gte(1) || player.integrations.gte(1),"a109"], //v2.0
   ["\"Where did my progress go?\" -Players after going Complex for the first time",player.totali.gte(1) || player.integrations.gte(1),"a110"], //v2.0
-  [`${player.zUnlocked ? `Congratulations, you're in the ${player.integrations.gte(1) ? `lategame` : `midgame`}!` : `You're currently in the earlygame, enjoy it while it lasts`}`,true,"a111"], //v2.0
+  [`${player.zUnlocked ? `Congratulations, you're in the ${player.sinusoidals.gte(1) ? `lategame` : `midgame`}!` : `You're currently in the earlygame, enjoy it while it lasts`}`,true,"a111"], //v2.0
   ["Why is the obtuse angle always sad? Because it is never right.",true,"a112"], //v2.0
   ["6 confronts 7 about eating 9",true,"a113"], //v2.0
   [`${player.totaly2.gte(1) ? (ccTiers() >= 50 ? (player.yPolynomials.unlocked ? 'z<sup>2</sup> when?' : 'y<sup>3</sup> when?') : 'x<sup>3</sup> when?') : 'y<sup>2</sup> when?'}`,player.totalx2.gte(1) || player.integrations.gte(1),"a114"], //v2.0
@@ -151,7 +151,7 @@ function updateNewsArray() {
   ["Have you realized that the Milestones are button elements yet?",player.complexes.gte(5) || player.integrations.gte(1),"a140"], //v2.1
   ["What happens when anti-slope comes in contact with antimatter? No one has survived to find out.",player.compChalCompletions[2] >= 1 || player.integrations.gte(1),"a141"], //v2.1
   ["Did you inflate the game or something?",player.i.gte("1e100000"),"a142"], //v2.1
-  ["<span style='color:blue'>Why should news messages be black or white? So boring. Blue looks so much nicer.</span>",true,"a143"], //v2.1
+  ["<span style='color:blue'>Why should news messages be black or white? That's so boring...blue looks so much nicer.</span>",true,"a143"], //v2.1
   ["SEVERE WEATHER WARNING: Major cubic storm crossing y-axis and travelling towards (2,8)-ville. Ends are approaching negative and positive infinity, respectively. Stay indoors and stay at low elevations. Thank you for your cooperation.",true,"a144"], //v2.1
   ["BREAKING NEWS: randomtuba doesn't know how his own automation code works!",hasQU(5) || hasQU(6) || player.totali.gte(1) || player.integrations.gte(1),"a145"], //v2.1
   ["<img src='https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/True%20Cubert.png?v=1675015469227' width='16' height='16'>",true,"a146"], //v2.1
@@ -175,7 +175,7 @@ function updateNewsArray() {
   ["<div onclick=\"this.style.display='none'\">Click on me to make me disappear!</div>",true,"a164"], //v2.2
   ["Fun Fact: e<sup>πi</sup> = -1",true,"a165"], //v2.2
   ["If there's a bug with Root Epicenter Level √-1, then you're just imagining it.",player.hasCompletedLevel4 || player.integrations.gte(1),"a166"], //v2.2
-  ["POV: You are currently inside of a challenge",player.challenge != 0 || player.compChallenge != 0 || player.yChallenge != 0 ,"a167"], //v2.2
+  ["POV: You are currently inside of a challenge",player.challenge != 0 || player.compChallenge != 0 || player.yChallenge != 0 || player.integration.challenge != 0,"a167"], //v2.2
   ["BREAKING NEWS: Incremental game <a href='https://mrbacon470.github.io/Coop-Co/' target='_blank'>Coop Co</a> contains a news message referencing Algebraic Progression!",true,"a168"], //v2.2
   ["Since when were <i>letters</i> a part of math? I thought they were supposed to be used for English!",player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a169"], //v2.2
   [`BREAKING NEWS: Small, family-owned Point Factories are being replaced with high-tech Variable Synthesizers! "What happened to the good ol' days of X, Y, and Z? Now we got xy, y<sup>2</sup> and all these other crazy variables," Farmer Dave remarks.`,player.varSynth.unlocked[0] || player.integrations.gte(1),"a170"], //v2.2
@@ -276,7 +276,7 @@ function updateNewsArray() {
   ["What if you've been collecting sex chromosomes instead of variables this whole time?",true,"a248"], //v3.0
   ["\"gge\" -downvoid",true,"a249"], //v3.0
   [`If I'm not mistaken, the current day is ${new Date().getMonth() + 1}/${new Date().getDate()}/${new Date().getYear() + 1900}.`,true,"a250"], //Prestige Game
-  ["If I'm not mistaken, the current version is v3.0.",true,"a251"], //Prestige Game
+  [`If I'm not mistaken, the current version is ${tmp.versionNumber}.`,true,"a251"], //Prestige Game
   ["Avez-vous pris le temps de traduire ce message d'information?",true,"a252"], //v3.0
   ["This news message's punchline is left as an exercise for the reader.",true,"a253"], //v3.0
   ["AVOID THE PIPELINE: v1.2 (2 days), v1.4 (2 weeks), v2.0 (3 months), v2.1 (3 months), v3.0 (2 years)",true,"a254"], //v3.0
@@ -382,7 +382,7 @@ function updateNewsArray() {
   ["Mathematicians when the math problem says \"die\" instead of \"fair standard 6-sided die\":",true,"a354"], //v3.0
   ["1 strike and a 1 week ban to Algebraic Progression for continuously repeating the same news messages (4 total)",true,"a355"], //v3.0
   ["Credit the Creators!",true,"a356"], //v3.0
-  ["LeBron James reportedly CLICKED \"Exit Challenge\" in the challenge header instead of clicking on the CHALLENGE ITSELF when completing it",hasSU(12) || player.totali.gte(1) || player.integrations.gte(1),"a357"], //v3.0
+  ["LeBron James reportedly caught FORGETTING to turn on the X<sup>2</sup> DOUBLER autobuyer",player.totali.gte(1) || player.integrations.gte(1),"a357"], //v3.0
   ["Are you delaying on working on something important? If so, please do the thing you're supposed to work on before playing this game. Good luck!",true,"a358"], //v3.0
   ["this game really puts the \"variable\" in \"multivariable calculus\"",player.integrations.gte(1),"a359"], //v3.0
   ["Born to go Cubic. Forced to go Complex",player.totali.gte(1) || player.integrations.gte(1),"a360"], //v3.0
@@ -407,7 +407,14 @@ function updateNewsArray() {
   ["\"What will you have after 500 years?!\" \"Not much, actually, due to the global speed multiplier...\"",player.gameTimePlayed.gte(15768000000),"a379"], //v3.0
   ["Forget about completing this game, a math major won't get you much of a job anyway...",true,"a380"], //v3.0
   ["My name is abutmodnar, and I am EVIL...!",true,"a381"], //v3.0
-  ["Newsarray doesn't work at idx 396 (anonymous) @ news.js:431",player.newsMessagesSeen >= 5000,"a382"], //v3.0
+  ["Newsarray doesn't work at idx 396 (anonymous) @ news.js:438",player.newsMessagesSeen >= 5000,"a382"], //v3.0
+  ["technically speaking, you're always 0% to infinity (because that's not in this game)",player.points.gte(1.79e308),"a383"], //v3.0.2
+  ["IC6 be like: ⬆️⬇️➡️⬅️⬇️➡️⬅️⬆️⬇️➡️",IntegrationUpgrades.ic6.isBought(),"a384"], //v3.0.2
+  ["Incremental game player caught opening console, cursed to face eternal timewalls.",true,"a385"], //v3.0.2
+  ["Y Man shocks x^2 waitress by speaking perfect Quadratic",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a386"], //v3.0.2
+  ["I!!! Just!!! Love!! Factorials! The!!! More!!! There!!! Are,!!! The!!! Less!! Impact!! They!!! Have!",true,"a387"], //v3.0.2
+  ["An Algebraic Progression Movie, coming soon to theaters, starring Jack Black as the player! \"X and Y!\" he says triumphantly while lighting a portal to the Coordinate Plane.",hasQU(12) || player.totali.gte(1) || player.integrations.gte(1),"a388"], //v3.0.2
+  ["Don't mind me, I'm just making my daily leftward commute...",true,"a389"], //v3.0.2
   ]
 }
 var s;
