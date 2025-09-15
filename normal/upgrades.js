@@ -235,5 +235,5 @@ function buyPermUpgrade(x) {
 }
 
 function hasPermUpgrade(x) {
-  return player.permUpgs.includes(x) && !player.options[31];
+  return player.permUpgs.includes(x) && player.options[31];
 }

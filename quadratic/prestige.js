@@ -80,7 +80,7 @@ function goQuadratic(force) {
     else if(quadFormula().gte(1)){
       if(!player.options[7] || player.autobuyers[9] || confirm("Going Quadratic will reset Buildings, Functions, Variables, and X Upgrades, but you will receive x² in return. Are you sure you want to do this?")) {
         let q = quadFormula()
-        if(player.dailyAchievements[0].includes('44') && !player.dailyAchievements[1].includes('44') && q.gte(player.x2.mul("1e1000"))){
+        if(player.dailyAchievements[0].includes('44') && !player.dailyAchievements[1].includes('44') && q.gte(player.x2.max(1).mul("1e1000"))){
           player.dailyAchievements[1].push('44')
           $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize('44').name, {
             style: 'apcurrent',
