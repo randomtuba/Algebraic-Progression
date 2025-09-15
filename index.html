@@ -2533,11 +2533,11 @@
                   <br>While in Integration Challenge 3 <b>({{player.integration.challenge == 3 ? "✔" : "✘"}})</b>
                 </span>
               </span>
-            </button><br v-if="a*2-2+b == 5 || a*2-2+b == 6">
-            <button class="hoverable" v-if="a*2-2+b == 5" onclick="IntegrationChallenges.attemptToFufillReqs()">
+            </button><br v-if="(a*2-2+b == 5 && IntegrationUpgrades.ic5.isBought()) || (a*2-2+b == 6 && IntegrationUpgrades.ic6.isBought())">
+            <button class="hoverable" v-if="a*2-2+b == 5 && IntegrationUpgrades.ic5.isBought()" onclick="IntegrationChallenges.attemptToFufillReqs()">
               Attempt to Fufill Requirements
             </button>
-            <button class="hoverable" v-if="a*2-2+b == 6" onclick="player.integration.ic6Timer += 10">
+            <button class="hoverable" v-if="a*2-2+b == 6 && IntegrationUpgrades.ic6.isBought()" onclick="player.integration.ic6Timer += 10">
               Manually Switch IC6 Variant
             </button>
           </td>

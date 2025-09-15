@@ -501,7 +501,7 @@ const IntegrationChallenges = {
   },
   attemptToFufillReqs() {
     let c = player.integration.chalCompletions[5]
-    player.integration.autobuyers.synthDivUpgs = false // no rebuyable SDUs
+    player.integration.autobuyers.synthDivUpgs = [null,false,false,false] // no rebuyable SDUs
     if(c >= 1) player.integration.autobuyers.zEmpowerments = false // no Z-Empowerments
     if(c >= 2) player.compAutobuyers[4] = false // no Y-Intercept
     if(c >= 3 && player.hypercompUpgs.dynamic.length > 4) HypercompUpgrades.respec(true) // at most 4 Hypercomplex Upgrades
