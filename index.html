@@ -816,7 +816,7 @@
         </button>
         <br><br>
       </span>
-      <div v-if="hasQU(14)">
+      <div :style="{ display: hasQU(14) && !player.inLostIntegration ? 'block' : 'none' }">
         Auto-Quadratic: Go Quadratic {{player.compAutobuyers[2] == 2 ? "after" : "when reaching"}} <input id="quadAuto" v-bind:value="player.inputValue" size="5"> <span v-html="new Decimal(player.compAutobuyers[2]).gt(1) ? (player.compAutobuyers[2] == 3 ? 'times your unspent x<sup>2</sup>' : 'seconds') : 'x<sup>2</sup>'"></span> <button onclick="player.autobuyers[9] = !player.autobuyers[9]" class="hoverable">{{player.autobuyers[9] ? 'ON' : 'OFF'}}</button>
         <button class="hoverable" v-if="hasSU(3) || hasMilestone(2)" onclick="player.compAutobuyers[2]++; if(player.compAutobuyers[2] > (hasMilestone(2) ? 3 : 2)){player.compAutobuyers[2] = 1};">
           Mode: {{player.compAutobuyers[2] != 1 ? (player.compAutobuyers[2] == 3 ? "X Times Unspent" : "Time") : "Amount"}}
