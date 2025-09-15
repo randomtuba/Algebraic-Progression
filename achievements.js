@@ -967,7 +967,7 @@ const DailyAchievements = {
     5: {name: "Ignoring The Basics",desc(){return `Go Complex with ${formatWhole(1)} Autoclicker and no Functions bought.`},done(){return false}},
   },
   5: { // Complex challenges to y-quadratic
-    1: {name: "Waiting Game",desc(){return `Reach a multiplier of ${format(1e150)}x from Challenge 9.`},done(){return CHALLENGES[9].eff().gte(1e150)}},
+    1: {name: "Waiting Game",desc(){return `Reach a multiplier of ${format(1e150)}x from Challenge 9.`},done(){return CHALLENGES[9].effect().gte(1e150)}},
     2: {name: "CC3 Wasn't Next?",desc(){return `Complete Complex Challenge 5 once.`},done(){return player.compChalCompletions[5] >= 1}},
     3: {name: "Inception Noise!",desc(){return `Enter a Challenge while in a Complex Challenge.`},done(){return player.challenge != 0 && player.compChallenge != 0}},
     4: {name: "Vastly Unprepared",desc(){return `Enter a Complex Challenge with no Complex Upgrades bought.`},done(){return player.compChallenge != 0 && player.compUpgs[0].length == 0}},
