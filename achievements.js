@@ -989,7 +989,7 @@ const DailyAchievements = {
   },
   8: { // Second integration to temporal plane
     1: {name: "Outside the Universe",desc(){return `Reach ${format("1e6e8")} points.`},done(){return player.points.gte("1e6e8")}},
-    2: {name: "Cartesian Productr",desc(){return `Have ${formatWhole(3)} different number set types active at once.`},done(){return player.integration.active.types.length >= 3}},
+    2: {name: "Cartesian Product",desc(){return `Have ${formatWhole(3)} different number set types active at once.`},done(){return player.integration.active.types.length >= 3}},
     3: {name: "How The Z-Tables Have Turned...",desc(){return `Have your Z-Collider levels be in ascending order.`},done(){return player.zlab.levels[1] < player.zlab.levels[2] && player.zlab.levels[2] < player.zlab.levels[3] && player.zlab.levels[3] < player.zlab.levels[4]}},
     4: {name: "Sloppy Riemann Sum",desc(){return `Integrate in under ${formatWhole(1)} hour.`},done(){return player.gamePrestigeTimes[7].lt(3600)}},
     5: {name: "Not That Synthetic",desc(){return `Reach ${format(1e12)} SE with no repeatable Synthetic Division Upgrades.`},done(){return player.synthEssence.gte(1e12) && player.synthDivUpgs[0][1].eq(0) && player.synthDivUpgs[0][2].eq(0) && player.synthDivUpgs[0][3].eq(0)}},

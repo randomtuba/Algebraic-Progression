@@ -63,7 +63,7 @@ const ComplexPrestigeLI = {
                 }
                 player.challengeEssence = new Decimal(0)
                 player.sqrtEnters = 0
-                if(!hasComplexMilestoneLI(9)) player.epicenterLevel = '1'
+                if(!hasComplexMilestoneLI(9)) player.epicenterLevel = 1
                 if(!hasComplexMilestoneLI(3)) player.currentSubtab[0] = "upgrades"
                 ResetPrestige.reset(true)
                 player.x2 = new Decimal(0)

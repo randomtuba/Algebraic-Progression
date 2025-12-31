@@ -21,7 +21,7 @@ const YQuadraticPrestigeLI = {
     },
     goYQuadratic(force) {
         if(this.y2Formula().gte(1) || force) {
-            if(force || !player.options[8] || player.autobuyers[9] || confirm("Going Y-Quadratic will reset everything Complex resets but you will receive y² in return. Are you sure you want to do this?")) {
+            if(force || !player.options[8] || player.compAutobuyers[12] || confirm("Going Y-Quadratic will reset everything Complex resets but you will receive y² in return. Are you sure you want to do this?")) {
                 if(!force) {
                     let y = this.y2Formula()
                     player.y2 = player.y2.add(y)

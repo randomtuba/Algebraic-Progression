@@ -1935,13 +1935,13 @@ function canCompleteChallengeDisplay() {
     if(!player.inLostIntegration) return player.x2.gte(COMP_CHALLENGES[player.compChallenge].goals[player.compChalCompletions[player.compChallenge]]) ? "Complete" : "Exit"
     if(player.inLostIntegration) return player.x2.gte(ComplexChallengesLI[player.compChallenge].goals[player.compChallenge]) ? "Complete" : "Exit"
   } else if (min == 29) {
-    return player.i.gte(IntegrationChallenges[1].goal(player.compChallenge) && !player.integration.chalCompletions[1].includes(player.challenge + (player.compChallenge * 10))) ? "Complete" : "Exit"
+    return player.i.gte(IntegrationChallenges[1].goal(player.compChallenge)) && !player.integration.chalCompletions[1].includes(player.challenge + (player.compChallenge * 10)) ? "Complete" : "Exit"
   } else if (min == 31) {
     return player.i.gte(IntegrationChallenges[3].goals[player.integration.chalCompletions[3]]) ? "Complete" : "Exit"
   } else if (min == 32) {
     return player.y2.gte(IntegrationChallenges[4].goals[player.integration.chalCompletions[4]]) ? "Complete" : "Exit"
   } else if (min == 34) {
-    return player.i.gte(IntegrationChallenges[6].goals[player.integration.ic6Version] && !player.integration.chalCompletions[6].includes(player.integration.ic6Version)) ? "Complete" : "Exit"
+    return player.i.gte(IntegrationChallenges[6].goals[player.integration.ic6Version]) && !player.integration.chalCompletions[6].includes(player.integration.ic6Version) ? "Complete" : "Exit"
   } else if (min > 35 && min < 42) {
     return player.epicenterLevel > 0 && player.points.gte(RootEpicenterLI.goals[player.epicenterLevel]) && !hasChallenge(player.epicenterLevel + 10) ? "Complete" : "Exit"
   } else {
@@ -2205,7 +2205,7 @@ document.addEventListener("keydown", function onEvent(event) {
         if(player.options[2] && hasYQU(2,'bought')) player.autobuyers[11] = !player.autobuyers[11]
       break;
       case "w":
-        if(player.options[2] && Alterations.has(2)) player.autobuyers[11] = !player.autobuyers[11]
+        if(player.options[2] && Alterations.has(2)) player.integration.autobuyers.w = !player.integration.autobuyers.w
       break;
       case "q":
         if(player.options[2] && hasQU(14)) player.autobuyers[9] = !player.autobuyers[9]

@@ -497,7 +497,7 @@ function tbookDescriptions(x,world) {
         <b>1)</b> Some aspects of this world may have been rushed during development. If you find any bugs, report them to the developer!<br>
         <b>2)</b> There are several visual changes of this world compared to the first. Can you find them all?<br>
         <b>3)</b> If you ever feel stuck, keep waiting and grinding, or ask for help on the Discord server. (linked in the Options tab)<br>
-        <b>4)</b> Once unlocked, all autobuyers can be found in a single tab instead of being scattered across all of the tabs.<br>
+        <b>4)</b> Once unlocked, most autobuyers can be found in a single tab instead of being scattered across all of the tabs.<br>
         <b>5)</b> There may still be things that need to be polished. Don't be scared if you encounter issues!<br><br>
         Anyway, good luck and enjoy the ride!`, // world 2 preface
         `<b>1:</b> Buy Autoclicker
