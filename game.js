@@ -1753,7 +1753,7 @@ function checkForEndgame() {
 function modifiedReality() {
   if (player.zUnlocked) {
     if(!player.polynomials[10].boughtThisRun) document.title = "Algebraic Progression " + tmp.versionNumber
-    document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/logo2.png?v=1743469008828");
+    document.getElementById("favicon").setAttribute("href","X, Y, and Z.png");
     tmp.textbook.names[9] = "Coordinate Realm (v1.1)"
     setTimeout(() => {
       if(!player.inLostIntegration) {
@@ -1765,7 +1765,7 @@ function modifiedReality() {
     }, Math.random()*100);
   } else {
     document.title = "Algebraic Progression " + tmp.versionNumber
-    document.getElementById("favicon").setAttribute("href","https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/logo1.png?v=1743469004406");
+    document.getElementById("favicon").setAttribute("href","X and Y.png");
     tmp.textbook.names[9] = "Coordinate Plane (v1.1)"
   }
   

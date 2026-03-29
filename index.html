@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
     <link rel="stylesheet" href="style.css" id="style" />
-    <link id="favicon" rel="icon" type="image/png" href="https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/logo1.png?v=1743469004406">
+    <link id="favicon" rel="icon" type="image/png" href="X and Y.png">
     <!--- UTILS !--->
     <script src="utils/break_eternity.js"></script>
     <script src="utils/format.js" defer></script>
@@ -661,7 +661,7 @@
       <div v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
         <button id="achsubtab1" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'regular'" v-if="player.subtabDisplays[4][0]">Achievements</button>
         <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'secret'" v-if="player.subtabDisplays[4][1]">Secret Achievements</button>
-        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'daily'" v-if="player.subtabDisplays[4][2]">Daily Achievements</button>
+        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'daily'" v-if="player.subtabDisplays[4][2] && !player.inLostIntegration">Daily Achievements</button>
       </div><br v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
       <div id="tab4-1disp" v-if="player.currentSubtab[4] == 'regular'"> <!--- REGULAR ACHIEVEMENTS !--->
       {{player.achievements.length}}/90 Achievements completed ({{format(player.achievements.length / 0.9)}}%)<br><br>
@@ -2951,7 +2951,7 @@
         Achievements: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[4] = !player.tabDisplays[4]">{{player.tabDisplays[4] ? "SHOWN" : "HIDDEN"}}</button><br>
         <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][0] = !player.subtabDisplays[4][0]">Achievements: {{player.subtabDisplays[4][0] ? "SHOWN" : "HIDDEN"}}</button> 
         <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][1] = !player.subtabDisplays[4][1]">Secret Achievements: {{player.subtabDisplays[4][1] ? "SHOWN" : "HIDDEN"}}</button>
-        <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][2] = !player.subtabDisplays[4][2]">Daily Achievements: {{player.subtabDisplays[4][2] ? "SHOWN" : "HIDDEN"}}</button><br>
+        <button class="hoverable" onclick="if(!tmp.allTabsShown)player.subtabDisplays[4][2] = !player.subtabDisplays[4][2]" v-if="!player.inLostIntegration">Daily Achievements: {{player.subtabDisplays[4][2] ? "SHOWN" : "HIDDEN"}}</button><br>
         Textbook: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[5] = !player.tabDisplays[5]">{{player.tabDisplays[5] ? "SHOWN" : "HIDDEN"}}</button><br>
         <span v-if="player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.totalGP.gte(1) || player.integrations.gte(1)">Upgrades: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[6] = !player.tabDisplays[6]">{{player.tabDisplays[6] ? "SHOWN" : "HIDDEN"}}</button><br></span>
         <span v-if="hasQU(10) && player.inLostIntegration">Automation: <button class="hoverable" onclick="if(!tmp.allTabsShown)player.tabDisplays[10] = !player.tabDisplays[10]">{{player.tabDisplays[10] ? "SHOWN" : "HIDDEN"}}</button><br></span>

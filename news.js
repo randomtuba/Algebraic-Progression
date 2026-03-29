@@ -154,7 +154,7 @@ function updateNewsArray() {
   ["<span style='color:blue'>Why should news messages be black or white? That's so boring...blue looks so much nicer.</span>",true,"a143"], //v2.1
   ["SEVERE WEATHER WARNING: Major cubic storm crossing y-axis and travelling towards (2,8)-ville. Ends are approaching negative and positive infinity, respectively. Stay indoors and stay at low elevations. Thank you for your cooperation.",true,"a144"], //v2.1
   ["BREAKING NEWS: randomtuba doesn't know how his own automation code works!",hasQU(5) || hasQU(6) || player.totali.gte(1) || player.integrations.gte(1),"a145"], //v2.1
-  ["<img src='https://cdn.glitch.global/f11707a7-4c2e-4e11-b957-162b8f56f334/True%20Cubert.png?v=1675015469227' width='16' height='16'>",true,"a146"], //v2.1
+  ["<img src='True Cubert.png' width='16' height='16'>",true,"a146"], //v2.1
   ["BREAKING NEWS: Developer messing with <span style='color: white; animation: a-existence-glow 3s infinite'>new text animation!</span>",true,"a147"], //v2.1
   ["INSIDE LOOK: What are Upgrade Points made out of? Research and analysis has discovered that they contain, on average, 62% dreams, 33% water vapor, and 5% sulfuric acid.",player.upgradePoints[1].gte(1) || player.integrations.gte(1),"a148"], //v2.1
   ["Your Ad Here",true,"a149"], //v2.1

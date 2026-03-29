@@ -475,6 +475,7 @@ const IntegrationChallenges = {
             6: [true,true,true,true,true,true,true], // Integration
             7: [true,true,true,true], // Sinusoidal
           }
+          player.currentSubtab[4] = "regular"
 
           player.inLostIntegration = true
         }
