@@ -2311,7 +2311,7 @@ function subtabArray() {
 
   if(player.subtabDisplays[4][0]) arr[4].push("regular")
   if(player.subtabDisplays[4][1]) arr[4].push("secret")
-  if(player.subtabDisplays[4][2]) arr[4].push("daily")
+  if(player.subtabDisplays[4][2] && !player.inLostIntegration) arr[4].push("daily")
   
   if(player.subtabDisplays[5][0]) arr[5].push("main")
   if(player.subtabDisplays[5][1]) arr[5].push("division")

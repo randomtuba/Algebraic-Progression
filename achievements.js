@@ -1060,7 +1060,8 @@ const DailyAchievements = {
   refresh() {
     player.dailyAchievements = [[],[]] // clears daily achievement storage
     let j = 0 // variable to determine point in progression, will be increased for each daily achievement pushed
-    if(!hasQU(16) && player.totali.lt(1) && player.integrations.lt(1)) j = 1
+    if(player.inLostIntegration) j = 17
+    else if(!hasQU(16) && player.totali.lt(1) && player.integrations.lt(1)) j = 1
     else if (hasQU(16) && !hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 2
     else if (hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 3
     else if (player.totali.gte(1) && !hasCU(1,6) && player.integrations.lt(1)) j = 4
