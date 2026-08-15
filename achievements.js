@@ -31,7 +31,7 @@ function updateNotifs(){
   }
   // Daily Achievement Notifications
   for(let i = 0; i < 3; i++){
-    if(!player.dailyAchievements[1].includes(player.dailyAchievements[0][i]) && DailyAchievements.standardize(player.dailyAchievements[0][i]).done()){
+    if(!player.dailyAchievements[1].includes(player.dailyAchievements[0][i]) && DailyAchievements.standardize(player.dailyAchievements[0][i]).done() && (DailyAchievements.findJ(player.dailyAchievements[0][i]) > 18 ? player.inLostIntegration : !player.inLostIntegration)){
       player.dailyAchievements[1].push(player.dailyAchievements[0][i])
       $.notify("Daily Achievement Unlocked: " + DailyAchievements.standardize(player.dailyAchievements[0][i]).name, {
         style: 'apcurrent',
@@ -983,7 +983,7 @@ const DailyAchievements = {
   7: { // Variable synthesizer to second integration
     1: {name: "W isn't real",desc(){return `Reach ${formatWhole(100)}z.`},done(){return player.z.gte(100)}},
     2: {name: "Right Round, Like a Record",desc(){return `Reach ${format(360000)} revolutions.`},done(){return player.varSynth.revolutions.gte(360000)}},
-    3: {name: "Charged Build Advanced",desc(){return `Make your Charged X Upgrades build into a chessboard pattern.`},done(){return player.varSynth.chargedXUpgs.length == 4 && ((hasChargedUpgrade(1) && hasChargedUpgrade(3) && hasChargedUpgrade(5) && hasChargedUpgrade(7)) || (hasChargedUpgrade(2) && hasChargedUpgrade(4) && hasChargedUpgrade(6) && hasChargedUpgrade(8)))}},
+    3: {name: "Charged Build Advanced",desc(){return `Make your Charged X Upgrades build into a chessboard pattern.`},done(){return player.varSynth.chargedXUpgs.length == 4 && ((hasChargedUpgrade(1) && hasChargedUpgrade(3) && hasChargedUpgrade(6) && hasChargedUpgrade(8)) || (hasChargedUpgrade(2) && hasChargedUpgrade(4) && hasChargedUpgrade(5) && hasChargedUpgrade(7)))}},
     4: {name: "Pushing Through The Storm",desc(){return `Reach ${format("1e400000")} points in Synthetic Division.`},done(){return player.points.gte("1e400000") && player.inSynthDiv}},
     5: {name: "So-very-challenging",desc(){return `Reach ${format("1e10000000")} points in Y-Challenge 4 while following the requirements of Y-Quadratic Upgrade 12.`},done(){return player.points.gte("1e10000000") && player.sacX.eq(0) && player.sacY.eq(0) && player.sacX2.eq(0) && player.b.eq(0) && player.quadPower.eq(0)}},
   },
@@ -1040,7 +1040,7 @@ const DailyAchievements = {
     1: {name: "Running In Circles",desc(){return `Unlock the Unit Circle.`},done(){return player.unitCircle.unlocked}},
     2: {name: "Powers of Y",desc(){return `Unlock Y-Polynomials.`},done(){return player.yPolynomials.unlocked}},
     3: {name: "Recency Bias",desc(){return `Have ${format(1e9)} more Y-Polynomial Power than Polynomial Power.`},done(){return player.yPolyPower.gte(player.polyPower.add(1e9))}},
-    4: {name: "I Hate Trig",desc(){return `Reach ${format("1e1000")} pending dx with the Unit Circle quadrant set to ${formatWhole(0)}.`},done(){return IntegrationPrestige.dxFormula().gte("1e1000") && player.unitCircle.quadrant == 0}},
+    4: {name: "I Hate Trig",desc(){return `Reach ${format("1e1000")} pending dx in Quadrant 0.`},done(){return IntegrationPrestige.dxFormula().gte("1e1000") && player.unitCircle.quadrant == 0}},
     5: {name: "Remember YQUs?",desc(){return `Reach ${format("1e40000000")} i without generating QP and IP.`},done(){return player.i.gte("1e40000000") && player.quadPower.eq(0) && player.imagPower.eq(0)}},
   },
   16: { // Pythagorean triples to hypercomplex
@@ -1050,7 +1050,77 @@ const DailyAchievements = {
     4: {name: "When Life Was Simple",desc(){return `Reach ${format("1e50000000")} i with no Z.`},done(){return player.i.gte("1e50000000") && player.z.eq(0)}},
     5: {name: "What Even Is j(n)?",desc(){return `Reach ${format("1e90000000")} points in The Limit with all Challenge Factors maxed.`},done(){return player.points.gte("1e90000000") && player.integration.inTheLimit && Limit.totalLevels().gte(80)}},
   },
-  17: { // Hypercomplex+ (WIP)
+  17: { // Hypercomplex to IC5
+    1: {name: "The J",desc(){return `Reach ${format(1000)} j.`},done(){return player.j.gte(1000)}},
+    2: {name: "Quadruple U",desc(){return `Reach ${formatWhole(2)}w.`},done(){return player.w.gte(2)}},
+    3: {name: "Glass All Full",desc(){return `Try to fill a Pythagorean Triples bar when it's full.`},done(){return false}}, // not done
+    4: {name: "Simpler Explanation",desc(){return `Reach ${format("1e1.8e9")} i without Hypercomplex Upgrades.`},done(){return player.i.gte("1e1.8e9") && player.hypercompUpgs.dynamic.length == 0}},
+    5: {name: "Hero to Zero",desc(){return `Reach ${format("1e12000000")} y² in Quadrant 0.`},done(){return player.y2.gte("1e12000000") && player.unitCircle.quadrant == 0}},
+  },
+  18: { // IC5 to IC8
+    1: {name: "One Per Minute",desc(){return `Complete 60 Complex Challenge tiers.`},done(){return ccTiers() >= 60}},
+    2: {name: "Millionaire Monolith",desc(){return `Reach ${format("1e1e6")} dx.`},done(){return player.integrations.dx.gte("1e1e6")}},
+    3: {name: "Until Further Notice",desc(){return `Reach ${format("1e5e12")} points in Integration Challenge 7.`},done(){return player.points.gte("1e5e12") && player.integration.challenge == 7}},
+    4: {name: "Charges on Strike",desc(){return `Reach ${format("1e1e9")} y² without Charged Quadratic Upgrades.`},done(){return player.y2.gte("1e1e9") && player.chargedQuadUpgs.length == 0}},
+    5: {name: "I Will Never Be Satisfied",desc(){return `Reach ${format("1e1e14")} points in Integration Challenge 4.`},done(){return player.points.gte("1e1e14") && player.integration.challenge == 4}},
+  },
+  19: { // Lost integration to square root
+    1: {name: "Architect",desc(){return `Have at least ${formatWhole(100)} of each Building.`},done(){return player.buyables[1].gte(100) && player.buyables[2].gte(100) && player.buyables[3].gte(100)}},
+    2: {name: "So Close...",desc(){return `Reach ${formatWhole(99)}x.`},done(){return player.x.gte(99)}},
+    3: {name: "Generational Divide",desc(){return `Reach ${formatWhole(100)} purchased x with no generator multiplier upgrades.`},done(){return player.abc[1].gte(100) && player.buyables[5].eq(0)}},
+    4: {name: "Environmentally Safe",desc(){return `Reach ${format(1e12)} points with only Autoclickers.`},done(){return player.points.gte(1e12) && player.buyables[2].eq(0) && player.buyables[3].eq(0) && player.buyables[4].eq(0) && player.buyables[5].eq(0)}},
+    5: {name: "Soft Reset",desc(){return `Reset in under ${format(0.1)} seconds.`},done(){return player.prestigeTimes[1] <= 0.1}},
+  },
+  20: { // LI square root to complex
+    1: {name: "Challenger Approaching",desc(){return `Unlock Exponential Curve.`},done(){return hasQU(23)}},
+    2: {name: "Gargoogol",desc(){return `Reach ${format(1e200)} points.`},done(){return player.points.gte(1e200)}},
+    3: {name: "In & Out",desc(){return `Enter Square Root ${formatWhole(30)} times.`},done(){return player.sqrtEnters >= 30}},
+    4: {name: "Challengesque",desc(){return `Reach ${format("1e320")} points in Root Epicenter Task 3.`},done(){return player.points.gte("1e320") && player.inSqrt && player.epicenterLevel == 3}},
+    5: {name: "Feels Wrong",desc(){return `Reach ${format(1e50)}x without purchasing x.`},done(){return player.x.gte(1e50) && player.abc[1].eq(0)}},
+  },
+  21: { // LI complex to complex challenges
+    1: {name: "This Can't Be Real",desc(){return `Have ${formatWhole(6)} respeccable Complex Upgrades bought.`},done(){return player.compUpgs[0].length >= 6}},
+    2: {name: "Impossible",desc(){return `Cap out Complex Upgrade 8's effect.`},done(){return player.i.gte(1e10)}},
+    3: {name: "Eternal Complex",desc(){return `Go Complex ${formatWhole(1000)} times.`},done(){return player.complexes.gte(1000)}},
+    4: {name: "No Longer Here",desc(){return `Reach ${format("1e4800")} points without Complex Upgrades.`},done(){return player.points.gte("1e4800") && player.compUpgs[0].length == 0}},
+    5: {name: "Cold Feet",desc(){return `Reach ${format("1e1000")} reset points without using steps.`},done(){return player.x2.gte("1e1000") && player.compPlane[0][1].eq(player.compPlane[0][2])}},
+  },
+  22: { // LI complex challenges to y-quadratic
+    1: {name: "15 Step",desc(){return `Have 15 total steps.`},done(){return player.compPlane[0][2].gte(15)}},
+    2: {name: "CC3 Was Previous",desc(){return `Complete Complex Challenge 5 once.`},done(){return player.compChalCompletions[5] >= 1}},
+    3: {name: "Just a Dilation Ripoff",desc(){return `Reach ${format("1e3200")} reset points without square root upgrades.`},done(){return player.x2.gte("1e3200") && player.quadBuyables[4].eq(0) && player.quadBuyables[5].eq(0) && player.quadBuyables[6].eq(0)}},
+    4: {name: "Vastly Unprepared",desc(){return `Enter a Complex Challenge with no Complex Upgrades bought.`},done(){return player.compChallenge != 0 && player.compUpgs[0].length == 0}},
+    5: {name: "Variable Traditionalist",desc(){return `Reach ${format(1.5e6)}x with no Coordinate Plane Upgrades.`},done(){return player.x.gte(1e6) && player.quadBuyables[1].eq(0) && player.quadBuyables[2].eq(0) && player.quadBuyables[3].eq(0)}},
+  },
+  23: { // LI y-quadratic to mandelbrot
+    1: {name: "We Need To Cook",desc(){return `Unlock the Z Lab.`},done(){return hasYQU(8,'lost')}},
+    2: {name: "The Original Name",desc(){return `Unlock X Powers.`},done(){return ccTiers() >= 24}},
+    3: {name: "Alternative Prestige",desc(){return `Go Y-Quadratic ${formatWhole(100)} times.`},done(){return player.yQuadratics.gte(100)}},
+    4: {name: "Generation Failure",desc(){return `Reach ${format("1e160000")} points with no generator multiplier upgrades.`},done(){return player.points.gte("1e160000") && player.buyables[5].eq(0)}},
+    5: {name: "You're Pointless!",desc(){return `Reach ${format("1e3800")} points in Y Challenge 5.`},done(){return player.points.gte("1e3800") && player.yChallenge == 5}},
+  },
+  24: { // Mandelbrot to minibrots
+    1: {name: "The Forgotten Feature",desc(){return `Complete a Y Challenge in RET -1.`},done(){return player.yChalCompletions[1].eq(2) || player.yChalCompletions[2].eq(2) || player.yChalCompletions[3].eq(2) || player.yChalCompletions[4].eq(2) || player.yChalCompletions[5].eq(2) || player.yChalCompletions[6].eq(2)}},
+    2: {name: "A Brave Accomplishment",desc(){return `Enter the Mandelbrot in 2 Complexes or less.`},done(){return FractalMilestones.has(11)}},
+    3: {name: "Seeing Centuple",desc(){return `Enter the Mandelbrot ${formatWhole(100)} times.`},done(){return player.integrations.gte(100)}},
+    4: {name: "I Prefer Super-Boosters",desc(){return `Reach ${format("1e15000")} i with no X Powers Boosters.`},done(){return player.i.gte("1e15000") && player.triplers.gte(0)}},
+    5: {name: "Baryon Symmetry",desc(){return `Reach ${format("1e350")} y² with no Particles.`},done(){return player.y2.gte("1e350") && player.zlab.particles[1].eq(0) && player.zlab.particles[2].eq(0) && player.zlab.particles[3].eq(0)}},
+  },
+  25: { // Minibrots to y powers
+    1: {name: "Shaving Seconds",desc(){return `Complete Mandelbrot Challenge 1 at least once.`},done(){return player.integration.chalCompletions[9][1] < 120}},
+    2: {name: "Meta-Millennium",desc(){return `Reach ${format("1e1000")} meta-points.`},done(){return player.integration.emptySets.gte("1e1000")}},
+    3: {name: "Complex Infinities",desc(){return `Get 10 Riemann spheres in less than 20 seconds.`},done(){return player.integration.derivatives[1].gte(10) && player.prestigeTimes[6] <= 20}},
+    4: {name: "Too Many Buyables",desc(){return `Reach ${format("1e225000")} i with no X Powers Buyables.`},done(){return player.i.gte("1e225000") && checkPolynomialBuyables()}},
+    5: {name: "The Stump",desc(){return `Reach ${format("1e3000")} y² with no Fractal Arm upgrades.`},done(){return player.y2.gte("1e3000") && player.hypercompUpgs.dynamic.length == 0}},
+  },
+  26: { // Y powers+
+    1: {name: "The Retrocausal Name",desc(){return `Unlock Y Powers.`},done(){return FractalMilestones.has(12)}},
+    2: {name: "No Dectic?",desc(){return `Have 1 y⁹.`},done(){return player.yPolynomials[9].amount.gte(1)}},
+    3: {name: "Plague of Locusts",desc(){return `Reach ${format("1e3e8")} points in Mandelbrot Challenge 4.`},done(){return player.points.gte("1e3e8") && player.integration.challenge == 12}},
+    4: {name: "When Life Was Simple",desc(){return `Reach ${format("1e550000")} i with no Z.`},done(){return player.i.gte("1e550000") && player.z.eq(0)}},
+    5: {name: "No More Layers",desc(){return `Reach ${format("1e150000")} y² in Y Challenge 2.`},done(){return player.i.gte("1e150000") && player.yChallenge == 2}},
+  },
+  27: { // impossible category
     1: {name: "Impossible",desc(){return `This achievement is impossible.`},done(){return false}},
     2: {name: "Impossible",desc(){return `This achievement is impossible.`},done(){return false}},
     3: {name: "Impossible",desc(){return `This achievement is impossible.`},done(){return false}},
@@ -1060,29 +1130,40 @@ const DailyAchievements = {
   refresh() {
     player.dailyAchievements = [[],[]] // clears daily achievement storage
     let j = 0 // variable to determine point in progression, will be increased for each daily achievement pushed
-    if(player.inLostIntegration) j = 17
-    else if(!hasQU(16) && player.totali.lt(1) && player.integrations.lt(1)) j = 1
-    else if (hasQU(16) && !hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 2
-    else if (hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 3
-    else if (player.totali.gte(1) && !hasCU(1,6) && player.integrations.lt(1)) j = 4
-    else if (hasCU(1,6) && !player.zUnlocked) j = 5
-    else if (player.zUnlocked && !player.varSynth.unlocked[0] && player.integrations.lt(1)) j = 6
-    else if (player.varSynth.unlocked[0] && player.integrations.lt(1)) j = 7
-    else if (player.integrations.gte(1) && !player.integration.temporalPlane.unlocked) j = 8
-    else if (player.integration.temporalPlane.unlocked && player.integrations.lt(40)) j = 9
-    else if (player.integrations.gte(40) && !IntegrationUpgrades.integration4.isBought()) j = 10
-    else if (IntegrationUpgrades.integration4.isBought() && player.sinusoidals.lt(1)) j = 11
-    else if (player.sinusoidals.gte(1) && !IntegrationUpgrades.ic2.isBought()) j = 12
-    else if (IntegrationUpgrades.ic2.isBought() && !IntegrationUpgrades.ic3.isBought()) j = 13
-    else if (IntegrationUpgrades.ic3.isBought() && player.integration.chalCompletions[3] < 10) j = 14
-    else if (player.integration.chalCompletions[3] >= 10 && !player.pythTriples.unlocked) j = 15
-    else if (player.pythTriples.unlocked && !player.wUnlocked) j = 16
-    else j = 17
+    if(!player.inLostIntegration) {
+      if(!hasQU(16) && player.totali.lt(1) && player.integrations.lt(1)) j = 1
+      else if (hasQU(16) && !hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 2
+      else if (hasQU(20) && player.totali.lt(1) && player.integrations.lt(1)) j = 3
+      else if (player.totali.gte(1) && !hasCU(1,6) && player.integrations.lt(1)) j = 4
+      else if (hasCU(1,6) && !player.zUnlocked) j = 5
+      else if (player.zUnlocked && !player.varSynth.unlocked[0] && player.integrations.lt(1)) j = 6
+      else if (player.varSynth.unlocked[0] && player.integrations.lt(1)) j = 7
+      else if (player.integrations.gte(1) && !player.integration.temporalPlane.unlocked) j = 8
+      else if (player.integration.temporalPlane.unlocked && player.integrations.lt(40)) j = 9
+      else if (player.integrations.gte(40) && !IntegrationUpgrades.integration4.isBought()) j = 10
+      else if (IntegrationUpgrades.integration4.isBought() && player.sinusoidals.lt(1)) j = 11
+      else if (player.sinusoidals.gte(1) && !IntegrationUpgrades.ic2.isBought()) j = 12
+      else if (IntegrationUpgrades.ic2.isBought() && !IntegrationUpgrades.ic3.isBought()) j = 13
+      else if (IntegrationUpgrades.ic3.isBought() && player.integration.chalCompletions[3] < 10) j = 14
+      else if (player.integration.chalCompletions[3] >= 10 && !player.pythTriples.unlocked) j = 15
+      else if (player.pythTriples.unlocked && !player.wUnlocked) j = 16
+      else if (player.wUnlocked && !IntegrationUpgrades.ic5.isBought()) j = 17
+      else j = 18
+    } else {
+      if(!hasQU(15) && player.totali.lt(1) && player.integrations.lt(1)) j = 19
+      else if (hasQU(15) && player.totali.lt(1) && player.integrations.lt(1)) j = 20
+      else if (player.totali.gte(1) && !hasCU(1,6) && player.integrations.lt(1)) j = 21
+      else if (hasCU(1,6) && !player.zUnlocked && player.integrations.lt(1)) j = 22
+      else if (player.zUnlocked && player.integrations.lt(1)) j = 23
+      else if (player.integrations.gte(1) && !FractalArm.hasUpgrade(81)) j = 24
+      else if (FractalArm.hasUpgrade(81) && !FractalMilestones.has(12)) j = 25
+      else j = 26
+    }
     
     // pushes daily achievements to first sub-array (completed daily achievements go in second sub-array)
     for (let i = 0; i < 3; i++) {
       player.dailyAchievements[0].push(j.toString() + Math.floor((Math.random() * 5) + 1))
-      if(j < 17) j++
+      if(j < 27) j++
     }
 
     // sends complete notification
@@ -1096,5 +1177,19 @@ const DailyAchievements = {
     let str1 = str.length == 3 ? str.substring(0,2) : str.substring(0,1)
     let str2 = str.substring(str.length == 3 ? 2 : 1)
     return DailyAchievements[+str1][+str2]
+  },
+  findJ(x) { 
+    let str = x.toString()
+    let str1 = str.length == 3 ? str.substring(0,2) : str.substring(0,1)
+    let str2 = str.substring(str.length == 3 ? 2 : 1)
+    return +str1
   }
+}
+
+function checkPolynomialBuyables() {
+  let check = true
+  for (let i = 0; i < player.polynomials.buyables.length; i++) {
+    if (player.polynomials.buyables[i].gt(0)) check = false
+  }
+  return check
 }

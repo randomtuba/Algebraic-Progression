@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Algebraic Progression v3.0.2</title>
+    <title>Algebraic Progression v3.0.3</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Algebraic Progression by randomtuba" />
@@ -102,6 +102,7 @@
       <div id="credits">
         <b style="font-size:20px">Creator</b><br>
         randomtuba<br><br>
+        <b>Note:</b> Some of the following people mentioned are no longer associated with the project.<br><br>
         <b style="font-size:20px">Contributors Over The Years</b><br>
         TheMKeyHolder (AP Classic)<br>
         Yahtzee Master (AP Classic)<br>
@@ -661,7 +662,7 @@
       <div v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
         <button id="achsubtab1" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'regular'" v-if="player.subtabDisplays[4][0]">Achievements</button>
         <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'secret'" v-if="player.subtabDisplays[4][1]">Secret Achievements</button>
-        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'daily'" v-if="player.subtabDisplays[4][2] && !player.inLostIntegration">Daily Achievements</button>
+        <button id="achsubtab2" class="hoverable" style="font-size: 14px" onclick="player.currentSubtab[4] = 'daily'" v-if="player.subtabDisplays[4][2]">Daily Achievements</button>
       </div><br v-if="player.subtabDisplays[4][0] || player.subtabDisplays[4][1]">
       <div id="tab4-1disp" v-if="player.currentSubtab[4] == 'regular'"> <!--- REGULAR ACHIEVEMENTS !--->
       {{player.achievements.length}}/90 Achievements completed ({{format(player.achievements.length / 0.9)}}%)<br><br>
@@ -1235,7 +1236,7 @@
       </div>
     </div>
     <div id="tab8-3disp" v-if="player.currentSubtab[3] == 'challenges'"> <!--- Y-CHALLENGES !--->
-      <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e44) || ccTiers() < 48,buildingBuyable:player.y2.gte(1e44) && ccTiers() >= 48}" onclick="if(player.y2.gte(1e44) && ccTiers() >= 45){player.yChalsUnlocked[1] = true}" v-if="!player.yChalsUnlocked[1]">
+      <button style="width: 160px; height: 110px;" :class="{buildingLocked:player.y2.lt(1e44) || ccTiers() < 48,buildingBuyable:player.y2.gte(1e44) && ccTiers() >= 48}" onclick="if(player.y2.gte(1e44) && ccTiers() >= 48){player.yChalsUnlocked[1] = true}" v-if="!player.yChalsUnlocked[1]">
         Unlock for {{format(1.00e44)}} y<sup>2</sup> and {{formatWhole(48)}} CC tiers
       </button>
       <div v-if="player.yChalsUnlocked[1]">

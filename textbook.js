@@ -516,7 +516,8 @@ function tbookDescriptions(x,world) {
         ${player.integrations.gte(1) ? `<br><b>F:</b> Enter the Mandelbrot` : ``}
         ${player.quaternions[1].gte(180) ? `<br><b>I:</b> Buy Riemann sphere` : ``}
         <br><b>Shift+S:</b> Save Game
-        <br><b>Shift+E:</b> Export Save`, // hotkeys
+        <br><b>Shift+E:</b> Export Save
+        <br>You can use <b>Alt</b> + certain other hotkeys to toggle their respective autobuyers.`, // hotkeys
         `Generators are the production units for Point generation. There are ${hasCU(0,1) || player.integrations.gte(1) ? `four` : `three`} Generators, each one costing and producing more<br>
         than the previous. By default, Generator costs scale by 1.1x per purchase.
         ${hasUpgrade(6) || player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1) ? `<br><br>After buying X Upgrade 6, Generators now produce the previous Generator based on their bought amount.<br>For example, if you have 100 Point Portals, you would produce 100 Point Factories per second. This production can be<br>sped up with various upgrades.` : ``}`, // generators

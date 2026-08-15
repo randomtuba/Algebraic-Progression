@@ -407,14 +407,38 @@ function updateNewsArray() {
   ["\"What will you have after 500 years?!\" \"Not much, actually, due to the global speed multiplier...\"",player.gameTimePlayed.gte(15768000000),"a379"], //v3.0
   ["Forget about completing this game, a math major won't get you much of a job anyway...",true,"a380"], //v3.0
   ["My name is abutmodnar, and I am EVIL...!",true,"a381"], //v3.0
-  ["Newsarray doesn't work at idx 396 (anonymous) @ news.js:438",player.newsMessagesSeen >= 5000,"a382"], //v3.0
+  ["Newsarray doesn't work at idx 396 (anonymous) @ news.js:462",player.newsMessagesSeen >= 5000,"a382"], //v3.0
   ["technically speaking, you're always 0% to infinity (because that's not in this game)",player.points.gte(1.79e308),"a383"], //v3.0.2
   ["IC6 be like: ⬆️⬇️➡️⬅️⬇️➡️⬅️⬆️⬇️➡️",IntegrationUpgrades.ic6.isBought(),"a384"], //v3.0.2
   ["Incremental game player caught opening console, cursed to face eternal timewalls.",true,"a385"], //v3.0.2
-  ["Y Man shocks x^2 waitress by speaking perfect Quadratic",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a386"], //v3.0.2
+  ["Y Man shocks x<sup>2</sup> waitress by speaking perfect Quadratic",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a386"], //v3.0.2
   ["I!!! Just!!! Love!! Factorials! The!!! More!!! There!!! Are,!!! The!!! Less!! Impact!! They!!! Have!",true,"a387"], //v3.0.2
   ["An Algebraic Progression Movie, coming soon to theaters, starring Jack Black as the player! \"X and Y!\" he says triumphantly while lighting a portal to the Coordinate Plane.",hasQU(12) || player.totali.gte(1) || player.integrations.gte(1),"a388"], //v3.0.2
   ["Don't mind me, I'm just making my daily leftward commute...",true,"a389"], //v3.0.2
+  ["If variables are your power, then what are you without them?",player.x.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a390"], //v3.0.3
+  ["PARENTAL OFFSPRING WHOM IS A MEMBER OF THE MALE GENDER 😭💔",true,"a391"], //v3.0.3
+  ["I was looking for a prestige and then I found a prestige, and the Point Universe knows I'm miserable now",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a392"], //v3.0.3
+  ["I have discovered a truly marvelous joke, which this news message is too narrow to contain.",true,"a393"], //v3.0.3
+  ["<span class='realSolution'>it is green because it can be placed here</span>",true,"a394"], //v3.0.3
+  ["<span class='nonrealSolution'>it is red because it cannot be placed here</span>",true,"a395"], //v3.0.3
+  ["DID YOU SAY POTENTIAL",true,"a396"], //v3.0.3
+  ["Let's take a look... 👀",true,"a397"], //v3.0.3
+  [`"They were whippin up spaghetti code...in a kettle...boilin' spaghetti code..." "Actual spaghetti?" "...was boilin' bugs in the kettle..."`,true,"a398"], //v3.0.3
+  ["John Rod solos the Point Universe",true,"a399"], //v3.0.3
+  ["Jax, look, I know we don't get along, but I think I've found a way to complete Integration Challenge 3 without looking up a guide...",IntegrationUpgrades.ic3.isBought(),"a400"], //v3.0.3
+  ["Elegi, ergo calculo",true,"a401"], //v3.0.3
+  [`"Is this x defined, is f continous, how do you find out, you can use the limit process" -Calculus Rhapsody`,player.integrations.gte(1),"a402"], //v3.0.3
+  ["tuba let the devs out (instrumental pause) tuba let the devs out (instrumental pause) he opened up the door (he opened up the door)...they started running, they started running",true,"a403"], //v3.0.3
+  ["Are you Algebraic Progression because you copied Antimatter Dimensions, or did you copy Antimatter Dimensions because you're Algebraic Progression?",true,"a404"], //v3.0.3
+  [`Kane Parsons has reportedly collapsed his previous universe after reaching ${format("1e5e8")} points and has integrated into a new universe to conquer. He is 20 years old.`,true,"a405"], //v3.0.3
+  ["You unlocked a NEW MECHANIC! 😀😄🙂 It's a TIMEWALL MECHANIC... 😰😱😭",true,"a406"], //v3.0.3
+  ["Just watch me, Tuba! I'll solve equations with my right hand, and Buy Max with my left...! I'll take a Quadratic Upgrade...and <b>BUY IT</b>!",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a407"], //v3.0.3
+  [`I can't wait for "larptuba" to make "Larpgebraic Progression" and get 1 larpillion plays`,true,"a408"], //v3.0.3
+  ["That's what legendary players do! Kobe Bryant BROKE his COMPUTER MOUSE, and he did that-- That's what legendary players do...LeBron, legendary! Post-Complex comeback, came back...Kevin Durant got his foot into Complex Challenge 2, waited for anti-slope-- HE DIDN'T WIN, bro! He didn't complete any CC tiers! Stop calling that man legendary because he won with Steph Curry (the greatest idler ever), Clay Thompson (a top 3 speedrunner ever), stop calling him that!",hasCU(1,6) || player.integrations.gte(1),"a409"], //v3.0.3
+  ["a, b, c, d, e, f, i, j, k: If not variables, why letter shaped?",player.w.gte(1),"a410"], //v3.0.3
+  ["🐦👂🖐️🎵",true,"a411"], //v3.0.3
+  ["It's not just 100x — it's 1y!",player.y.gte(1) || player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a412"], //v3.0.3
+  ["A young game developer stands in their bedroom. It just so happens that today, the 25th of June, 2021, is the release of this developer's eventual successful incremental game. Although it was about one year ago that the project was conceptualized, it is only today that it will be given a name! What will the name of this incremental game be?",true,"a413"], //v3.0.3
   ]
 }
 var s;

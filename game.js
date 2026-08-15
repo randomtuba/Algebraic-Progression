@@ -60,7 +60,7 @@ var tmp = {
   shiftToggleBehavior: false,
   maxDiff: 0,
   clickedSecretUpgrade: false,
-  versionNumber: "v3.0.2",
+  versionNumber: "v3.0.3",
   absurdMode: false,
   
   triggeredEndingCutscene: false,
@@ -186,7 +186,7 @@ const dev = {
     });
   },
   refreshDailyAchievements() { // refreshes daily achievements and resets 24 hour daily achievement timer
-    console.log("not added yet ;(")
+    DailyAchievements.refresh()
   },
   refundPerks() { // respecs perk tree and gives spent holes back
     $.notify(`Perks refunded! +${player.integration.upgrades.qol.length} holes`, {
@@ -496,8 +496,8 @@ function mainLoop(){
   player.gamePrestigeTimes[6] = player.gamePrestigeTimes[6].add(new Decimal(diff).mul(TemporalPlane.totalEffect()))
   player.prestigeTimes[8] = player.prestigeTimes[8] += diff;
   player.gamePrestigeTimes[8] = player.gamePrestigeTimes[8].add(new Decimal(diff).mul(TemporalPlane.totalEffect()))
-  if(player.prestigeTimes[6] < player.timePlayed && player.integrations.lt(1)) player.prestigeTimes[6] = player.timePlayed
-  if(player.prestigeTimes[8] < player.timePlayed && player.sinusoidals.lt(1)) player.prestigeTimes[8] = player.timePlayed
+  if(player.integrations.lt(1)) player.prestigeTimes[6] = player.timePlayed
+  if(player.sinusoidals.lt(1)) player.prestigeTimes[8] = player.timePlayed
   if(player.gamePrestigeTimes[8].lt(player.gameTimePlayed) && player.sinusoidals.lt(1)) player.gamePrestigeTimes[8] = player.gameTimePlayed
   if(player.speedrunMode && !player.speedrunData[17][1]) player.speedrunTimer = player.speedrunTimer += diff;
   if(player.options[20] && (player.inLostIntegration ? FractalMilestones.has(1) : IntegrationUpgrades.pcc1.isBought()) && player.integration.challenge != 1 && player.integration.challenge != 2) player.integration.autoCCTimer -= diff
@@ -1933,7 +1933,7 @@ function canCompleteChallengeDisplay() {
     return player.points.gte(CHALLENGES[player.challenge].goal) && !hasChallenge(player.challenge) ? "Complete" : "Exit"
   } else if (min > 10 && min < 21) {
     if(!player.inLostIntegration) return player.x2.gte(COMP_CHALLENGES[player.compChallenge].goals[player.compChalCompletions[player.compChallenge]]) ? "Complete" : "Exit"
-    if(player.inLostIntegration) return player.x2.gte(ComplexChallengesLI[player.compChallenge].goals[player.compChallenge]) ? "Complete" : "Exit"
+    if(player.inLostIntegration) return player.x2.gte(ComplexChallengesLI[player.compChallenge].goals[player.compChalCompletions[player.compChallenge]]) ? "Complete" : "Exit"
   } else if (min == 29) {
     return player.i.gte(IntegrationChallenges[1].goal(player.compChallenge)) && !player.integration.chalCompletions[1].includes(player.challenge + (player.compChallenge * 10)) ? "Complete" : "Exit"
   } else if (min == 31) {
@@ -2175,58 +2175,239 @@ document.addEventListener("keydown", function onEvent(event) {
   if(event.key == 'Shift') {
     tmp.shiftToggleBehavior = true
   }
-  if(event.altKey && !player.inLostIntegration) {
+  if(event.altKey) {
     switch (event.key) {
       case "1":
-        if(player.options[2] && hasQU(5)) player.autobuyers[1] = !player.autobuyers[1]
+        if(player.options[2] && hasQU(5) && !player.inLostIntegration) {
+          player.autobuyers[1] = !player.autobuyers[1]
+          $.notify('Autoclicker Autobuyer ' + (player.autobuyers[1] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[1] = !player.autobuyers[1]
+          $.notify('Autoclicker Autobuyer ' + (player.autobuyers[1] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "2":
-        if(player.options[2] && hasQU(5)) player.autobuyers[2] = !player.autobuyers[2]
+        if(player.options[2] && hasQU(5) && !player.inLostIntegration) {
+          player.autobuyers[2] = !player.autobuyers[2]
+          $.notify('Point Factory Autobuyer ' + (player.autobuyers[2] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[2] = !player.autobuyers[2]
+          $.notify('Point Factory Autobuyer ' + (player.autobuyers[2] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "3":
-        if(player.options[2] && hasQU(5)) player.autobuyers[3] = !player.autobuyers[3]
+        if(player.options[2] && hasQU(5) && !player.inLostIntegration) {
+          player.autobuyers[3] = !player.autobuyers[3]
+          $.notify('Point Portal Autobuyer ' + (player.autobuyers[3] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[3] = !player.autobuyers[3]
+          $.notify('Point Portal Autobuyer ' + (player.autobuyers[3] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "4":
-        if(player.options[2] && hasQU(9)) player.autobuyers[4] = !player.autobuyers[4]
+        if(player.options[2] && hasQU(9) && !player.inLostIntegration) {
+          player.autobuyers[4] = !player.autobuyers[4]
+          $.notify('f(n) Autobuyer ' + (player.autobuyers[4] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasCU(0,1) && player.inLostIntegration) {
+          player.autobuyers[5] = !player.autobuyers[5]
+          $.notify('Point Quasar Autobuyer ' + (player.autobuyers[5] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "5":
-        if(player.options[2] && hasQU(9)) player.autobuyers[5] = !player.autobuyers[5]
+        if(player.options[2] && hasQU(9) && !player.inLostIntegration) {
+          player.autobuyers[5] = !player.autobuyers[5]
+          $.notify('g(n) Autobuyer ' + (player.autobuyers[5] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "6":
-        if(player.options[2] && hasQU(9)) player.autobuyers[6] = !player.autobuyers[6]
+        if(player.options[2] && hasQU(9) && !player.inLostIntegration) {
+          player.autobuyers[6] = !player.autobuyers[6]
+          $.notify('h(n) Autobuyer ' + (player.autobuyers[6] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "x":
-        if(player.options[2] && hasQU(6)) player.autobuyers[7] = !player.autobuyers[7]
+        if(player.options[2] && hasQU(6) && !player.inLostIntegration) {
+          player.autobuyers[7] = !player.autobuyers[7]
+          $.notify('X Autobuyer ' + (player.autobuyers[7] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[7] = !player.autobuyers[7]
+          $.notify('X Autobuyer ' + (player.autobuyers[7] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "y":
-        if(player.options[2] && hasQU(10)) player.autobuyers[8] = !player.autobuyers[8]
+        if(player.options[2] && hasQU(10) && !player.inLostIntegration) {
+          player.autobuyers[8] = !player.autobuyers[8]
+          $.notify('Y Autobuyer ' + (player.autobuyers[8] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[8] = !player.autobuyers[8]
+          $.notify('Y Autobuyer ' + (player.autobuyers[8] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "z":
-        if(player.options[2] && hasYQU(2,'bought')) player.autobuyers[11] = !player.autobuyers[11]
+        if(player.options[2] && hasYQU(2,'bought') && !player.inLostIntegration) {
+          player.autobuyers[11] = !player.autobuyers[11]
+          $.notify('Z Autobuyer ' + (player.autobuyers[11] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasYQU(4,'lost') && player.inLostIntegration) {
+          player.autobuyers[11] = !player.autobuyers[11]
+          $.notify('Z Autobuyer ' + (player.autobuyers[11] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "w":
-        if(player.options[2] && Alterations.has(2)) player.integration.autobuyers.w = !player.integration.autobuyers.w
+        if(player.options[2] && Alterations.has(2) && !player.inLostIntegration) {
+          player.integration.autobuyers.w = !player.integration.autobuyers.w
+          $.notify('W Autobuyer ' + (player.integration.autobuyers.w ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "q":
-        if(player.options[2] && hasQU(14)) player.autobuyers[9] = !player.autobuyers[9]
+        if(player.options[2] && hasQU(14) && !player.inLostIntegration) {
+          player.autobuyers[9] = !player.autobuyers[9]
+          $.notify('Auto-Quadratic ' + (player.autobuyers[9] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "b":
-        if(player.options[2] && hasMilestone(8)) player.compAutobuyers[4] = !player.compAutobuyers[4]
+        if(player.options[2] && hasMilestone(8) && !player.inLostIntegration) {
+          player.compAutobuyers[4] = !player.compAutobuyers[4]
+          $.notify('Y-Intercept Autobuyer ' + (player.compAutobuyers[4] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "c":
-        if(player.options[2] && hasMilestone(12)) player.compAutobuyers[7] = !player.compAutobuyers[7]
+        if(player.options[2] && hasMilestone(12) && !player.inLostIntegration) {
+          player.compAutobuyers[7] = !player.compAutobuyers[7]
+          $.notify('Auto-Complex ' + (player.compAutobuyers[7] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasComplexMilestoneLI(12) && player.inLostIntegration) {
+          player.compAutobuyers[7] = !player.compAutobuyers[7]
+          $.notify('Auto-Complex ' + (player.compAutobuyers[7] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "u":
-        if(player.options[2] && hasYQU(12,'bought')) player.compAutobuyers[12] = !player.compAutobuyers[12]
+        if(player.options[2] && hasYQU(12,'bought') && !player.inLostIntegration) {
+          player.compAutobuyers[12] = !player.compAutobuyers[12]
+          $.notify('Y-Quadratic Automator ' + (player.compAutobuyers[12] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && hasYQU(12,'lost') && player.inLostIntegration) {
+          player.compAutobuyers[12] = !player.compAutobuyers[12]
+          $.notify('Y-Quadratic Automator ' + (player.compAutobuyers[12] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "i":
-        if(player.options[2] && IntegrationUpgrades.integration1.isBought()) player.integration.autobuyers.integration = !player.integration.autobuyers.integration
+        if(player.options[2] && IntegrationUpgrades.integration1.isBought() && !player.inLostIntegration) {
+          player.integration.autobuyers.integration = !player.integration.autobuyers.integration
+          $.notify('Auto-Integration ' + (player.integration.autobuyers.integration ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "n":
-        if(player.options[2] && SinusoidalUpgrades.has(9)) player.integration.autobuyers.sinusoidal = !player.integration.autobuyers.sinusoidal
+        if(player.options[2] && SinusoidalUpgrades.has(9) && !player.inLostIntegration) {
+          player.integration.autobuyers.sinusoidal = !player.integration.autobuyers.sinusoidal
+          $.notify('Auto-Sinusoidal ' + (player.integration.autobuyers.sinusoidal ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
       case "f":
-        if(player.options[2] && SinusoidalUpgrades.has(13)) pplayer.integration.autobuyers.polyFactoring = !player.integration.autobuyers.polyFactoring
+        if(player.options[2] && SinusoidalUpgrades.has(13) && !player.inLostIntegration) {
+          player.integration.autobuyers.polyFactoring = !player.integration.autobuyers.polyFactoring
+          $.notify('Polynomial Factoring Autobuyer ' + (player.integration.autobuyers.polyFactoring ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+        if(player.options[2] && FractalMilestones.has(11) && player.inLostIntegration) {
+          player.integration.autobuyers.integration = !player.integration.autobuyers.integration
+          $.notify('Auto-Mandelbrot ' + (player.integration.autobuyers.integration ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
+      break;
+      case "g":
+        if(player.options[2] && hasQU(10) && player.inLostIntegration) {
+          player.autobuyers[4] = !player.autobuyers[4]
+          $.notify('Generator Multiplier Autobuyer ' + (player.autobuyers[4] ? "Enabled" : "Disabled"), {
+            style: 'apcurrent',
+            className:'saving',
+          });
+        }
       break;
     }
   }
