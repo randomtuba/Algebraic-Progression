@@ -696,7 +696,7 @@
       <table class="autocenter">
         <tr>
           <td v-for="a in 3" :class="{achievementLocked:!player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]),achievementUnlocked:player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]),achievementGolden:player.dailyAchievements[1].length == 3}">
-            <b><span style="font-size:20px">{{DailyAchievements.standardize(player.dailyAchievements[0][a-1]).name}}</span></b><br>{{player.dailyAchievements[1].length >= a-1 || player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]) || player.dailyAchievements[0][a-1] > 170 ? DailyAchievements.standardize(player.dailyAchievements[0][a-1]).desc() : "???"}}
+            <b><span style="font-size:20px">{{DailyAchievements.standardize(player.dailyAchievements[0][a-1]).name}}</span></b><br>{{player.dailyAchievements[1].length >= a-1 || player.dailyAchievements[1].includes(player.dailyAchievements[0][a-1]) || player.dailyAchievements[0][a-1] > 270 ? DailyAchievements.standardize(player.dailyAchievements[0][a-1]).desc() : "???"}}
           </td>
         </tr>
       </table><br>
