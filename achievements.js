@@ -1059,7 +1059,7 @@ const DailyAchievements = {
   },
   18: { // IC5 to IC8
     1: {name: "One Per Minute",desc(){return `Complete 60 Complex Challenge tiers.`},done(){return ccTiers() >= 60}},
-    2: {name: "Millionaire Monolith",desc(){return `Reach ${format("1e1e6")} dx.`},done(){return player.integrations.dx.gte("1e1e6")}},
+    2: {name: "Millionaire Monolith",desc(){return `Reach ${format("1e1e6")} dx.`},done(){return player.integration.dx.gte("1e1e6")}},
     3: {name: "Until Further Notice",desc(){return `Reach ${format("1e5e12")} points in Integration Challenge 7.`},done(){return player.points.gte("1e5e12") && player.integration.challenge == 7}},
     4: {name: "Charges on Strike",desc(){return `Reach ${format("1e1e9")} y² without Charged Quadratic Upgrades.`},done(){return player.y2.gte("1e1e9") && player.chargedQuadUpgs.length == 0}},
     5: {name: "I Will Never Be Satisfied",desc(){return `Reach ${format("1e1e14")} points in Integration Challenge 4.`},done(){return player.points.gte("1e1e14") && player.integration.challenge == 4}},

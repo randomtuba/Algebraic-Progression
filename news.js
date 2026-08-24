@@ -430,7 +430,7 @@ function updateNewsArray() {
   [`"Is this x defined, is f continous, how do you find out, you can use the limit process" -Calculus Rhapsody`,player.integrations.gte(1),"a402"], //v3.0.3
   ["tuba let the devs out (instrumental pause) tuba let the devs out (instrumental pause) he opened up the door (he opened up the door)...they started running, they started running",true,"a403"], //v3.0.3
   ["Are you Algebraic Progression because you copied Antimatter Dimensions, or did you copy Antimatter Dimensions because you're Algebraic Progression?",true,"a404"], //v3.0.3
-  [`Kane Parsons has reportedly collapsed his previous universe after reaching ${format("1e5e8")} points and has integrated into a new universe to conquer. He is 20 years old.`,true,"a405"], //v3.0.3
+  [`Kane Parsons has reportedly collapsed his previous universe after reaching ${format("1e5e8")} points and has integrated into a new universe to conquer. He is 20 years old.`,player.integrations.gte(1),"a405"], //v3.0.3
   ["You unlocked a NEW MECHANIC! 😀😄🙂 It's a TIMEWALL MECHANIC... 😰😱😭",true,"a406"], //v3.0.3
   ["Just watch me, Tuba! I'll solve equations with my right hand, and Buy Max with my left...! I'll take a Quadratic Upgrade...and <b>BUY IT</b>!",player.totalx2.gte(1) || player.totali.gte(1) || player.integrations.gte(1),"a407"], //v3.0.3
   [`I can't wait for "larptuba" to make "Larpgebraic Progression" and get 1 larpillion plays`,true,"a408"], //v3.0.3
